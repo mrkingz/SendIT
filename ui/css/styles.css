@@ -4,7 +4,7 @@
     background-repeat: no-repeat;
     background-size: cover;
     background-position: center;
- 
+    min-height: 100vh;
 }
 
 
@@ -77,22 +77,8 @@ html {
 }
 
 .header {
-    border-bottom: 1px solid #cccccc; 
-    display: -webkit-box;
-    /* display: -ms-flexbox;
-    display: flex;
-    -ms-flex-wrap: wrap;
-    flex-wrap: wrap;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify; */
-    justify-content: space-between;
-    padding: 0.2rem 1rem;
     -webkit-box-shadow: 0 0 2px 2px rgba(1,1,1,.5);
-    box-shadow: 0 0 2px 2px rgba(1,1,1,.2); 
-    background-color: rgb(14, 14, 54);  
+    box-shadow: 0 0 2px 2px rgba(1,1,1,.2);  
 }
 
 .bar::before {
@@ -102,7 +88,7 @@ html {
 .brand {
     color: rgb(14, 14, 54);
     font-weight: bold;
-    font-size: 32px
+    font-size: 30px
 }
 
 .nav-link {
@@ -126,30 +112,46 @@ html {
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
     border-radius: .2rem;
-    border: 1px solid rgb(29, 29, 136)
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 2.5rem;
+    padding-bottom: .4rem;
+    border-bottom: 1px solid rgb(213, 213, 228);
 }
 
 .auth-header {
-    display: inline;
-    padding: 4rem 3rem 0 3rem;
+    min-height: 100px;
+    padding: 0rem 2rem;
 }
 
-.auth-header-line {
-    margin-top: .5rem;
-    border-top: 1px solid rgba(196, 196, 248, 0.993);
-    border-bottom: 1px solid rgb(14, 14, 54);
+.header-height{
+    padding: 0rem !important;
+    min-height: 100px;
 }
 
-.auth-wrapper {
-    margin: .5rem 2rem 2rem;
-    background-color: rgb(245, 245, 255);
+.brand-header {
+    display: flex;
+    flex-direction: column-reverse;
+    width: 100%;
+    *border-bottom: 1px solid rgba(196, 196, 248, 0.993);
+}
+
+.wrapper-border {
     border: 1px solid rgb(233, 233, 253);
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
     border-radius: .2rem;
 }
 
-.auth-wrapper hr.section-seperator {
+.wrapper {
+    margin: .5rem 2rem 2rem;
+    background-color: rgb(245, 245, 255);
+}
+
+.wrapper hr.section-seperator {
     border-top: 1px dotted rgb(223, 223, 240);
     margin: 0 1rem;
 }
@@ -173,13 +175,25 @@ html {
 
 .auth-header > ul > li.bar {
     font-weight: normal;
-    font-size: 32px;
+    font-size: 28px;
+}
+
+.align-bottom {
+    display: flex;
+    flex-direction: column-reverse;
+    height: 100%;
+    margin: 0 !important;
 }
 
 .page {
     color: rgba(18, 18, 90, 0.932);
     margin: 0 .2rem;
-    font-size: .85rem;
+    font-size: .8rem;
+}
+
+.page-container {
+    min-height:300px;
+    margin: .3rem 1.5rem;
 }
 
 .btn-primary {
@@ -226,15 +240,35 @@ html {
     border: none
 }
 
+.check-wrapper {
+    margin-top: .2rem;
+    padding: 1rem;
+    background: rgb(241, 241, 253)
+}
+
+.content-header {
+    font-size:1.2rem; 
+    font-weight: 600;
+    margin-top: 2rem; 
+    padding:.3rem .5rem; 
+    color:rgb(6, 6, 44); 
+    border-bottom:1px solid rgb(212, 212, 231);
+}
+
 .control {
     width: 100%;
-    padding: .3rem;
+    padding: .4rem .4rem;
     margin-top: .13rem;
-    font-size: .75rem;
+    font-size: .85rem;
     border: 1px solid rgb(158, 158, 228);
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
     border-radius: .2rem;
+}
+
+.control option {
+    margin: 0;
+    padding: 0;
 }
 
 .control:focus {
@@ -284,6 +318,15 @@ html {
     font-size: .75rem;
 }
 
+.side-panel {
+    background: rgb(236, 236, 255);
+    height: 100%;
+}
+
+.left-panel {
+    border-right:1px solid rgb(205, 205, 245);
+}
+
 .footer {
     color: #dedef5;
     font-size: .88rem;
@@ -295,12 +338,21 @@ html {
 }
 
 .form {
-    padding: 1rem;
+    margin: 1rem;
 }
 
 .dotted-border {
     border-style: dotted !important;
     border-color: #c2c2c2;
+}
+
+.m-0 {
+    margin: 0 !important
+}
+
+.mx-0 {
+    margin-left: 0 !important;
+    margin-right: 0 !important; 
 }
 
 .mx-sm {
@@ -311,6 +363,11 @@ html {
 .mx-md {
     margin-left: .4rem;
     margin-right: .4rem; 
+}
+
+.mx-lg {
+    margin-left: .6rem;
+    margin-right: .6rem; 
 }
 
 .my-sm {
@@ -345,6 +402,50 @@ html {
 
 .mt-lg {
     margin-top: .6rem; 
+}
+
+.px-sm {
+    padding-left: .2rem;
+    padding-right: .2rem;
+}
+
+.px-md {
+    padding-left: .4rem;
+    padding-right: .4rem;
+}
+
+.px-lg {
+    padding-left: .6rem;
+    padding-right: .6rem;
+}
+
+.nav-menu {
+    width: 25px;
+    padding: 6px 0;
+    position: relative;
+    display: inline-block;
+}
+
+.nav-menu::before {
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    border-top: 2px solid rgb(14, 14, 54);
+    border-bottom: 2px solid rgb(14, 14, 54);
+    margin-bottom: 6px;
+    top: 0px;
+}
+    
+.nav-menu::after {
+    content: "";
+    position: absolute;
+    top: 6px;
+    left: 0px;
+    height: 2px;
+    width: 100%;
+    background: rgb(14, 14, 54);
 }
 
 .no-wrap {
@@ -394,8 +495,8 @@ html {
 }
 
 .transparent {
-    padding: .5rem 0;
-    margin: 3rem 1rem;
+    padding: .2rem 0;
+    margin: 2rem 1rem;
     background: rgba(71, 71, 114, 0.2);
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
@@ -406,6 +507,82 @@ html {
     list-style: none;
 }
 
-.unstyled-list li ~ li{
+.brand-header >.unstyled-list li ~ li {
     margin: 0 .3rem;
+}
+
+a.nav-links {
+    display: block;
+    padding: .2rem .5rem;
+    margin: .1rem 0rem;
+    background-color: #3498DB !important;
+}
+
+/* Dropdown button on hover & focus */
+.dropbtn:hover, .dropbtn:focus {
+    background: rgb(230, 230, 253);
+    border: 1px dotted rgb(197, 197, 250);
+    outline-style: none
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    float: right;
+    /* display: inline-block; */
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    right: 0;
+    display: none;
+    color: rgba(18, 18, 90, 0.932);
+    position: absolute;
+    background-color: #ffffff;
+    min-width: 160px;
+    box-shadow: 0px 8px 10px 5px rgba(0,0,0,0.5);
+    z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+    color: black;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+    font-size: .8rem;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {
+    color: #ffffff;
+    background-color: rgb(14, 14, 78)
+}
+
+/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
+.show {
+    display:block;
+}
+
+.form-check {
+    position: relative;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+  
+.form-check.disabled .form-check-label {
+    color: #636c72;
+    cursor: not-allowed;
+}
+  
+.form-check-label {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+    font-size: 13px;
+    cursor: pointer;
+}
+  
+.form-check-input {
+    position: absolute;
+    margin-top: 0.2rem;
 }
