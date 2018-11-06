@@ -245,7 +245,7 @@ html {
 
 .btn-link {
     background-color: transparent;
-    border: none
+    border: 1px solid transparent;
 }
 
 .card {
@@ -406,6 +406,12 @@ html {
     font-size: .7rem;
 }
 
+.filter-div {
+    display: flex;
+    flex-direction: row-reverse;
+    margin-bottom: .4rem;
+}
+
 .form {
     margin: 1rem;
 }
@@ -488,6 +494,17 @@ html {
     padding: 6px 0;
     position: relative;
     display: inline-block;
+}
+
+.more-details {
+    background: rgb(247, 247, 250);
+    padding:.5rem;
+    margin-top: .4rem;
+    padding-top: 1rem
+}
+
+div.nexted ~ div.nexted {
+    margin-top: 1rem;
 }
 
 .nav-menu::before {
@@ -586,7 +603,7 @@ a.nav-links {
     background-color: #3498DB !important;
 }
 
-/* Dropdown button on hover & focus */
+.btn-link:hover,
 .dropbtn:hover, .dropbtn:focus {
     background: rgb(230, 230, 253);
     border: 1px dotted rgb(197, 197, 250);
