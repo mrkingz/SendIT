@@ -64,6 +64,10 @@ html {
             justify-content: end !important;
 }
 
+.row-reverse {
+    flex-direction: row-reverse;
+}
+
 .align-center {
     text-align: center;
 }
@@ -146,8 +150,12 @@ html {
     border-radius: .2rem;
 }
 
+.auth-padding {
+    padding: 20px 0 !important;
+}
+
 .wrapper {
-    margin: .5rem 2rem 2rem;
+    margin: .6rem;
     background-color: rgb(245, 245, 255);
 }
 
@@ -238,6 +246,57 @@ html {
 .btn-link {
     background-color: transparent;
     border: none
+}
+
+.card {
+    padding: .3rem;
+    background-color:#fefef8;
+    border:1px solid rgb(202, 202, 226);
+    border: 1px solid rgb(158, 158, 228);
+    -webkit-border-radius: .2rem;
+    -moz-border-radius: .2rem;
+    border-radius: .2rem;
+}
+
+.card ~ .card {
+    margin-top: .5rem;
+}
+
+.card-row {
+    display: inline-flex;
+    width: 100%;
+}
+
+.card-row ~ .card-row {
+    border-top: 1px solid rgb(232, 232, 252);
+}
+
+.card-wrapper {
+    background-color: #fafafa;
+    border: 1px solid rgb(213, 213, 255);
+}
+
+.card-row > div {
+    padding: .3rem .5rem;
+    display: flex;
+    justify-content: baseline;
+    font-size: .7rem;
+}
+
+.data-header {
+    padding-left: .2rem;
+    padding-right: .2rem; 
+    width: 35%;
+    font-weight: bold;
+    color: rgb(14,14,54);
+    border-right: 1px solid rgb(232, 232, 252);
+}
+
+.data {
+    width: 65%;
+    font-weight: normal;
+    color: rgba(18, 18, 90, 0.932);
+    background-color: #fff;
 }
 
 .check-wrapper {
@@ -337,13 +396,18 @@ html {
     border-top: 1px solid #dedef5;
 }
 
-.form {
-    margin: 1rem;
-}
-
 .dotted-border {
     border-style: dotted !important;
     border-color: #c2c2c2;
+}
+
+.filter-btn {
+    border: 1px solid transparent;
+    font-size: .7rem;
+}
+
+.form {
+    margin: 1rem;
 }
 
 .m-0 {
@@ -452,6 +516,10 @@ html {
     white-space: nowrap;
 }
 
+.red-color {
+    color: darkred;
+}
+
 .required::after {
     content: ' *';
     color: red;
@@ -532,6 +600,10 @@ a.nav-links {
     /* display: inline-block; */
 }
 
+.dropdown-content-mini {
+    min-width: 120px !important;
+}
+
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
     right: 0;
@@ -551,6 +623,11 @@ a.nav-links {
     text-decoration: none;
     display: block;
     font-size: .8rem;
+}
+
+.dropdown-content-mini a {
+    padding: 7px;
+    font-size: .7rem;   
 }
 
 /* Change color of dropdown links on hover */
