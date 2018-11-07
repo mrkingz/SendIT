@@ -19,6 +19,7 @@
 }
 
 html {
+    color: rgb(6, 6, 49);
     font-family: sans-serif;
     line-height: 1.15;
     -webkit-text-size-adjust: 100%;
@@ -648,7 +649,6 @@ a.nav-links {
 .dropdown {
     position: relative;
     float: right;
-    /* display: inline-block; */
 }
 
 .dropdown-content-mini {
@@ -667,7 +667,16 @@ a.nav-links {
     z-index: 1;
 }
 
+button.menu-btn {
+    width: 100%;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
 /* Links inside the dropdown */
+.dropdown-content button.menu-btn,
 .dropdown-content a {
     color: black;
     padding: 10px;
@@ -676,15 +685,21 @@ a.nav-links {
     font-size: .8rem;
 }
 
+.dropdown-content-mini button.menu-btn,
 .dropdown-content-mini a {
     padding: 7px 10px;
     font-size: .7rem;   
 }
 
 /* Change color of dropdown links on hover */
+.dropdown-content button.menu-btn:hover,
 .dropdown-content a:hover {
     color: #ffffff;
-    background-color: rgb(14, 14, 78)
+    background-color: rgb(14, 14, 78);
+}
+
+button.menu-btn:focus {
+    outline: none;
 }
 
 /* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
@@ -731,7 +746,11 @@ a.nav-links {
 }
 
 .modal-md {
-    width: 36%;
+    max-width: 460px;
+}
+
+.modal-sm {
+    max-width: 320px;
 }
 
 /* Modal Content */
@@ -739,6 +758,7 @@ a.nav-links {
     position: relative;
     background-color: #ffffff;
     margin: auto;
+    left: auto;
     padding: 0;
     border: 1px solid rgb(188, 188, 243);
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
@@ -786,7 +806,8 @@ a.nav-links {
 }
 
 .modal-body {
-    padding: 10px 16px;
+    padding: 1rem .5rem;
+    margin-bottom: 1rem;
     background-color: #fff;
 }
 
@@ -794,4 +815,19 @@ a.nav-links {
     padding: 2px 16px;
     background-color: #ffffff;
     color: white;
+}
+
+.warning {
+    padding: .7rem .5rem;
+    margin-top: .2rem;
+    margin-bottom: .5rem;
+    color: #857b26;
+    text-align: center;
+    font-size: .8rem;
+    line-height: 1.4;
+    background-color: #fffbdb;
+    border: 1px solid #f7f1bb;
+    -webkit-border-radius: .2rem;
+    -moz-border-radius: .2rem;
+    border-radius: .2rem;
 }
