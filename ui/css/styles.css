@@ -341,7 +341,7 @@ html {
 
 .control {
     width: 100%;
-    padding: .4rem .4rem;
+    padding: .3rem .4rem;
     margin-top: .13rem;
     font-size: .85rem;
     border: 1px solid rgb(158, 158, 228);
@@ -735,7 +735,7 @@ button.menu-btn:focus {
     display: none; /* Hidden by default */
     position: fixed; /* Stay in place */
     z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    padding-top: 50px; /* Location of the box */
     left: 0;
     top: 0;
     width: 100%; /* Full width */
@@ -743,6 +743,12 @@ button.menu-btn:focus {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-body .form {
+    margin: 0rem !important;
+    background: rgb(238, 238, 245); 
+    padding: 1rem; 
 }
 
 .modal-md {
@@ -801,20 +807,17 @@ button.menu-btn:focus {
 
 .modal-header {
     margin: .5rem;
-    min-height: 15px;
+    min-height: 5px;
     background-color: #fff;
 }
 
 .modal-body {
-    padding: 1rem .5rem;
-    margin-bottom: 1rem;
+    padding: 1rem .5rem .5rem;
     background-color: #fff;
 }
 
-.modal-footer {
-    padding: 2px 16px;
-    background-color: #ffffff;
-    color: white;
+.modal-body .check-wrapper {
+    margin-top: .2rem;
 }
 
 .warning {

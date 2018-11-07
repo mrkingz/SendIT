@@ -203,7 +203,8 @@
                                                                     <button onclick="dropdown('order-menu')" class="btn btn-link dropbtn" style="padding: .1rem .6rem"><i class="fa fa-caret-down"></i></button>
                                                                     <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">
                                                                         <button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>
-                                                                        <button class="menu-btn">Update location</button>
+                                                                        <button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
+                                                                        <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>
                                                                         <button class="menu-btn">Delete</button>
                                                                     </div>
                                                                 </div>
@@ -258,7 +259,7 @@
         </div>
 
 
-        <!-- The Modal -->
+        <!-- Destination Modal -->
         <div id="destination-modal" class="modal">
 
             <!-- Modal content -->
@@ -267,38 +268,101 @@
                     <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
                 </div>
                 <div class="modal-body">
-                    <h4>Edit destination</h4>
+                    <h3>Edit destination</h3>
                     <div class="check-wrapper">
                         <form class="form" action="">
                             <div class="control-group">
-                                    <label class="required" for="address">Address</label>
-                                    <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
-                                </div>
+                                <label class="required" for="address">Address</label>
+                                <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+                            </div>
 
-                                <div class="control-group">
-                                    <label class="required" for="city">City/Town</label>
-                                    <input type="text" class="control col-lg-10 col-md-10 col-sm-12" name="city" id="city" placeholder="City/Town" autocomplete="off">
-                                </div>
+                            <div class="control-group">
+                                <label class="required" for="city">City/Town</label>
+                                <input type="text" class="control col-lg-10 col-md-10 col-sm-12" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                            </div>
 
-                                <div class="control-group">
-                                    <label class="required" for="destination">State</label>
-                                    <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
-                                        <option value="">Select state</option>
-                                        <option value="Lagos">Lagos</option>
-                                    </select>
-                                </div>
+                            <div class="control-group">
+                                <label class="required" for="destination">State</label>
+                                <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
+                                    <option value="">Select state</option>
+                                    <option value="Lagos">Lagos</option>
+                                </select>
+                            </div>
     
-                        <div class="my-lg">
-                            <button class="btn btn-primary" onclick="return false">Save</button>
+                            <div class="my-lg">
+                                <button class="btn btn-primary" onclick="return false">Save</button>
+                            </div>
                         </div>
-                    </div>
                     </form>
-                </div>
-                <div class="modal-footer">
-                <h3>Modal Footer</h3>
                 </div>
             </div>
         </div>
+
+        
+        <!-- Location Modal -->
+        <div id="location-modal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content modal-md">
+                <div class="modal-header">
+                    <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <h3>Update location</h3>
+                    <div class="check-wrapper">
+                        <form class="form" action="">
+                            <div class="control-group">
+                                <label class="required" for="destination">State</label>
+                                <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
+                                    <option value="">Select state</option>
+                                    <option value="Lagos">Lagos</option>
+                                </select>
+                            </div>
+                            <div class="control-group">
+                                <label class="required" for="city">City/Town</label>
+                                <input type="text" class="control col-lg-10 col-md-10 col-sm-12" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                            </div>
+    
+                            <div class="my-lg">
+                                <button class="btn btn-primary" onclick="return false">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Modal -->
+        <div id="status-modal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Update status</h3>
+                        <div class="check-wrapper">
+                            <form class="form" action="">
+                                <div class="control-group">
+                                    <label class="required" for="destination">Delivery status</label>
+                                    <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
+                                        <option value="">Select status</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="In Transit">In transit</option>
+                                        <option value="Pending">Pending</option>
+                                    </select>
+                                </div>
+        
+                                <div class="my-lg">
+                                    <button class="btn btn-primary" onclick="return false">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <script src="../js/script.js"></script>
        
     </body>
