@@ -780,13 +780,18 @@ a.nav-links {
 }
 
 .modal-header {
-    margin: .3rem .5rem;
+    margin: .5rem;
+    min-height: 15px;
     background-color: #fff;
 }
 
 .modal-body {
-    padding: 2px 16px;
+    padding: 10px 16px;
     background-color: #fff;
+}
+
+.modal-body .form {
+    m
 }
 
 .modal-footer {
