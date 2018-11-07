@@ -202,9 +202,9 @@
                                                                 <div class="dropdown">
                                                                     <button onclick="dropdown('order-menu')" class="btn btn-link dropbtn" style="padding: .1rem .6rem"><i class="fa fa-caret-down"></i></button>
                                                                     <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">
-                                                                        <a href="">Cancel order</a>
-                                                                        <a href="">Update location</a>
-                                                                        <a href="">Delete</a>
+                                                                        <button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>
+                                                                        <button class="menu-btn">Update location</button>
+                                                                        <button class="menu-btn">Delete</button>
                                                                     </div>
                                                                 </div>
                                                             
@@ -233,13 +233,38 @@
         </div> 
         <!-- Modals -->
 
+        <div id="confirm-modal" class="modal">
+
+            <!-- Modal content -->
+            <div class="modal-content modal-sm">
+                <div class="modal-header">
+                    <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="red-color size-12 bold align-center">Confirm alert</div>
+                    <div class="warning">
+                        <span>
+                            Are you sure you want to cancel this order?<br>
+                            Click continue to confirm this operation
+                        </span>
+                    </div>
+                    <div class="my-lg align-center">
+                        <button class="btn btn-primary btn-sm">Continue</button>
+                        <button class="btn btn-primary btn-sm" onclick="hideModal()">Quit</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
         <!-- The Modal -->
         <div id="destination-modal" class="modal">
 
             <!-- Modal content -->
             <div class="modal-content modal-md">
                 <div class="modal-header">
-                    <span class="close" tabindex="-1">&times;</span>
+                    <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
                 </div>
                 <div class="modal-body">
                     <h4>Edit destination</h4>
