@@ -232,7 +232,7 @@ html {
 .btn {
     display: inline-block;
     padding: 4px 12px;
-    margin-bottom: 0;
+    margin-bottom: .2rem;
     font-size: 14px;
     line-height: 20px;
     text-align: center;
@@ -248,8 +248,18 @@ html {
     border: 1px solid transparent;
 }
 
+.card-header .btn-link {
+    color: #3498DB;
+}
+
+.btn-sm {
+    padding: .08rem .5rem;
+    margin-bottom: 0;
+    font-size: .66rem;
+}
+
 .card {
-    padding: .3rem;
+    padding: 0 .5rem;
     background-color:#fefef8;
     border:1px solid rgb(202, 202, 226);
     border: 1px solid rgb(158, 158, 228);
@@ -260,6 +270,21 @@ html {
 
 .card ~ .card {
     margin-top: .5rem;
+}
+
+.card-title,
+.card-header {
+    display: flex;
+}
+
+.card-header {
+    justify-content: space-between;
+    margin-bottom: .3rem;
+}
+
+.card-title {
+    flex-direction: column-reverse;
+    justify-content: space-evenly
 }
 
 .card-row {
@@ -300,7 +325,6 @@ html {
 }
 
 .check-wrapper {
-    margin-top: .2rem;
     padding: 1rem;
     background: rgb(241, 241, 253)
 }
@@ -474,6 +498,16 @@ html {
     margin-top: .6rem; 
 }
 
+.px-0 {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.py-0 {
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+}
+
 .px-sm {
     padding-left: .2rem;
     padding-right: .2rem;
@@ -618,7 +652,7 @@ a.nav-links {
 }
 
 .dropdown-content-mini {
-    min-width: 120px !important;
+    min-width: 140px !important;
 }
 
 /* Dropdown Content (Hidden by Default) */
@@ -643,7 +677,7 @@ a.nav-links {
 }
 
 .dropdown-content-mini a {
-    padding: 7px;
+    padding: 7px 10px;
     font-size: .7rem;   
 }
 
@@ -679,4 +713,84 @@ a.nav-links {
 .form-check-input {
     position: absolute;
     margin-top: 0.2rem;
+}
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.modal-md {
+    width: 36%;
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #ffffff;
+    margin: auto;
+    padding: 0;
+    border: 1px solid rgb(188, 188, 243);
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s;
+    -webkit-border-radius: .3rem;
+    -moz-border-radius: .3rem;
+    border-radius: .3rem;
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {top:-300px; opacity:0} 
+    to {top:0; opacity:1}
+}
+
+@keyframes animatetop {
+    from {top:-300px; opacity:0}
+    to {top:0; opacity:1}
+}
+
+/* The Close Button */
+.close {
+    color:darkred;
+    float: right;
+    font-size: 1rem;
+    padding: .1rem;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: rgb(214, 26, 26);
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+}
+
+.modal-header {
+    margin: .3rem .5rem;
+    background-color: #fff;
+}
+
+.modal-body {
+    padding: 2px 16px;
+    background-color: #fff;
+}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #ffffff;
+    color: white;
 }
