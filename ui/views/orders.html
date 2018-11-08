@@ -21,7 +21,7 @@
                                         <ul class="unstyled-list">
                                             <li><span class="brand">SendIT</span><sup>&trade;</sup></li>
                                             <li class="bar"></li>
-                                            <li style="margin: 0"><span class="page align-bottom">Delivery orders</span></li>
+                                            <li class="mx-0"><span class="page align-bottom"> Delivery orders</span></li>
                                         </ul>
                                     </div>
                                     <div style="display:flex; flex-direction: column-reverse">
@@ -30,7 +30,7 @@
                                             <div id="activities" class="dropdown-content">
                                                 <a href="create.html">Create order</a>
                                                 <a href="orders.html">Delivery orders</a>
-                                                <a href="#">Profile</a>
+                                                <a href="profile.html">Profile</a>
                                                 <a href="login.html">Log out</a>
                                             </div>
                                         </div>
@@ -56,14 +56,16 @@
                                                     <div class="content-header">
                                                         Delivery orders
                                                     </div>                                                  
-                                                    <div class="check-wrapper">
+                                                    <div class="panel">
                                                         <div class="filter-div">
                                                             <div class="dropdown">
                                                                 <button onclick="dropdown('filter')" class="btn btn-link dropbtn filter-btn">Filter orders <i class="fa fa-caret-down"></i></button>
                                                                 <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
-                                                                    <a href="">All orders</a>
-                                                                    <a href="">Pending orders</a>
-                                                                    <a href="">Delivered orders</a>
+                                                                    <button class="menu-btn">All orders</button>
+                                                                    <button class="menu-btn">Pending orders</button>
+                                                                    <button class="menu-btn">In-transit orders</button>
+                                                                    <button class="menu-btn">Cancelled orders</button>
+                                                                    <button class="menu-btn">Delivered orders</button>
                                                                 </div>
                                                             </div>
                                                         </div> 
@@ -242,7 +244,7 @@
                                             </div>
                                         </div>
                                         <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <div class="side-panel"></div>
+                                            <div class="side-panel right-panel"></div>
                                         </div>
                                     </div>
                                 </div>                

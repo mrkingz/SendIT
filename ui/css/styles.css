@@ -198,6 +198,7 @@ html {
     color: rgba(18, 18, 90, 0.932);
     margin: 0 .2rem;
     font-size: .8rem;
+    padding-bottom: .2rem;
 }
 
 .page-container {
@@ -249,7 +250,7 @@ html {
     border: 1px solid transparent;
 }
 
-.card-header .btn-link {
+.skyblue-color {
     color: #3498DB;
 }
 
@@ -325,7 +326,7 @@ html {
     background-color: #fff;
 }
 
-.check-wrapper {
+.panel {
     padding: 1rem;
     background: rgb(241, 241, 253)
 }
@@ -343,7 +344,7 @@ html {
     width: 100%;
     padding: .3rem .4rem;
     margin-top: .13rem;
-    font-size: .85rem;
+    font-size: .8rem;
     border: 1px solid rgb(158, 158, 228);
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
@@ -409,6 +410,10 @@ html {
 
 .left-panel {
     border-right:1px solid rgb(205, 205, 245);
+}
+
+.right-panel {
+    border-left:1px solid rgb(205, 205, 245);
 }
 
 .footer {
