@@ -1,0 +1,38 @@
+{
+  "name": "sendit",
+  "version": "1.0.0",
+  "description": "Parcel delivery order app",
+  "main": "app.js",
+  "scripts": {
+    "start:dev": "SET NODE_ENV=development && nodemon --watch server --exec babel-node ./server/app",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mrkingz/SendIT.git"
+  },
+  "author": "Kingsley Frank-Demesi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mrkingz/SendIT/issues"
+  },
+  "homepage": "https://github.com/mrkingz/SendIT#readme",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-istanbul": "^5.1.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "dotenv": "^6.1.0",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "morgan": "^1.9.1",
+    "validator": "^10.9.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "nodemon": "^1.18.6"
+  }
+}
