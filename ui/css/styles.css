@@ -335,6 +335,7 @@ html {
     font-size:1.2rem; 
     font-weight: 600;
     margin-top: 2rem; 
+    margin-bottom: .5rem;
     padding:.3rem .5rem; 
     color:rgb(6, 6, 44); 
     border-bottom:1px solid rgb(212, 212, 231);
@@ -939,4 +940,44 @@ button.menu-btn:focus {
     font-weight: bold;
     font-size: 45px;
     text-align: center;
+}
+
+.dashboard-wrapper {
+    min-height: 400px;
+}
+
+.dashboard {
+    display: flex;
+    justify-content: space-between;
+    padding: .1rem;
+    border: 1px solid rgb(163, 163, 218);
+    background: #fefefe;
+}
+
+.dashboard a.btn {
+    width: 100%;
+    padding: 1rem .5rem;
+    margin: .1rem;
+}
+
+.no-orders::before {
+    content: "You currently have no active orders...";
+}
+
+.alert {
+    border: 1px solid #fafafa;
+    -webkit-border-radius: .2rem;
+    -moz-border-radius: .2rem;
+        border-radius: .2rem;
+}
+
+.alert-info {
+    font-style: italic;
+    font-size: .75rem;
+    padding: 1rem;
+    width: 100%;
+    color: #385d7a;
+    background-color: #e2f0fb;
+    border-color: #d6e9f9;
+    
 }
