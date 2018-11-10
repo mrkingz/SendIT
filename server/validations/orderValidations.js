@@ -55,6 +55,8 @@ export default class OrderValidations extends UtilityService {
 				return next();
 			}
 
+			console(new Date());
+
 			return this.errorResponse(res, 400, `${message} is required!`);
 		};
 	}
@@ -122,23 +124,20 @@ export default class OrderValidations extends UtilityService {
 		return (req, res, next) => {
 			let message;
 			const {
-				weight, deliveryMethod, pickupDate, pickupTime, receiverName, receiverPhone
+				weight, deliveryMethod, receiverName, receiverPhone
 			} = this.trimAttr(req.body);		
 			
 			if (!_.isUndefined(weight) && !Validator.isNumeric(weight)) {
 				message = 'Invalid entry for parcel weight';
-			} else if (!_.isUndefined(deliveryMethod) && (deliveryMethod != 'Fast' || deliveryMethod != 'Normal')) {
+			} else if (!_.isUndefined(deliveryMethod)
+					&& (deliveryMethod !== 'Fast' && deliveryMethod !== 'Normal')) {
 				message = 'Invalid entry for delivery method. Must be Fast or Normal';
-			} else if (!_.isUndefined(pickupDate) && !_.isDate(pickupDate)) {
-				message = 'Invalid entry for pickup date';
-			} else if (!_.isUndefined(pickupTime) && !_.isDate(pickupTime)) {
-				message = 'Invalid entry for pickup time';
 			}	else if (!_.isUndefined(receiverName) && !_.isString(receiverName)) {
 				message = 'Invalid entry for receiver\'s name';
 			} else if (!_.isUndefined(receiverPhone) && !Validator.isMobilePhone(receiverPhone)) {
 				message = 'Invalid entry for receiver\'s phone number';
 			}
-
+			console.log(deliveryMethod);
 			if (_.isEmpty(message)) {
 				return next();
 			}

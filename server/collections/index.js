@@ -70,7 +70,7 @@ class Collections {
 	 * @returns {Array} Returns an array of orders
 	 * @memberof Collection
 	 */
-	getOrers() {
+	getOrders() {
 		return this.orders;
 	}
 }
