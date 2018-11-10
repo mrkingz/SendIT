@@ -122,8 +122,7 @@ export default class OrderValidations extends UtilityService {
 		return (req, res, next) => {
 			let message;
 			const {
-				weight, deliveryMethod, pickupAddress, pickupCity, pickupState, pickupDate, pickupTime,
-				destinationAddress, destinationCity, destinationState, receiverName, receiverPhone
+				weight, deliveryMethod, pickupDate, pickupTime, receiverName, receiverPhone
 			} = this.trimAttr(req.body);		
 			
 			if (!_.isUndefined(weight) && !Validator.isNumeric(weight)) {
@@ -139,6 +138,12 @@ export default class OrderValidations extends UtilityService {
 			} else if (!_.isUndefined(receiverPhone) && !Validator.isMobilePhone(receiverPhone)) {
 				message = 'Invalid entry for receiver\'s phone number';
 			}
+
+			if (_.isEmpty(message)) {
+				return next();
+			}
+
+			return this.errorResponse(res, 400, message);
 		};
 	}
 }
