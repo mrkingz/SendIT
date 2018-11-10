@@ -76,4 +76,47 @@ export default class UserController extends UtilityService {
       return this.errorResponse(res, 401, message);
     };
   }
+
+	/**
+	 * Authenticate users
+	 * @static
+	 * @returns {function} Returns an expresss middleware function that handles user authentication
+	 * @memberof UserController
+	 */
+  static authenticateUser() {
+    return (req, res, next) => {
+      let message = 'Access denied! Token not provided';
+      let token = req.cookies.token || req.getAuthorization || req.query.token ||
+        req.body.token || req.headers.token;
+      if (token) {
+        const regex = new RegExp('/^Bearer (\S+)$/');
+        const match = regex.exec(token);
+
+        token = (match) ? match[1] : token;
+        let decoded;
+        try {
+          decoded = jwt.verify(token, process.env.SECRET_KEY, {
+            issuer: process.env.ISSUER
+          });
+          if (decoded) {
+            const length = collections.getUsersCount();
+            for (let i = 0; i < length; i++) {
+              if (parseInt(collections.getUsers()[i].userId, 10) === parseInt(decoded.userId, 10)) {
+                req.body.decoded = decoded;
+                return next();
+              }
+            }
+            message = 'Sorry, user does not exist';
+          }
+        } catch (error) {
+          if (error.message === 'jwt expired') {
+            message = 'Access denied! Token has expired';
+          } else {
+            message = 'Access denied! Invalid authentication token';
+          }
+        }
+      }
+      return this.errorResponse(res, 401, message);
+    };
+  }
 }
