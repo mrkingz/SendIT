@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 /**
+ * @exports
  * @description
  * @class UtilityService
  */
@@ -9,7 +10,7 @@ export default class UtilityService {
 	 * Converts the first character of a string to upper case
 	 * If an object is passed, the method only convert its string 
 	 * propeties
-     * 
+   * 
 	 * @static
 	 * @method upperCaseFirst
 	 * @memberof UtilityService
