@@ -93,5 +93,50 @@ export default class ParcelController extends UtilityService {
         ? this.successResponse(res, 200, undefined, { parcels: collections.getParcels() })
         : this.errorResponse(res, 404, 'No parcel found');
     };
+	}
+	
+  /**
+   * Cancel parcel deivery order
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @memberof RequestController
+   */
+  static cancelParcelOrder() {
+    return (req, res) => {
+			const parcelId = req.params.parcelId;
+			const { userId } = req.body.decoded;
+			const length = collections.getParcelsCount();
+
+      let parcel;
+      for (let i = 0; i < length; i++) {
+				if (parseInt(collections.getParcels()[i].userId, 10) === parseInt(userId, 10) 
+					&& parseInt(collections.getParcels()[i].parcelId, 10) === parseInt(parcelId, 10)) {
+          parcel = collections.getParcels()[i];
+          break;
+        }
+      }
+
+			if (parcel) {
+        const status = 'Cancelled';
+				if (parcel.deliveryStatus === 'Delivered') {
+					return this.errorResponse(
+            res, 404, 'Already delivered parcel cannot be cancelled', undefined
+            );
+        }
+        
+        if (parcel.deliveryStatus === status) {
+          return this.errorResponse(
+            res, 200, 'Parcel has already been cancelled'
+            );
+        }
+
+				parcel.deliveryStatus = status;
+				return this.successResponse(
+          res, 200, 'Parcel delivery order successfully cancelled', parcel
+          );
+			}
+
+			return this.errorResponse(res, 404, 'No parcel found');
+    };
   }
 }

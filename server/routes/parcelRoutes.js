@@ -28,4 +28,8 @@ parcelRouter.get('/api/v1/users/:userId/parcels',
 	UserController.authenticateUser(),
 	ParcelController.getUserParcels());
 
+parcelRouter.put('/api/v1/parcels/:parcelId/cancel',
+	UserController.authenticateUser(),
+	ParcelController.cancelParcelOrder());
+
 export default parcelRouter;
