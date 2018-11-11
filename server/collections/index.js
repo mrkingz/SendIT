@@ -10,7 +10,7 @@ class Collections {
 	 */
 	constructor() {
 		this.users = [];
-		this.orders = [];
+		this.parcels = [];
 	}
 
 	/**
@@ -45,33 +45,33 @@ class Collections {
 
 
 	/**
-	 * Add new order to orders collection
+	 * Add new order to parcels collection
 	 * 
-	 * @param {any} order
+	 * @param {any} parcel
 	 * @memberof Collections
 	 */
-	addOrders(order) {
-		this.orders.push(order);
+	addParcels(parcel) {
+		this.parcels.push(parcel);
 	}
 
 	/**
-	 * Get the number of orders 
+	 * Get the number of parcels 
 	 * 
-	 * @returns {number} Returns the number of orders
+	 * @returns {number} Returns the number of parcels
 	 * @memberof Collections
 	 */
-	getOrdersCount() {
-		return this.orders.length;
+	getParcelsCount() {
+		return this.parcels.length;
 	}
 
 	/**
-	 * Get orders collection
+	 * Get parcels collection
 	 * 
-	 * @returns {Array} Returns an array of orders
+	 * @returns {Array} Returns an array of parcels
 	 * @memberof Collection
 	 */
-	getOrders() {
-		return this.orders;
+	getParcels() {
+		return this.parcels;
 	}
 }
 export default new Collections();

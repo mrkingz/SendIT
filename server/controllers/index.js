@@ -1,8 +1,8 @@
 import UserController from './userController';
-import OrderController from './orderController';
+import ParcelController from './parcelController';
 
 const controllers = {
   UserController,
-  OrderController,
+  ParcelController,
 };
 export default controllers;

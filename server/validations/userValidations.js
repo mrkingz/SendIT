@@ -19,7 +19,7 @@ export default class UserValidations extends UtilityService {
     return (req, res, next) => {
       let message;
       const { 
-        email, password, firstname, lastname, gender, address, city, state, phone
+        email, password, firstname, lastname, gender, address, city, state, phone, isAdmin
       } = this.trimAttr(req.body);
 
       if (Validator.isEmpty(email)) {
@@ -48,7 +48,7 @@ export default class UserValidations extends UtilityService {
 
       if (_.isEmpty(message)) {
         req.body = { 
-          email, password, firstname, lastname, gender, address, city, state, phone
+          email, password, firstname, lastname, gender, address, city, state, phone, isAdmin
         };
         return next();
       }
@@ -78,10 +78,9 @@ export default class UserValidations extends UtilityService {
         }
       }
 
-      if (isUnique) {
-        return next();
-      }
-      return this.errorResponse(res, 409, (message || `${string} has been used`));
+      return (isUnique)
+        ? next()
+        : this.errorResponse(res, 409, (message || `${string} has been used`));
     };
   }
 
@@ -118,11 +117,9 @@ export default class UserValidations extends UtilityService {
         attr = 'Phone number';
       }
 
-      if (_.isEmpty(attr)) {
-        return next();
-      }
-
-      return this.errorResponse(res, 400, `${attr} is required!`);
+      return (_.isEmpty(attr))
+        ? next()
+        : this.errorResponse(res, 400, `${attr} is required!`);
     };
   }
 
@@ -134,10 +131,9 @@ export default class UserValidations extends UtilityService {
    */
   static isValidEmail() {
     return (req, res, next) => {
-      if (Validator.isEmail(req.body.email)) {
-        return next();
-      }
-      return this.errorResponse(res, 400, 'Please, enter a valid email address');
+      return (Validator.isEmail(req.body.email))
+        ? next()
+        : this.errorResponse(res, 400, 'Please, enter a valid email address');
     };
   }
 }
