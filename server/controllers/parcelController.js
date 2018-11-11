@@ -59,7 +59,7 @@ export default class ParcelController extends UtilityService {
 	}
 	
   /**
-   * Gets all user's requests
+   * Gets all user's parcels
    * @static
    * @returns {function} Returns an express middleware function that handles the GET request
    * @memberof RequestController
@@ -77,6 +77,20 @@ export default class ParcelController extends UtilityService {
 
       return (parcels.length > 0)
         ? this.successResponse(res, 200, undefined, { parcels })
+        : this.errorResponse(res, 404, 'No parcel found');
+    };
+	}
+	
+  /**
+   * Gets all parcels
+   * @static
+   * @returns {function} Returns an express middleware function that handles the GET request
+   * @memberof RequestController
+   */
+  static getParcels() {
+    return (req, res) => {
+      return (collections.getParcels().length > 0)
+        ? this.successResponse(res, 200, undefined, { parcels: collections.getParcels() })
         : this.errorResponse(res, 404, 'No parcel found');
     };
   }
