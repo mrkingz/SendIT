@@ -24,7 +24,7 @@ export default class UserController extends UtilityService {
 			const hashSalt = bcrypt.genSaltSync(10);
 			req.body.password = bcrypt.hashSync(req.body.password, hashSalt);
 			req.body.userId = collections.getUsersCount() + 1;
-			req.body.isAdmin = _.isUndefined(req.body.isAdmin) ? false : req.body.isAdmin;
+			req.body.isAdmin = _.isUndefined(req.body.isAdmin) ? false : Boolean(req.body.isAdmin);
 
 			collections.addUsers(req.body);
 
@@ -117,6 +117,20 @@ export default class UserController extends UtilityService {
         }
       }
       return this.errorResponse(res, 401, message);
+    };
+  }
+
+  /**
+   * Authorizes a user
+   * @static
+   * @returns {function} Returns an express middleware that handles the authorization
+   * @memberof UserController
+   */
+  static authorizeUser() {
+    return (req, res, next) => {
+      return (req.body.decoded.isAdmin) 
+        ? next()
+        : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
     };
   }
 }

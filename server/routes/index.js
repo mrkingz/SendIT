@@ -1,9 +1,9 @@
 import authRoutes from './authRoutes';
-import orderRoutes from './orderRoutes';
+import parcelRoutes from './parcelRoutes';
 
 const routes = {
   authRoutes,
-  orderRoutes,
+  parcelRoutes,
 };
 
 export default routes;

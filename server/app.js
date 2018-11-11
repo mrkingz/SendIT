@@ -15,7 +15,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: false }));
 app.use(cookiePasrer());
 app.use(routes.authRoutes);
-app.use(routes.orderRoutes);
+app.use(routes.parcelRoutes);
 
 app.all('/api', (req, res) => {
   res.status('200').send({

@@ -4,15 +4,15 @@ import UtilityService from '../services/utilityService';
 
 /**
  * @export
- * @class OrderValidations
+ * @class ParcelValidations
  * @extends {UtilityService}
  */
-export default class OrderValidations extends UtilityService {
+export default class ParcelValidations extends UtilityService {
   /**
    * Validate for required parcel delivery order details
    * @static
    * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof OrderValidations
+   * @memberof ParcelValidations
    */
 	static isRequired() {
 		return (req, res, next) => {
@@ -51,13 +51,9 @@ export default class OrderValidations extends UtilityService {
 				message = 'Receiver\'s phone number';
 			}
 
-			if (_.isEmpty(message)) {
-				return next();
-			}
-
-			console(new Date());
-
-			return this.errorResponse(res, 400, `${message} is required!`);
+			return _.isEmpty(message) 
+				? next() 
+				: this.errorResponse(res, 400, `${message} is required!`);
 		};
 	}
 
@@ -66,7 +62,7 @@ export default class OrderValidations extends UtilityService {
 	 *
 	 * @static
 	 * @returns {function} Returns an express middleware function that handles the validation
-	 * @memberof OrderValidations
+	 * @memberof ParcelValidations
 	 */
 	static isEmpty() {
 		return (req, res, next) => {
@@ -105,11 +101,9 @@ export default class OrderValidations extends UtilityService {
 				message = 'Receiver\'s phone number';
 			}
 
-			if (_.isEmpty(message)) {
-				return next();
-			}
-
-			return this.errorResponse(res, 400, `${message} cannot be empty!`);
+			return _.isEmpty(message)
+				? next() 
+				: this.errorResponse(res, 400, `${message} cannot be empty!`);
 		};
 	}
 
@@ -118,7 +112,7 @@ export default class OrderValidations extends UtilityService {
 	 *
 	 * @static
 	 * @returns {function} Returns an express middleware function that handles the validation
-	 * @memberof OrderValidations
+	 * @memberof ParcelValidations
 	 */
 	static isValid() {
 		return (req, res, next) => {
@@ -137,12 +131,8 @@ export default class OrderValidations extends UtilityService {
 			} else if (!_.isUndefined(receiverPhone) && !Validator.isMobilePhone(receiverPhone)) {
 				message = 'Invalid entry for receiver\'s phone number';
 			}
-			console.log(deliveryMethod);
-			if (_.isEmpty(message)) {
-				return next();
-			}
-
-			return this.errorResponse(res, 400, message);
+		
+			return _.isEmpty(message) ? next() : this.errorResponse(res, 400, message);
 		};
 	}
 }
