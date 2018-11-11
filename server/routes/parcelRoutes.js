@@ -10,12 +10,14 @@ const { ParcelValidations } = validations;
 
 const parcelRouter = express.Router();
 
-parcelRouter.post('/api/v1/parcels',
-	UserController.authenticateUser(),
-	ParcelValidations.isRequired(),
+parcelRouter.route('/api/v1/parcels')
+.all(UserController.authenticateUser())
+.post(ParcelValidations.isRequired(),
 	ParcelValidations.isEmpty(),
 	ParcelValidations.isValid(),
-	ParcelController.createParcel());
+	ParcelController.createParcel())
+.get(UserController.authorizeUser(),
+	ParcelController.getParcels());
 
 parcelRouter.get('/api/v1/parcels/:parcelId',
 	UserController.authenticateUser(),
