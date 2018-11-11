@@ -8,18 +8,22 @@ const {
 } = controllers;
 const { ParcelValidations } = validations;
 
-const ParcelRouter = express.Router();
+const parcelRouter = express.Router();
 
-ParcelRouter.route('/api/v1/parcels')
-.all(UserController.authenticateUser())
-.post(ParcelValidations.isRequired(),
+parcelRouter.post('/api/v1/parcels',
+	UserController.authenticateUser(),
+	ParcelValidations.isRequired(),
 	ParcelValidations.isEmpty(),
 	ParcelValidations.isValid(),
 	ParcelController.createParcel());
 
-ParcelRouter.route('/api/v1/parcels/:parcelId')
-.all(UserController.authenticateUser(),
-	UserController.authorizeUser())
-.get(ParcelController.getParcel());
+parcelRouter.get('/api/v1/parcels/:parcelId',
+	UserController.authenticateUser(),
+	UserController.authorizeUser(),
+  ParcelController.getParcel());
 
-export default ParcelRouter;
+parcelRouter.get('/api/v1/users/:userId/parcels',
+	UserController.authenticateUser(),
+	ParcelController.getUserParcels());
+
+export default parcelRouter;
