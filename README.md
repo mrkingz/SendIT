@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/mrkingz/SendIT.svg?branch=develop)](https://travis-ci.com/mrkingz/SendIT)
+
 # SendIT
 SendIT is a courier service that helps users deliver parcels to different destinations. SendIT
 provides courier quotes based on weight categories.
