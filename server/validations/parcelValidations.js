@@ -51,8 +51,8 @@ export default class ParcelValidations extends UtilityService {
 				message = 'Receiver\'s phone number';
 			}
 
-			return _.isEmpty(message) 
-				? next() 
+			return _.isEmpty(message)
+				? next()
 				: this.errorResponse(res, 400, `${message} is required!`);
 		};
 	}
@@ -75,7 +75,7 @@ export default class ParcelValidations extends UtilityService {
 			/**
 			 * Validates for undefined, empty fields and invalid entry
 			 */
-			if (_.isUndefined(weight)) {
+			if (!_.isUndefined(weight) && _.isEmpty(weight)) {
 				message = 'Weight';
 			} else if (!_.isUndefined(deliveryMethod) && _.isEmpty(deliveryMethod)) {
 				message = 'Delivery method';
@@ -102,7 +102,7 @@ export default class ParcelValidations extends UtilityService {
 			}
 
 			return _.isEmpty(message)
-				? next() 
+				? next()
 				: this.errorResponse(res, 400, `${message} cannot be empty!`);
 		};
 	}
@@ -118,20 +118,18 @@ export default class ParcelValidations extends UtilityService {
 		return (req, res, next) => {
 			let message;
 			const {
-				weight, deliveryMethod, receiverName, receiverPhone
-			} = this.trimAttr(req.body);		
-			
+				weight, deliveryMethod, receiverPhone
+			} = this.trimAttr(req.body);
+
 			if (!_.isUndefined(weight) && !Validator.isNumeric(weight)) {
 				message = 'Invalid entry for parcel weight';
 			} else if (!_.isUndefined(deliveryMethod)
-					&& (deliveryMethod !== 'Fast' && deliveryMethod !== 'Normal')) {
+				&& (deliveryMethod !== 'Fast' && deliveryMethod !== 'Normal')) {
 				message = 'Invalid entry for delivery method. Must be Fast or Normal';
-			}	else if (!_.isUndefined(receiverName) && !_.isString(receiverName)) {
-				message = 'Invalid entry for receiver\'s name';
 			} else if (!_.isUndefined(receiverPhone) && !Validator.isMobilePhone(receiverPhone)) {
 				message = 'Invalid entry for receiver\'s phone number';
 			}
-		
+
 			return _.isEmpty(message) ? next() : this.errorResponse(res, 400, message);
 		};
 	}
