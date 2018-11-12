@@ -1,9 +1,9 @@
 import _ from 'lodash';
 
 /**
- * @exports
- * @description
+ * @export
  * @class UtilityService
+ * @extends {ValidationService}
  */
 export default class UtilityService {
 	/**
@@ -83,6 +83,8 @@ export default class UtilityService {
     for (let key in attributes) {
       if (attributes[key]) { 
         trimed[key] = attributes[key].toString().trim(); 
+      } else {
+        trimed[key] = attributes[key];
       }
     }
     return trimed;

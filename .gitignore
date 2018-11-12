@@ -3,3 +3,5 @@ debug.log
 .env
 .vscode/
 node_modules/
+.nyc_output/
+coverage/
