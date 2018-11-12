@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.com/mrkingz/SendIT.svg?branch=develop)](https://travis-ci.com/mrkingz/SendIT)
+[![Coverage Status](https://coveralls.io/repos/github/mrkingz/SendIT/badge.svg?branch=develop)](https://coveralls.io/github/mrkingz/SendIT?branch=develop)
 
 # SendIT
 SendIT is a courier service that helps users deliver parcels to different destinations. SendIT
