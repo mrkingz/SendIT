@@ -30,7 +30,7 @@ export default class UserController extends UtilityService {
 
 			const { password, ...data } = req.body;
 			data.createdAt = new Date();
-			return this.successResponse(res, 201, 'Registration was successful', data );
+			return this.successResponse(res, 201, 'Registration was successfull', data );
 		};
 	}
 

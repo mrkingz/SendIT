@@ -23,7 +23,7 @@ export default class UserValidations extends UtilityService {
       } = this.trimAttr(req.body);
 
       if (Validator.isEmpty(email)) {
-        message = 'Email address cannot be empty!';
+        message = 'E-mail address cannot be empty!';
       } else if (!Validator.isEmail(email)) {
         message = 'Please, enter a valid email address!';
       } else if (Validator.isEmpty(password)) {
@@ -33,17 +33,19 @@ export default class UserValidations extends UtilityService {
       } else if (Validator.isEmpty(firstname)) {
         message = 'Firstname cannot be empty!';
       } else if (Validator.isEmpty(lastname)) {
-        message = 'lastname cannot be empty!';
+        message = 'Lastname cannot be empty!';
       } else if (Validator.isEmpty(gender)) {
         message = 'Gender cannot be empty!';
       } else if (Validator.isEmpty(address)) {
         message = 'Address cannot be empty!';
       } else if (Validator.isEmpty(city)) {
-        message = 'City cannot be empty!';
+        message = 'City or town cannot be empty!';
       } else if (Validator.isEmpty(state)) {
         message = 'State cannot be empty!';
       } else if (Validator.isEmpty(phone)) {
         message = 'Phone number cannot be empty!';
+      } else if (!Validator.isMobilePhone(phone)) {
+        message = 'Please enter a valid phone number!';
       }
 
       if (_.isEmpty(message)) {
@@ -98,7 +100,7 @@ export default class UserValidations extends UtilityService {
         email, password, firstname, lastname, gender, address, city, state, phone 
       } = req.body;
       if (_.isUndefined(email)) {
-        attr = 'Email address';
+        attr = 'E-mail address';
       } else if ( _.isUndefined(password)) {
         attr = 'Password';
       } else if ( _.isUndefined(firstname)) {
@@ -120,20 +122,6 @@ export default class UserValidations extends UtilityService {
       return (_.isEmpty(attr))
         ? next()
         : this.errorResponse(res, 400, `${attr} is required!`);
-    };
-  }
-
-  /**
-   * Validates email
-   * @static
-   * @return {function} Returns an express middleware function that does the validation
-   * @memberof UserValidations
-   */
-  static isValidEmail() {
-    return (req, res, next) => {
-      return (Validator.isEmail(req.body.email))
-        ? next()
-        : this.errorResponse(res, 400, 'Please, enter a valid email address');
     };
   }
 }
