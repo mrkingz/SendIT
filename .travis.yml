@@ -11,6 +11,6 @@ cache:
     - "node_modules"
 branches: 
   only:
-    - feature
+    - develop
 after_success:
   - npm run coverage
