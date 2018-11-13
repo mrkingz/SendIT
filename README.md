@@ -69,7 +69,7 @@ Lives at: https://mrkingz.github.io/SendIT/ui/views/index.html
 
 ## Application Limitations
 * Only one admin can exist
-* Users can only create account once with their username, email, phone, password and biodata
+* Users can only create account once with their full name, email and password
 * Users will have to obtain a fresh token after 72 hours when their session has expired
 * Users will only be able to access the full application functionalities only if they are signed in
 
