@@ -8,93 +8,23 @@ const server = supertest.agent(app);
 const users = [{
 	firstname: 'James',
 	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
 	email: 'example@gmail.com',
 	password: 'Password1'
 }, {
 	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
 	email: 'example@gmail.com',
 	password: 'Password1'
 }, {
-	firstname: 'James',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
+	firstname: 'James Ogugayo',
 	email: 'example@gmail.com',
 	password: 'Password1'
 }, {
-	firstname: 'James',
+	firstname: 'James Ogugayo',
 	lastname: 'Ogugayo',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
-	email: 'example@gmail.com',
 	password: 'Password1'
 }, {
-	firstname: 'James',
+	firstname: 'James Ogugayo',
 	lastname: 'Ogugayo',
-	gender: 'Male',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
-	email: 'example@gmail.com',
-	password: 'Password1'
-}, {
-	firstname: 'James',
-	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	state: 'Lagos',
-	phone: '08035610915',
-	email: 'example@gmail.com',
-	password: 'Password1'
-}, {
-	firstname: 'James',
-	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	phone: '08035610915',
-	email: 'example@gmail.com',
-	password: 'Password1'
-}, {
-	firstname: 'James',
-	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	email: 'example@gmail.com',
-	password: 'Password1'
-}, {
-	firstname: 'James',
-	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
-	password: 'Password1'
-}, {
-	firstname: 'James',
-	lastname: 'Ogugayo',
-	gender: 'Male',
-	address: '23, Bola Ige Street',
-	city: 'Ikeja',
-	state: 'Lagos',
-	phone: '08035610915',
 	email: 'example@gmail.com',
 }];
 
@@ -116,14 +46,6 @@ describe('Test authentication routes', () => {
 						.to.be.a('string').that.is.equal(users[0].firstname);
 					expect(response.data).to.have.own.property('lastname')
 						.to.be.a('string').that.is.equal(users[0].lastname);
-					expect(response.data).to.have.own.property('gender')
-						.to.be.a('string').that.is.equal(users[0].gender);
-					expect(response.data).to.have.own.property('address')
-						.to.be.a('string').that.is.equal(users[0].address);
-					expect(response.data).to.have.own.property('city')
-						.to.be.a('string').that.is.equal(users[0].city);
-					expect(response.data).to.have.own.property('state')
-						.to.be.a('string').that.is.equal(users[0].state);
 					expect(response.data).to.have.own.property('email')
 						.to.be.a('string').that.is.equal(users[0].email);
 					expect(response.data).to.have.own.property('isAdmin')
@@ -159,75 +81,11 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if gender is undefined', (done) => {
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[3])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Gender is required!');
-					done();
-				});
-		});
-
-		it('It should not create a user if address is undefined', (done) => {
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[4])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Address is required!');
-					done();
-				});
-		});
-
-		it('It should not create a user if city is undefined', (done) => {
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[5])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('City or town is required!');
-					done();
-				});
-		});
-
-		it('It should not create a user state is undefined', (done) => {
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[6])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('State is required!');
-					done();
-				});
-		});
-
-		it('It should not create a user if phone number is undefined', (done) => {
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[7])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Phone number is required!');
-					done();
-				});
-		});
 
 		it('It should not create a user if email address is undefined', (done) => {
 			server
 				.post('/api/v1/auth/signup')
-				.send(users[8])
+				.send(users[3])
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(400);
@@ -240,7 +98,7 @@ describe('Test authentication routes', () => {
 		it('It should not create a user if password is undefined', (done) => {
 			server
 				.post('/api/v1/auth/signup')
-				.send(users[9])
+				.send(users[4])
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(400);
@@ -263,19 +121,6 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if phone number has been used', (done) => { 
-			users[0].email = 'example1@gmail.com';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(409);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Phone number has been used!');
-					done();
-				});
-		});
 
 		it('It should not create a user if firstname is empty', (done) => { 
 			users[0].firstname = '';
@@ -306,81 +151,6 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if gender is empty', (done) => { 
-			users[0].lastname = 'Ogugayo';
-			users[0].gender = '';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Gender cannot be empty!');
-					done();
-				});
-		});
-
-		it('It should not create a user if address is empty', (done) => { 
-			users[0].gender = 'Male';
-			users[0].address = '';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Address cannot be empty!');
-					done();
-				});
-		});
-
-		it('It should not create a user if city is empty', (done) => { 
-			users[0].address = '23, Bola Ige Street';
-			users[0].city = '';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('City or town cannot be empty!');
-					done();
-				});
-		});
-
-		it('It should not create a user if state is empty', (done) => { 
-			users[0].city = 'Ikeja';
-			users[0].state = '';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('State cannot be empty!');
-					done();
-				});
-		});
-
-		it('It should not create a user if phone number is empty', (done) => { 
-			users[0].state = 'Lagos';
-			users[0].phone = '';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Phone number cannot be empty!');
-					done();
-				});
-		});
-
 		it('It should not create a user if email address is empty', (done) => { 
 			users[0].phone = '08035610915';
 			users[0].email = '';
@@ -398,21 +168,6 @@ describe('Test authentication routes', () => {
 
 		it('It should not create a user for invalid email address', (done) => { 
 			users[0].phone = '08035610915';
-			users[0].email = 'example@gmail';
-			server
-				.post('/api/v1/auth/signup')
-				.send(users[0])
-				.end((err, res) => {
-					const response = res.body;
-					expect(res.statusCode).to.equal(400);
-					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Please, enter a valid email address!');
-					done();
-				});
-		});
-
-		it('It should not create a user for invalid phone number', (done) => { 
-			users[0].phone = '08035610';
 			users[0].email = 'example@gmail';
 			server
 				.post('/api/v1/auth/signup')

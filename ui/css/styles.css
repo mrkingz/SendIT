@@ -111,6 +111,16 @@ html {
 
 .auth-container {
     background-color: #fff;
+    margin: 2rem 3rem;
+    -webkit-box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
+    box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
+    -webkit-border-radius: .2rem;
+    -moz-border-radius: .2rem;
+    border-radius: .2rem;
+}
+
+.container {
+    background-color: #fff;
     margin: 2rem;
     -webkit-box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
     box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
@@ -325,6 +335,10 @@ html {
     color: rgba(18, 18, 90, 0.932);
     background-color: #fff;
 }
+.details-link-div {
+    margin: .5rem 0;
+    text-align: right;
+}
 
 .panel {
     padding: 1rem;
@@ -395,7 +409,7 @@ html {
 .control-group {
     display: flex;
     flex-direction: column;
-    margin-bottom: .7rem;
+    margin: 0 .2rem .7rem;
 }
 
 .control-group > label[for] {
@@ -421,7 +435,7 @@ html {
     color: #dedef5;
     font-size: .88rem;
     padding: 1.5rem 1rem;
-    margin: 0 .5rem;
+    margin: 0 2rem;
     margin-bottom: 5rem;
     text-shadow: 2px 2px 8px #111;
     border-top: 1px solid #dedef5;
@@ -761,6 +775,10 @@ button.menu-btn:focus {
     padding: 1rem; 
 }
 
+.modal-body h3 {
+    margin-bottom: .2rem;
+}
+
 .modal-md {
     max-width: 460px;
 }
@@ -929,7 +947,7 @@ button.menu-btn:focus {
 
 .user-links a {
     padding: .5rem;
-    width: 20% !important;
+    min-width: 20%;
 }
 
 .welcome {

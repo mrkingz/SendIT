@@ -12,244 +12,209 @@
     <body class="bg">
         <div class="row no-gutters">
             <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-                <div class="transparent">
-                    <div class="auth-container">
-                        <div class="row no-gutters">
-                            <div class="col-12">
-                                <header class="page-header mx-lg">
-                                    <div class="brand-header header-height auth-header mx-lg">
-                                        <ul class="unstyled-list">
-                                            <li><span class="brand">SendIT</span><sup>&trade;</sup></li>
-                                            <li class="bar"></li>
-                                            <li class="mx-0"><span class="page align-bottom"> Delivery orders</span></li>
-                                        </ul>
-                                    </div>
-                                    <div style="display:flex; flex-direction: column-reverse">
-                                        <div class="dropdown mx-lg">
-                                            <button onclick="dropdown('activities')" class="btn btn-link dropbtn"><i class="fa fa-chevron-down"></i></button>
-                                            <div id="activities" class="dropdown-content">
-                                                <a href="dashboard.html">Dashboard</a>
-                                                <a href="create.html">Create order</a>
-                                                <a href="orders.html">Delivery orders</a>
-                                                <a href="profile.html">Profile</a>
-                                                <a href="login.html">Log out</a>
-                                            </div>
+                <div class="auth-container">
+                    <div class="row no-gutters">
+                        <div class="col-12">
+                            <header class="page-header mx-lg">
+                                <div class="brand-header header-height auth-header mx-lg">
+                                    <ul class="unstyled-list">
+                                        <li><span class="brand">SendIT</span><sup>&trade;</sup></li>
+                                        <li class="bar"></li>
+                                        <li class="mx-0"><span class="page align-bottom"> Delivery orders</span></li>
+                                    </ul>
+                                </div>
+                                <div style="display:flex; flex-direction: column-reverse">
+                                    <div class="dropdown mx-lg">
+                                        <button onclick="dropdown('activities')" class="btn btn-link dropbtn"><i class="fa fa-chevron-down"></i></button>
+                                        <div id="activities" class="dropdown-content">
+                                            <a href="dashboard.html">Dashboard</a>
+                                            <a href="create.html">Create order</a>
+                                            <a href="orders.html">Delivery orders</a>
+                                            <a href="profile.html">Profile</a>
+                                            <a href="login.html">Log out</a>
                                         </div>
                                     </div>
-                                </header>                                
-                            </div>
+                                </div>
+                            </header>                                
                         </div>
-                        <div class="row no-gutters">
-                            <div class="col-12"> 
-                                <div class="wrapper">
-                                    <div class="row">
-                                        <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <div class="side-panel left-panel">
-                                                <div class=""></div>
-                                                <div class="">
- 
-                                                </div>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="col-12"> 
+                            <div class="wrapper">
+                                <div class="row">
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="side-panel left-panel">
+                                            <div class=""></div>
+                                            <div class="">
+
                                             </div>
                                         </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-                                            <div style="padding-bottom: 30px">
-                                                <div>
-                                                    <div class="content-header">
-                                                        Delivery orders
-                                                    </div>                                                  
-                                                    <div class="panel">
-                                                        <div class="filter-div">
-                                                            <div class="dropdown">
-                                                                <button onclick="dropdown('filter')" class="btn btn-link dropbtn filter-btn">Filter orders <i class="fa fa-caret-down"></i></button>
-                                                                <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
-                                                                    <button class="menu-btn">All orders</button>
-                                                                    <button class="menu-btn">Pending orders</button>
-                                                                    <button class="menu-btn">In-transit orders</button>
-                                                                    <button class="menu-btn">Cancelled orders</button>
-                                                                    <button class="menu-btn">Delivered orders</button>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div style="padding-bottom: 30px">
+                                            <div>
+                                                <div class="content-header">
+                                                    Delivery orders
+                                                </div>                                                  
+                                                <div class="panel">
+                                                    <div class="filter-div">
+                                                        <div class="dropdown">
+                                                            <button onclick="dropdown('filter')" class="btn btn-link dropbtn filter-btn">Filter orders <i class="fa fa-caret-down"></i></button>
+                                                            <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
+                                                                <button class="menu-btn">All orders</button>
+                                                                <button class="menu-btn">Pending orders</button>
+                                                                <button class="menu-btn">In-transit orders</button>
+                                                                <button class="menu-btn">Cancelled orders</button>
+                                                                <button class="menu-btn">Delivered orders</button>
+                                                            </div>
+                                                        </div>
+                                                    </div> 
+                                                <div class="card">
+                                                    <div class="more-details">
+                                                            <div class="nexted">
+                                                                <div class="card-header">
+                                                                    <div class="card-title">
+                                                                            <label class="size-12 bold">Tracking #: 45557676766</label>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="card-wrapper">
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Weight</div>
+                                                                        <div class="data">64.2 kgs</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Parcel description</div>
+                                                                        <div class="data">Binatone standing fan</div>
+                                                                    </div>
+                                                                                                                                
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Date sent</div>
+                                                                        <div class="data">5th November, 2018</div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Delivery method</div>
+                                                                        <div class="data">Fast delivery</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Status</div>
+                                                                        <div class="data red-color">Delivered</div>
+                                                                    </div>
                                                                 </div>
                                                             </div>
-                                                        </div> 
-                                                    <div class="card">
-                                                        <div class="more-details">
-                                                                <div class="nexted">
-                                                                    <div class="card-header">
-                                                                        <div class="card-title">
-                                                                                <label class="size-12 bold">Tracking #: 45557676766</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-wrapper">
+                                                    </div>                                                          
 
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Weight</div>
-                                                                            <div class="data">64.2 kgs</div>
-                                                                        </div>
+                                                    <div class="details-link-div">
+                                                        <a href="details.html" class="btn btn-link btn-sm skyblue-color">Details</a>
+                                                    </div> 
+                                                </div>
 
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Parcel description</div>
-                                                                            <div class="data">Binatone standing fan</div>
-                                                                        </div>
-                                                                                                                                    
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Date sent</div>
-                                                                            <div class="data">5th November, 2018</div>
-                                                                        </div>
-                                                                        
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Delivery method</div>
-                                                                            <div class="data">Fast delivery</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Status</div>
-                                                                            <div class="data red-color">Delivered</div>
-                                                                        </div>
+                                                <div class="card">
+                                                    <div class="more-details">
+                                                            <div class="nexted">
+                                                                <div class="card-header">
+                                                                    <div class="card-title">
+                                                                        <label class="size-12 bold">Tracking #: 45557676766</label>
                                                                     </div>
                                                                 </div>
+                                                                <div class="card-wrapper">
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Weight</div>
+                                                                        <div class="data">64.2 kgs</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Parcel description</div>
+                                                                        <div class="data">Binatone standing fan</div>
+                                                                    </div>
+                                                                                                                                
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Date sent</div>
+                                                                        <div class="data">5th November, 2018</div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Delivery method</div>
+                                                                        <div class="data">Fast delivery</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Status</div>
+                                                                        <div class="data red-color">In transit</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Present location</div>
+                                                                        <div class="data">Ibadan</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>                                                          
 
-                                                        <div class="flex row-reverse mt-md mb-sm">
-                                                                
-                                                            <div class="dropdown">
-                                                                <button onclick="dropdown('order-menu1')" class="btn btn-link dropbtn" style="padding: .1rem .6rem"><i class="fa fa-caret-down"></i></button>
-                                                                <div id="order-menu1" class="dropdown-content size-11 dropdown-content-mini">
-                                                                    <button class="menu-btn">Cancel order</button>
-                                                                    <button class="menu-btn">Update location</button>
-                                                                    <button class="menu-btn">Update status</button>
-                                                                    <a href="details.html">View details</a>
-                                                                    <button class="menu-btn">Delete</button>
-                                                                </div>
-                                                            </div>
-                                                            
-                                                        </div> 
+                                                        <div class="details-link-div">
+                                                            <a href="details.html" class="btn btn-link btn-sm skyblue-color">Details</a>
+                                                        </div>
                                                     </div>
 
                                                     <div class="card">
                                                         <div class="more-details">
-                                                                <div class="nexted">
-                                                                    <div class="card-header">
-                                                                        <div class="card-title">
-                                                                            <label class="size-12 bold">Tracking #: 45557676766</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-wrapper">
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Weight</div>
-                                                                            <div class="data">64.2 kgs</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Parcel description</div>
-                                                                            <div class="data">Binatone standing fan</div>
-                                                                        </div>
-                                                                                                                                    
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Date sent</div>
-                                                                            <div class="data">5th November, 2018</div>
-                                                                        </div>
-                                                                        
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Delivery method</div>
-                                                                            <div class="data">Fast delivery</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Status</div>
-                                                                            <div class="data red-color">In transit</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Present location</div>
-                                                                            <div class="data">Ibadan</div>
-                                                                        </div>
+                                                            <div class="nexted">
+                                                                <div class="card-header">
+                                                                    <div class="card-title">
+                                                                        <label class="size-12 bold">Tracking #: 45557676766</label>
                                                                     </div>
                                                                 </div>
-                                                            </div>                                                          
-    
-                                                            <div class="flex row-reverse mt-md mb-sm">
+                                                                <div class="card-wrapper">
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Reference No.</div>
+                                                                        <div class="data">123426754</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Weight</div>
+                                                                        <div class="data">64.2 kgs</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Parcel description</div>
+                                                                        <div class="data">Binatone standing fan</div>
+                                                                    </div>
+                                                                                                                                
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Date sent</div>
+                                                                        <div class="data">5th November, 2018</div>
+                                                                    </div>
                                                                     
-                                                                <div class="dropdown">
-                                                                    <button onclick="dropdown('order-menu2')" class="btn btn-link dropbtn" style="padding: .1rem .6rem"><i class="fa fa-caret-down"></i></button>
-                                                                    <div id="order-menu2" class="dropdown-content size-11 dropdown-content-mini">
-                                                                        <button class="menu-btn">Cancel order</button>
-                                                                        <button class="menu-btn">Update location</button>
-                                                                        <button class="menu-btn">Update status</button>
-                                                                        <a href="details.html">View details</a>
-                                                                        <button class="menu-btn">Delete</button>
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Delivery method</div>
+                                                                        <div class="data">Fast delivery</div>
+                                                                    </div>
+
+                                                                    <div class="card-row">
+                                                                        <div class="data-header">Status</div>
+                                                                        <div class="data red-color">Delivered</div>
                                                                     </div>
                                                                 </div>
-                                                                
+                                                            </div>
+                                                            </div>                                                          
+
+                                                            <div class="details-link-div">
+                                                                <a href="details.html" class="btn btn-link btn-sm skyblue-color">Details</a>
                                                             </div> 
                                                         </div>
-
-                                                        <div class="card">
-                                                            <div class="more-details">
-                                                                <div class="nexted">
-                                                                    <div class="card-header">
-                                                                        <div class="card-title">
-                                                                            <label class="size-12 bold">Tracking #: 45557676766</label>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="card-wrapper">
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Reference No.</div>
-                                                                            <div class="data">123426754</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Weight</div>
-                                                                            <div class="data">64.2 kgs</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Parcel description</div>
-                                                                            <div class="data">Binatone standing fan</div>
-                                                                        </div>
-                                                                                                                                    
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Date sent</div>
-                                                                            <div class="data">5th November, 2018</div>
-                                                                        </div>
-                                                                        
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Delivery method</div>
-                                                                            <div class="data">Fast delivery</div>
-                                                                        </div>
-
-                                                                        <div class="card-row">
-                                                                            <div class="data-header">Status</div>
-                                                                            <div class="data red-color">Delivered</div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                                </div>                                                          
-        
-                                                                <div class="flex row-reverse mt-md mb-sm">
-                                                                        
-                                                                    <div class="dropdown">
-                                                                        <button onclick="dropdown('order-menu3')" class="btn btn-link dropbtn" style="padding: .1rem .6rem"><i class="fa fa-caret-down"></i></button>
-                                                                        <div id="order-menu3" class="dropdown-content size-11 dropdown-content-mini">]
-                                                                            <button class="menu-btn">Cancel order</button>
-                                                                            <button class="menu-btn">Update location</button>
-                                                                            <button class="menu-btn">Update status</button>
-                                                                            <a href="details.html">View details</a>
-                                                                            <button class="menu-btn">Delete</button>
-                                                                        </div>
-                                                                    </div>
-                                                                    
-                                                                </div> 
-                                                            </div>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-lg-3 col-md-3 col-sm-12">
-                                            <div class="side-panel right-panel"></div>
-                                        </div>
                                     </div>
-                                </div>                
-                            </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12">
+                                        <div class="side-panel right-panel"></div>
+                                    </div>
+                                </div>
+                            </div>                
                         </div>
                     </div>
                 </div>

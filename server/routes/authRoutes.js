@@ -10,7 +10,6 @@ authRouter.post('/api/v1/auth/signup',
   UserValidations.isRequired(),
   UserValidations.validateRegistration(),  
   UserValidations.isUnique('Email', 'E-mail address has been used!'),
-  UserValidations.isUnique('Phone', 'Phone number has been used!'),
   UserController.register());
 
   authRouter.post('/api/v1/auth/login', 

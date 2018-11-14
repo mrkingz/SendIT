@@ -19,7 +19,7 @@ export default class UserValidations extends UtilityService {
     return (req, res, next) => {
       let message;
       const { 
-        email, password, firstname, lastname, gender, address, city, state, phone, isAdmin
+        email, password, firstname, lastname, isAdmin
       } = this.trimAttr(req.body);
 
       if (Validator.isEmpty(email)) {
@@ -34,23 +34,11 @@ export default class UserValidations extends UtilityService {
         message = 'Firstname cannot be empty!';
       } else if (Validator.isEmpty(lastname)) {
         message = 'Lastname cannot be empty!';
-      } else if (Validator.isEmpty(gender)) {
-        message = 'Gender cannot be empty!';
-      } else if (Validator.isEmpty(address)) {
-        message = 'Address cannot be empty!';
-      } else if (Validator.isEmpty(city)) {
-        message = 'City or town cannot be empty!';
-      } else if (Validator.isEmpty(state)) {
-        message = 'State cannot be empty!';
-      } else if (Validator.isEmpty(phone)) {
-        message = 'Phone number cannot be empty!';
-      } else if (!Validator.isMobilePhone(phone)) {
-        message = 'Please enter a valid phone number!';
-      }
+      } 
 
       if (_.isEmpty(message)) {
         req.body = { 
-          email, password, firstname, lastname, gender, address, city, state, phone, isAdmin
+          email, password, firstname, lastname, isAdmin
         };
         return next();
       }
@@ -97,7 +85,7 @@ export default class UserValidations extends UtilityService {
     return (req, res, next) => {
       let attr;
       const { 
-        email, password, firstname, lastname, gender, address, city, state, phone 
+        email, password, firstname, lastname 
       } = req.body;
       if (_.isUndefined(email)) {
         attr = 'E-mail address';
@@ -107,16 +95,6 @@ export default class UserValidations extends UtilityService {
         attr = 'Firstname';
       } else if ( _.isUndefined(lastname)) {
         attr = 'Lastname';
-      } else if ( _.isUndefined(gender)) {
-        attr = 'Gender';
-      } else if ( _.isUndefined(address)) {
-        attr = 'Address';
-      } else if ( _.isUndefined(city)) {
-        attr = 'City or town';
-      } else if ( _.isUndefined(state)) {
-        attr = 'State';
-      } else if ( _.isUndefined(phone)) {
-        attr = 'Phone number';
       }
 
       return (_.isEmpty(attr))
