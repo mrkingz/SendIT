@@ -9,25 +9,27 @@
         <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
     </head>
-    <body class="bg">
+    <body>
+        <header class="header align-bottom">
+            <div class="header-content">
+                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+                <div class="menu-div">
+                    <ul class="navbar">
+                        <li><a href="index.html" class="btn btn-link btn-sm">Home</a></li>
+                        <li><a href="registration.html" class="btn btn-link btn-sm">Sign up</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>  
         <div class="row no-gutters">
             <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
                 <div class="auth-container">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="brand-header auth-header">
-                                <ul class="unstyled-list">
-                                    <li><span class="brand">SendIT</span><sup>&trade;</sup></li>
-                                    <li class="bar"><span class="page">Login</span></li>
-                                </ul>
-                            </div> 
-                        </div>
-                    </div>
                     <div class="row no-gutters">
                         <div class="col-12">                        
                             <div class="wrapper auth-padding">
                                 <div class="row">
                                     <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+                                        <div class="align-center bold mt-lg"> <h1>Sign in</h1></div>
                                         <form class="form" action="" method="POST">               
                                             <div class="section">
                                                 <div class="control-group">
@@ -40,15 +42,11 @@
                                                     <input type="password" class="control col-12" name="" id="password" placeholder="Password">
                                                 </div>
                                                 <div class="control-group mb-sm">
-                                                    <button class="btn btn-primary btn-block" onclick="login(event)">Login</button>
+                                                    <button class="btn btn-primary btn-block" onclick="login(event)">Sign in</button>
                                                 </div>
                                                 <div class="align-right mx-sm">
                                                     <a href="" class="btn btn-link size-11 btn-sm forgot-password">Forgot password?</a>
                                                 </div>
-                                            </div>
-                                            
-                                            <div class="section align-right size-11 no-wrap">
-                                                Don't have account? <a href="registration.html" class="btn btn-link mx-sm btn-sm bold">Register</a>
                                             </div>
                                         </form>
                                     </div>
