@@ -2,20 +2,19 @@
 let oDropdown;
 /* When the user clicks on the button, 
 toggle between hiding and showing the dropdown content */
-dropdown = function(id) {
+dropdown = function (id) {
   oDropdown = document.getElementById(id);
-  oDropdown.classList.toggle("show");
-}
+  oDropdown.classList.toggle('show');
+};
 
 // Close the dropdown menu if the user clicks outside of it
-window.onclick = function(event) {
-
+window.onclick = function (event) {
   if (event.target == modal) {
-    modal.style.display = "none";
+    modal.style.display = 'none';
   }
 
   if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn i')) {
-    let dropdowns = document.getElementsByClassName("dropdown-content");
+    let dropdowns = document.getElementsByClassName('dropdown-content');
   
     for (let i = 0; i < dropdowns.length; i++) {
       let openDropdown = dropdowns[i];
@@ -24,18 +23,28 @@ window.onclick = function(event) {
       }
     }
   }
-}
+};
 
 
 // // Get the modal
 let modal;
 
 // // When the user clicks the button, open the modal 
-showModal = function(modalId) {
+showModal = function (modalId) {
   modal = document.getElementById(modalId);
-  modal.style.display = "block";
-}
+  modal.style.display = 'block';
+};
 
-hideModal = function() {
-    modal.style.display = "none";
-}
+hideModal = function () {
+    modal.style.display = 'none';
+};
+
+const toggleEnquiryForm = function (event, isShow) {
+  event.preventDefault();
+  const div = document.getElementById('enquiry');
+  if (isShow) {
+    div.style.maxHeight = '500px';
+  } else {
+    div.style.maxHeight = '0px';
+  } 
+};

@@ -28,6 +28,12 @@ html {
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+#enquiry {
+    max-height: 0;
+    transition: max-height .5s;
+    overflow: hidden;
+}
+
 .flex {
     display: -webkit-box !important;
     display: -webkit-flex !important;
@@ -82,8 +88,79 @@ html {
 }
 
 .header {
-    -webkit-box-shadow: 0 0 2px 2px rgba(1,1,1,.5);
-    box-shadow: 0 0 2px 2px rgba(1,1,1,.2);  
+    padding: 0 8rem; 
+    background:  #ffffff;
+    min-height: 100px;
+    border-bottom: 1px solid rgb(171, 171, 207);
+    -webkit-box-shadow: 0 0 5px 3px rgba(1,1,1,.5);
+        -moz-box-shadow: 0 0 5px 3px rgba(1,1,1,.5);
+        box-shadow: 0 0 5px 3px rgba(1,1,1,.2);  
+}
+
+.header-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.nav {
+    width: 100%;
+}
+
+.navbar li {
+    display: inline-block;
+    padding-bottom: .3rem;
+}
+
+.navbar li a {
+    font-size: .8rem;
+    font-weight: 700;
+    color: rgb(14, 14, 54);
+}
+
+.brand-name {
+    font-size:40px;
+    font-weight:bold;
+    color: rgb(14, 14, 54);
+}
+
+.index-container {
+    margin: .5rem;
+    padding: .5rem;
+}
+
+.menu-div {
+    display: flex; 
+    flex-direction: column-reverse;
+     padding-bottom: .2rem;
+}
+
+.socials {
+    display: block;
+    margin: .5rem;
+    padding: .5rem;
+}
+
+.socials-list li ~ li {
+    border-top: 1px solid rgb(179, 179, 219);
+}
+
+.justify-content {
+    text-align: justify;
+}
+
+.co-info { 
+    padding: 2rem;
+    line-height: 1.5;
+    font-size: .85rem;
+    background-color: #fefefe;
+    text-align: justify;
+}
+
+@media only screen and (max-width : 490px) {
+    .header {
+        padding: 0 .65rem; 
+    }
 }
 
 .bar::before {
@@ -427,23 +504,23 @@ html {
     border-right:1px solid rgb(205, 205, 245);
 }
 
+.dotted-border {
+    border-style: dotted !important;
+    border-color: #c2c2c2;
+}
+
 .right-panel {
     border-left:1px solid rgb(205, 205, 245);
 }
 
 .footer {
-    color: #dedef5;
+    color: #2f2f77;
     font-size: .88rem;
     padding: 1.5rem 1rem;
     margin: 0 2rem;
     margin-bottom: 5rem;
-    text-shadow: 2px 2px 8px #111;
+    text-shadow: 2px 2px 8px rgb(241, 239, 239);
     border-top: 1px solid #dedef5;
-}
-
-.dotted-border {
-    border-style: dotted !important;
-    border-color: #c2c2c2;
 }
 
 .filter-btn {
@@ -459,6 +536,29 @@ html {
 
 .form {
     margin: 1rem;
+}
+
+.form-check {
+    position: relative;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.form-check.disabled .form-check-label {
+    color: #636c72;
+    cursor: not-allowed;
+}
+  
+.form-check-label {
+    padding-left: 1.25rem;
+    margin-bottom: 0;
+    font-size: 13px;
+    cursor: pointer;
+}
+  
+.form-check-input {
+    position: absolute;
+    margin-top: 0.2rem;
 }
 
 .m-0 {
@@ -726,32 +826,8 @@ button.menu-btn:focus {
     outline: none;
 }
 
-/* Show the dropdown menu (use JS to add this class to the .dropdown-content container when the user clicks on the dropdown button) */
 .show {
     display:block;
-}
-
-.form-check {
-    position: relative;
-    display: block;
-    margin-bottom: 0.5rem;
-}
-  
-.form-check.disabled .form-check-label {
-    color: #636c72;
-    cursor: not-allowed;
-}
-  
-.form-check-label {
-    padding-left: 1.25rem;
-    margin-bottom: 0;
-    font-size: 13px;
-    cursor: pointer;
-}
-  
-.form-check-input {
-    position: absolute;
-    margin-top: 0.2rem;
 }
 
 /* The Modal (background) */
@@ -863,16 +939,6 @@ button.menu-btn:focus {
     border-radius: .2rem;
 }
 
-.index-container {
-    margin: .5rem;
-}
-
-.index-header {
-    padding: 2rem 0 1rem;
-    margin: .5rem .5rem 0;
-    border-bottom: 1px solid rgb(227, 227, 240);
-}
-
 .map {
     background-image: url('../images/bg.jpg');
     background-repeat: no-repeat;
@@ -930,10 +996,15 @@ button.menu-btn:focus {
     height:100%;
 }
 
+.h-100 {
+    height: 100% !important;
+}
+
 .image-div {
     width: 100%;
     height: 200px;
-    padding: .5rem;
+    padding: .5rem 0;
+    border: 1px solid rgb(225, 225, 245)
 }
 
 .bg-white {
@@ -950,9 +1021,14 @@ button.menu-btn:focus {
     min-width: 20%;
 }
 
+.note,
 .welcome {
+    font-size: 20px;
     color: #fff;
-    text-shadow: 2px 2px 8px #111;
+    text-shadow: 2px 2px 8px #111;  
+}
+
+.welcome {
     padding-top: 75px;
     padding-bottom: 20px;
     font-weight: bold;
@@ -998,4 +1074,49 @@ button.menu-btn:focus {
     background-color: #e2f0fb;
     border-color: #d6e9f9;
     
+}
+
+.data-label {
+    font-size: .8rem;
+    font-weight: bold;
+}
+
+.data-value {
+    font-size: .75rem;
+    border: 1px solid rgb(232, 232, 248); 
+    margin-bottom: .5rem;
+    padding:.4rem .5rem;
+    -webkit-border-radius:.2rem;
+        -moz-border-radius: .2rem;
+            border-radius: .2rem;
+
+}
+
+.profile-div {
+    background-color: #fefefe;
+    border: 1px solid rgb(214, 214, 241);
+    margin-bottom: .5rem;
+    padding: .5rem;
+    -webkit-border-radius:.2rem;
+        -moz-border-radius: .2rem;
+            border-radius: .2rem;
+}
+
+.avatar {
+    border:1px solid rgb(206, 206, 231);
+    margin: 1rem; 
+    border-radius: 50%; 
+    width: 110px; 
+    height: 120px;
+}
+
+.avatar-wrapper {
+    height: 100%;
+    background: #fafafa;;
+}
+
+.data-wrapper {
+    border: 1px solid  #f1f1f1;
+    background-color: #fefefe;
+    padding: 1rem .8rem;
 }
