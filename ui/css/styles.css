@@ -90,7 +90,7 @@ html {
 .header {
     padding: 0 8rem; 
     background:  #ffffff;
-    min-height: 100px;
+    min-height: 50px;
     border-bottom: 1px solid rgb(171, 171, 207);
     -webkit-box-shadow: 0 0 5px 3px rgba(1,1,1,.5);
         -moz-box-shadow: 0 0 5px 3px rgba(1,1,1,.5);
@@ -119,8 +119,9 @@ html {
 }
 
 .brand-name {
-    font-size:40px;
+    font-size:30px;
     font-weight:bold;
+    padding-bottom: .3rem;
     color: rgb(14, 14, 54);
 }
 
