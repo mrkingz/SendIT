@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Validator from 'validator';
-import collections from '../collections';
+import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
 /**

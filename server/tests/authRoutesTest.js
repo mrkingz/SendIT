@@ -41,7 +41,7 @@ describe('Test authentication routes', () => {
 					expect(response.message).to.equal('Registration was successfull');
 					expect(response.data).to.be.an('object');
 					expect(response.data).to.have.own.property('userId')
-						.to.be.a('number').that.is.equal(1);
+						.to.be.a('number');
 					expect(response.data).to.have.own.property('firstname')
 						.to.be.a('string').that.is.equal(users[0].firstname);
 					expect(response.data).to.have.own.property('lastname')
@@ -122,7 +122,7 @@ describe('Test authentication routes', () => {
 		});
 
 
-		it('It should not create a user if firstname is empty', (done) => { 
+		it('It should not create a user if firstname is empty', (done) => {
 			users[0].firstname = '';
 			server
 				.post('/api/v1/auth/signup')
@@ -136,7 +136,7 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if lastname is empty', (done) => { 
+		it('It should not create a user if lastname is empty', (done) => {
 			users[0].firstname = 'James';
 			users[0].lastname = '';
 			server
@@ -151,7 +151,7 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if email address is empty', (done) => { 
+		it('It should not create a user if email address is empty', (done) => {
 			users[0].phone = '08035610915';
 			users[0].email = '';
 			server
@@ -166,7 +166,7 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user for invalid email address', (done) => { 
+		it('It should not create a user for invalid email address', (done) => {
 			users[0].phone = '08035610915';
 			users[0].email = 'example@gmail';
 			server
@@ -181,7 +181,7 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if password is empty', (done) => { 
+		it('It should not create a user if password is empty', (done) => {
 			users[0].email = 'example@gmail.com';
 			users[0].password = '';
 			server
@@ -196,7 +196,7 @@ describe('Test authentication routes', () => {
 				});
 		});
 
-		it('It should not create a user if password is less than eight characters', (done) => { 
+		it('It should not create a user if password is less than eight characters', (done) => {
 			users[0].phone = '08035610651';
 			users[0].email = 'example@gmail.com';
 			users[0].password = 'Pass';
@@ -214,54 +214,54 @@ describe('Test authentication routes', () => {
 	});
 
 	describe('Test sign in route', () => {
-    it('It should sign in a user with email and password', (done) => {
-      server
-      .post('/api/v1/auth/login')
-      .send({
-        email: 'example@gmail.com',
-        password: 'Password1'
-      })
-      .end((err, res) => {
-        const response = res.body;
-        expect(response).to.be.an('object');
-        expect(res.statusCode).to.equal(200);
-        expect(response.status).to.equal('Success');
-        expect(response.message).to.equal('Successfully signed in');
-        expect(response.data).to.be.an('object')
-        .to.have.own.property('token').to.be.a('string');
-        done();
-      });
+		it('It should sign in a user with email and password', (done) => {
+			server
+				.post('/api/v1/auth/login')
+				.send({
+					email: 'example@gmail.com',
+					password: 'Password1'
+				})
+				.end((err, res) => {
+					const response = res.body;
+					expect(response).to.be.an('object');
+					expect(res.statusCode).to.equal(200);
+					expect(response.status).to.equal('Success');
+					expect(response.message).to.equal('Successfully signed in');
+					expect(response.data).to.be.an('object')
+						.to.have.own.property('token').to.be.a('string');
+					done();
+				});
 		});
-		
-    it('It should not sign in a user with inavlid email and password', (done) => {
-      server
-      .post('/api/v1/auth/login')
-      .send({
-        email: 'mrKingz001@hotmail.com',
-        password: 'Password1'
-      })
-      .end((err, res) => {
-        const response = res.body;
-        expect(response).to.be.an('object');
-        expect(res.statusCode).to.equal(401);
-        expect(response.status).to.equal('Fail');
-        expect(response.message).to.equal('Invalid sign in credentials');
-        done();
-      });
+
+		it('It should not sign in a user with inavlid email and password', (done) => {
+			server
+				.post('/api/v1/auth/login')
+				.send({
+					email: 'mrKingz001@hotmail.com',
+					password: 'Password1'
+				})
+				.end((err, res) => {
+					const response = res.body;
+					expect(response).to.be.an('object');
+					expect(res.statusCode).to.equal(401);
+					expect(response.status).to.equal('Fail');
+					expect(response.message).to.equal('Invalid sign in credentials');
+					done();
+				});
 		});
-		
-    it('It should not sign in a user with inavlid email', (done) => {
-      server
-      .post('/api/v1/auth/login')
-      .send()
-      .end((err, res) => {
-        const response = res.body;
-        expect(response).to.be.an('object');
-        expect(res.statusCode).to.equal(401);
-        expect(response.status).to.equal('Fail');
-        expect(response.message).to.equal('E-mail address and password are required!');
-        done();
-      });
-    });
-  });
+
+		it('It should not sign in a user with inavlid email', (done) => {
+			server
+				.post('/api/v1/auth/login')
+				.send()
+				.end((err, res) => {
+					const response = res.body;
+					expect(response).to.be.an('object');
+					expect(res.statusCode).to.equal(401);
+					expect(response.status).to.equal('Fail');
+					expect(response.message).to.equal('E-mail address and password are required!');
+					done();
+				});
+		});
+	});
 });

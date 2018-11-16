@@ -2,7 +2,7 @@ import _ from 'lodash';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import collections from '../collections';
+import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
 dotenv.load();
