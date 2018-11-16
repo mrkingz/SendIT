@@ -126,8 +126,8 @@ html {
 }
 
 .index-container {
-    margin: .5rem;
-    padding: .5rem;
+    margin: 0 .5rem;
+    padding: .5rem .5rem 0;
 }
 
 .menu-div {
@@ -189,7 +189,7 @@ html {
 
 .auth-container {
     background-color: #fff;
-    margin: 2rem 3rem;
+    margin: 1rem 3rem;
     -webkit-box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
     box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
     -webkit-border-radius: .2rem;
@@ -1017,16 +1017,6 @@ button.menu-btn:focus {
 
 .bg-white {
     background-color: #ffffff;
-}
-
-.user-links {
-    padding: .5rem;
-    width: auto;
-}
-
-.user-links a {
-    padding: .5rem;
-    min-width: 20%;
 }
 
 .note,

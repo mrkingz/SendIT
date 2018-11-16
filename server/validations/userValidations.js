@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Validator from 'validator';
 import collections from '../collections';
-import UtilityService from '../services/utilityService';
+import UtilityService from '../helpers/UtilityService';
 
 /**
  * @export

@@ -1,5 +1,5 @@
 import collections from '../collections';
-import UtilityService from '../services/utilityService';
+import UtilityService from '../helpers/UtilityService';
 
 
 /**
@@ -19,11 +19,12 @@ export default class ParcelController extends UtilityService {
 			const days = { fast: '3 days', normal: '7 days' };
 			const { decoded, ...parcelDetails } = req.body;
 			const moment = new Date();
-			parcelDetails.parcelId = collections.getParcels().length + 1;
+			parcelDetails.parcelId = collections.getParcelsCount() + 1;
 			parcelDetails.userId = decoded.userId;
 			parcelDetails.price = Number(req.body.weight) * 100;
 			parcelDetails.deliveryStatus = 'Pending';
-			parcelDetails.presentLocation = 'Not available';
+      parcelDetails.presentLocation = 'Not available';
+      parcelDetails.trackingId = moment.getTime();
 			parcelDetails.deliveryDuration = days[req.body.deliveryMethod.toLowerCase()];
 			parcelDetails.createdAt = moment;
 			parcelDetails.updatedAt = moment;
@@ -44,7 +45,7 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       let parcel;
       const parcelId = req.params.parcelId;
-      const length = collections.getParcels().length;
+      const length = collections.getParcelsCount();
       for (let i = 0; i < length; i++) {
         if (parseInt(collections.getParcels()[i].parcelId, 10) === parseInt(parcelId, 10)) {
           parcel = collections.getParcels()[i];
@@ -68,7 +69,7 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       const { userId } = req.body.decoded;
       const parcels = [];
-      const length = collections.getParcels().length;
+      const length = collections.getParcelsCount();
       for (let i = 0; i < length; i++) {
         if (parseInt(collections.getParcels()[i].userId, 10) === parseInt(userId, 10)) {
           parcels.push(collections.getParcels()[i]);
@@ -89,7 +90,7 @@ export default class ParcelController extends UtilityService {
    */
   static getParcels() {
     return (req, res) => {
-      return (collections.getParcels().length > 0)
+      return (collections.getParcelsCount() > 0)
         ? this.successResponse(res, 200, undefined, { parcels: collections.getParcels() })
         : this.errorResponse(res, 404, 'No parcel found');
     };
