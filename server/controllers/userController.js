@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import collections from '../collections';
-import UtilityService from '../services/utilityService';
+import UtilityService from '../helpers/UtilityService';
 
 dotenv.load();
 
@@ -58,14 +58,7 @@ export default class UserController extends UtilityService {
             } else {
               const { userId, isAdmin } = collections.getUsers()[i];
               return this.successResponse(res, 200, 'Successfully signed in', {
-									// Generate token 
-                  token: jwt.sign({
-                    userId, email, isAdmin,
-                  }, process.env.SECRET_KEY, {
-                      issuer: process.env.ISSUER,
-                      subject: process.env.SUBJECT,
-                      expiresIn: process.env.EXPIRATION
-                    })
+                  token: this.generateToken({ userId, isAdmin, email })
                 }
               );
             }
@@ -75,6 +68,23 @@ export default class UserController extends UtilityService {
       }
       return this.errorResponse(res, 401, message);
     };
+  }
+
+  /**
+   * Generate a JWT for authenticated user
+   *
+   * @param {object} credentials
+   * @returns {string} the generated token
+   * @memberof UserController
+   */
+  static generateToken(credentials) {
+    return jwt.sign({
+        ...credentials
+        }, process.env.SECRET_KEY, {
+          issuer: process.env.ISSUER,
+          subject: process.env.SUBJECT,
+          expiresIn: process.env.EXPIRATION
+        });
   }
 
 	/**
@@ -121,7 +131,7 @@ export default class UserController extends UtilityService {
   }
 
   /**
-   * Authorizes a user
+   * Authorize a user
    * @static
    * @returns {function} Returns an express middleware that handles the authorization
    * @memberof UserController

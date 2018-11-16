@@ -37,15 +37,11 @@ export default class UtilityService {
               const array = attributes[key].split(' ');
               attr[key] = array.map((str) => {
                 str = str.toString().trim();
-                return (skip.includes(str))
-                  ? str
-                  : str.charAt(0).toUpperCase() + str.substr(1);
+                return (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
               }).join(' ');
             } else {
               const str = attributes[key].toString().trim();
-              attr[key] = (skip.includes(str))
-                ? str
-                : str.charAt(0).toUpperCase() + str.substr(1);
+              attr[key] = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
             }
           } else attr[key] = attributes[key];
         }
@@ -55,15 +51,13 @@ export default class UtilityService {
         const array = attributes.split(' ');
         attr = array.map((str) => {
           str = str.toString().trim();
-          return (skip.includes(str))
-            ? str
-            : this.cleanString(str.charAt(0).toUpperCase() + str.substr(1));
+          return (skip.includes(str)) ? str : this.cleanString(
+                    str.charAt(0).toUpperCase() + str.substr(1)
+                  );
         }).join(' ');
       } else {
         const str = attributes.toString().trim();
-        attr = (skip.includes(str))
-          ? str
-          : str.charAt(0).toUpperCase() + str.substr(1);
+        attr = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
       }
     } else attr = attributes;
     return attr;
@@ -137,9 +131,7 @@ export default class UtilityService {
     return response.status(code).json({
       status: 'Success',
       message,
-      data: {
-        ...data
-      }
+      data
     });
   }
 }

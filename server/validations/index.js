@@ -1,5 +1,5 @@
-import UserValidations from './userValidations';
-import ParcelValidations from './parcelValidations';
+import UserValidations from './UserValidations';
+import ParcelValidations from './ParcelValidations';
 
 const validations = {
 	UserValidations,
