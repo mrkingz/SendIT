@@ -59,9 +59,9 @@ Lives at: https://mrkingz.github.io/SendIT/ui/views/index.html
 ```
 
 ```
-* After successful installation, create a `.env` file which will be used to load environment variables 
+*After successful installation, create a `.env` file which will be used to load environment variables 
  **see .env.example file as a sample**
-* Create a databse to be used with application
+*Create a databse to be used with application
 ```
 
 ## Testing
