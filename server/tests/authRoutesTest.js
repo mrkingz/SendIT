@@ -61,9 +61,9 @@ describe('Test authentication routes', () => {
 				.send(users[1])
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Firstname is required!');
+					expect(response.message).to.equal('Firstname is required');
 					done();
 				});
 		});
@@ -74,9 +74,9 @@ describe('Test authentication routes', () => {
 				.send(users[2])
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Lastname is required!');
+					expect(response.message).to.equal('Lastname is required');
 					done();
 				});
 		});
@@ -88,9 +88,9 @@ describe('Test authentication routes', () => {
 				.send(users[3])
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('E-mail address is required!');
+					expect(response.message).to.equal('E-mail address is required');
 					done();
 				});
 		});
@@ -101,9 +101,9 @@ describe('Test authentication routes', () => {
 				.send(users[4])
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Password is required!');
+					expect(response.message).to.equal('Password is required');
 					done();
 				});
 		});
@@ -116,7 +116,7 @@ describe('Test authentication routes', () => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(409);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('E-mail address has been used!');
+					expect(response.message).to.equal('E-mail address has been used');
 					done();
 				});
 		});
@@ -129,9 +129,9 @@ describe('Test authentication routes', () => {
 				.send(users[0])
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Firstname cannot be empty!');
+					expect(response.message).to.equal('Firstname is not allowed to be empty');
 					done();
 				});
 		});
@@ -144,70 +144,81 @@ describe('Test authentication routes', () => {
 				.send(users[0])
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Lastname cannot be empty!');
+					expect(response.message).to.equal('Lastname is not allowed to be empty');
 					done();
 				});
 		});
 
 		it('It should not create a user if email address is empty', (done) => {
-			users[0].phone = '08035610915';
-			users[0].email = '';
 			server
 				.post('/api/v1/auth/signup')
-				.send(users[0])
+				.send({
+					firstname: 'James',
+					lastname: 'Ogugayo',
+					email: '',
+					password: 'Password1'
+				})
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('E-mail address cannot be empty!');
+					expect(response.message).to.equal('E-mail address is not allowed to be empty');
 					done();
 				});
 		});
 
-		it('It should not create a user for invalid email address', (done) => {
-			users[0].phone = '08035610915';
-			users[0].email = 'example@gmail';
+		it('It should not create a user for invalid email address', (done) => { 
 			server
 				.post('/api/v1/auth/signup')
-				.send(users[0])
+				.send({
+					firstname: 'James',
+					lastname: 'Ogugayo',
+					email: 'example@',
+					password: 'Password1'
+				})
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Please, enter a valid email address!');
+					expect(response.message).to.equal('E-mail address must be a valid email');
 					done();
 				});
 		});
 
 		it('It should not create a user if password is empty', (done) => {
-			users[0].email = 'example@gmail.com';
-			users[0].password = '';
 			server
 				.post('/api/v1/auth/signup')
-				.send(users[0])
+				.send({
+					firstname: 'James',
+					lastname: 'Ogugayo',
+					email: 'example@gmail.com',
+					password: ' '
+				})
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Password cannot be empty!');
+					expect(response.message).to.equal('Password is not allowed to be empty');
 					done();
 				});
 		});
 
 		it('It should not create a user if password is less than eight characters', (done) => {
-			users[0].phone = '08035610651';
-			users[0].email = 'example@gmail.com';
-			users[0].password = 'Pass';
 			server
 				.post('/api/v1/auth/signup')
-				.send(users[0])
+				.send({
+					firstname: 'James',
+					lastname: 'Ogugayo',
+					email: 'example@gmail.com',
+					password: 'Pass'
+				})
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(400);
+					expect(res.statusCode).to.equal(422);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Password must be at least 8 characters long!');
+					expect(response.message).to.equal('Password length must be at least 8 characters long');
 					done();
 				});
 		});
@@ -259,7 +270,7 @@ describe('Test authentication routes', () => {
 					expect(response).to.be.an('object');
 					expect(res.statusCode).to.equal(401);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('E-mail address and password are required!');
+					expect(response.message).to.equal('E-mail address and password are required');
 					done();
 				});
 		});

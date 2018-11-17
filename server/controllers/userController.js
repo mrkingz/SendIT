@@ -48,7 +48,7 @@ export default class UserController extends UtilityService {
       let message = 'Invalid sign in credentials';
 
       if ((_.isUndefined(email)) || _.isUndefined(password)) {
-        message = 'E-mail address and password are required!';
+        message = 'E-mail address and password are required';
       } else {
         const length = collections.getUsersCount();
         for (let i = 0; i < length; i++) {

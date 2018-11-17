@@ -32,8 +32,8 @@ describe('Test class UtilityService', () => {
 		});
 	});
 
-	describe('Test method upperCaseFirst of UtilityService', () => {
-		const parcel = UtilityService.upperCaseFirst({ description: 'office chair' });
+	describe('Test method ucFirst of UtilityService', () => {
+		const parcel = UtilityService.ucFirstObj({ description: 'office chair' });
 		it('It should capitalize the first character of the value of description', () => {
 			expect(parcel).to.be.an('object');
 			expect(parcel).to.have.own.property('description').to.be.a('string')
@@ -41,8 +41,8 @@ describe('Test class UtilityService', () => {
 		});
 	});
 
-	describe('Test method upperCaseFirst of UtilityService', () => {
-		const parcel = UtilityService.upperCaseFirst({
+	describe('Test method ucFirst of UtilityService', () => {
+		const parcel = UtilityService.ucFirstObj({
 			description: 'office chair' 
 		}, { bool: true });
 		it('It should capitalize the first character of every word', () => {
@@ -52,26 +52,26 @@ describe('Test class UtilityService', () => {
 		});
 	});
 
-	describe('Test method upperCaseFirst of UtilityService', () => {
+	describe('Test method ucFirst of UtilityService', () => {
 		let description = 'office chair';
-		description = UtilityService.upperCaseFirst(description);
+		description = UtilityService.ucFirstStr(description);
 		it('It should capitalize the first character in the string argument', () => {
 			expect(description).to.be.a('string');
 			expect(description).to.be.equal('Office chair');
 		});
 	});
 
-	describe('Test method upperCaseFirst of UtilityService', () => {
+	describe('Test method ucFirst of UtilityService', () => {
 		let description = 'office chair';
-		description = UtilityService.upperCaseFirst(description, { bool: true });
+		description = UtilityService.ucFirstStr(description, { bool: true });
 		it('It should capitalize the first character of every word in the string argument', () => {
 			expect(description).to.be.a('string');
 			expect(description).to.be.equal('Office Chair');
 		});
 	});
 
-	describe('Test method upperCaseFirst of UtilityService', () => {
-		const parcel = UtilityService.upperCaseFirst({
+	describe('Test method ucFirst of UtilityService', () => {
+		const parcel = UtilityService.ucFirstObj({
 			description: 'fan and blender' 
 		}, 
 			{ bool: true, skip: ['and'] });

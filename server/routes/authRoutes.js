@@ -7,9 +7,8 @@ const { UserValidations } = validations;
 const authRouter = express.Router();
 
 authRouter.post('/api/v1/auth/signup',
-  UserValidations.isRequired(),
-  UserValidations.validateRegistration(),  
-  UserValidations.isUnique('Email', 'E-mail address has been used!'),
+  UserValidations.validateUser(),
+  UserValidations.isUnique('Email', 'E-mail address has been used'),
   UserController.register());
 
   authRouter.post('/api/v1/auth/login', 

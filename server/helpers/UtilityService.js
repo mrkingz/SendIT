@@ -7,24 +7,22 @@ import _ from 'lodash';
  */
 export default class UtilityService {
 	/**
-	 * Converts the first character of a string to upper case
-	 * If an object is passed, the method only convert its string 
-	 * propeties
+	 * Capitalizes the first character of an object's string porperty 
    * 
 	 * @static
-	 * @method upperCaseFirst
+	 * @method ucFirstObj
 	 * @memberof UtilityService
 	 * @param {(Object|String)} attributes The object whose string properties
 	 * is or the string to be converted
 	 * @param {Boolean} options
-	 * Note: options.bool: if true, first character of every word will be
+	 * Note: options.bool: if true, first character of every string will be
 	 * 		 	 capitalize; if false (default), only the first character of the sentence 
 	 * 		   will be capitalize
-	 *       options.skip: array of words to skip
+	 *       options.skip: array of strings to skip
 	 * @returns {(Object|String)} An object with converted string attributes or a 
 	 * converted string
 	 */
-  static upperCaseFirst(attributes, options) {
+  static ucFirstObj(attributes, options) {
     let attr = null;
     const bool = (options && !_.isUndefined(options.bool)) ? options.bool : false;
     const skip = (options && !_.isUndefined(options.skip)) ? options.skip : [];
@@ -46,21 +44,44 @@ export default class UtilityService {
           } else attr[key] = attributes[key];
         }
       }
-    } else if (_.isString(attributes)) {
-      if (bool) {
-        const array = attributes.split(' ');
-        attr = array.map((str) => {
-          str = str.toString().trim();
-          return (skip.includes(str)) ? str : this.cleanString(
-                    str.charAt(0).toUpperCase() + str.substr(1)
-                  );
-        }).join(' ');
-      } else {
-        const str = attributes.toString().trim();
-        attr = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
-      }
     } else attr = attributes;
     return attr;
+  }
+
+	/**
+	 * Capitalizes the first character of a string
+   * 
+	 * @static
+	 * @method ucFirstStr
+	 * @memberof UtilityService
+	 * @param {(Object|String)} string The object whose string properties
+	 * is or the string to be converted
+	 * @param {Boolean} options
+	 * Note: options.bool: if true, first character of every string will be
+	 * 		 	 capitalize; if false (default), only the first character of the sentence 
+	 * 		   will be capitalize
+	 *       options.skip: array of strings to skip
+	 * @returns {(Object|String)} An object with converted string attributes or a 
+	 * converted string
+	 */
+  static ucFirstStr(string, options) {
+    const bool = (options && !_.isUndefined(options.bool)) ? options.bool : false;
+    const skip = (options && !_.isUndefined(options.skip)) ? options.skip : [];
+  
+    let str;
+    if (bool) {
+      const array = string.split(' ');
+      str = array.map((s) => {
+        s = s.toString().trim();
+        return (skip.includes(s)) ? s : this.cleanString(
+                  s.charAt(0).toUpperCase() + s.substr(1)
+                );
+      }).join(' ');
+    } else {
+      str = string.toString().trim();
+      str = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
+    }
+    return str;
   }
 
 
