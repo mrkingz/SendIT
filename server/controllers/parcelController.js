@@ -18,7 +18,6 @@ export default class ParcelController extends UtilityService {
 		return (req, res) => {
 			const days = { fast: '3 days', normal: '7 days' };
       const { decoded, ...parcelDetails } = req.body;
-      console.log(JSON.stringify(req.body.decoded));
       const moment = new Date();
 			parcelDetails.parcelId = collections.getParcelsCount() + 1;
 			parcelDetails.userId = decoded.userId;
