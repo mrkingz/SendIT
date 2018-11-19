@@ -6,13 +6,13 @@
 SendIT is a courier service that helps users deliver parcels to different destinations. SendIT
 provides courier quotes based on weight categories.
 
-# GH-pages link: 
+#### GH-pages link: 
 - https://mrkingz.github.io/SendIT/ui/views/index.html
 
-# Heroku links: 
+#### Heroku links: 
 - https://senditkingsley.herokuapp.com/api
 
-# Pivotal Tracker link: 
+#### Pivotal Tracker link: 
 - https://www.pivotaltracker.com/n/projects/2212947
 
 # Features
