@@ -9,7 +9,7 @@ provides courier quotes based on weight categories.
 #### GH-pages link: 
 - https://mrkingz.github.io/SendIT/ui/views/index.html
 
-#### Heroku links: 
+#### Heroku link: 
 - https://senditkingsley.herokuapp.com/api
 
 #### Pivotal Tracker link: 
