@@ -12,9 +12,7 @@ const parcelRouter = express.Router();
 
 parcelRouter.route('/api/v1/parcels')
 .all(UserController.authenticateUser())
-.post(ParcelValidations.isRequired(),
-	ParcelValidations.isEmpty(),
-	ParcelValidations.isValid(),
+.post(ParcelValidations.validateParcel(),
 	ParcelController.createParcel())
 .get(UserController.authorizeUser(),
 	ParcelController.getParcels());

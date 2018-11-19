@@ -44,11 +44,12 @@ export default class UserController extends UtilityService {
 	 */
   static signin() {
     return (req, res) => {
-      const { email, password } = req.body;
+      let { email, password } = req.body;
+      email = _.isUndefined(email) ? email : email.toLowerCase();
       let message = 'Invalid sign in credentials';
 
       if ((_.isUndefined(email)) || _.isUndefined(password)) {
-        message = 'E-mail address and password are required!';
+        message = 'E-mail address and password are required';
       } else {
         const length = collections.getUsersCount();
         for (let i = 0; i < length; i++) {

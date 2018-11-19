@@ -1,5 +1,4 @@
-import _ from 'lodash';
-import Validator from 'validator';
+import Joi from 'joi';
 import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
@@ -11,41 +10,53 @@ import UtilityService from '../helpers/UtilityService';
 export default class UserValidations extends UtilityService {
   /**
    * Validates user's sign up details
+   * 
    * @static
+   * @method validateUser
    * @returns {function} Returns an express middleware function that handles the validation
    * @memberof UserValidations
    */
-  static validateRegistration() {
+  static validateUser() {
     return (req, res, next) => {
-      let message;
-      const { 
-        email, password, firstname, lastname, isAdmin
-      } = this.trimAttr(req.body);
-
-      if (Validator.isEmpty(email)) {
-        message = 'E-mail address cannot be empty!';
-      } else if (!Validator.isEmail(email)) {
-        message = 'Please, enter a valid email address!';
-      } else if (Validator.isEmpty(password)) {
-        message = 'Password cannot be empty!';
-      } else if (password.length < 8) {
-        message = 'Password must be at least 8 characters long!';
-      } else if (Validator.isEmpty(firstname)) {
-        message = 'Firstname cannot be empty!';
-      } else if (Validator.isEmpty(lastname)) {
-        message = 'Lastname cannot be empty!';
-      } 
-
-      if (_.isEmpty(message)) {
-        req.body = { 
-          email, password, firstname, lastname, isAdmin
-        };
+      return Joi.validate(this.trimAttr(req.body), this.getUserSchema(), (err, data) => {
+        if (err) {
+          return this.errorResponse(
+            res, 422, this.ucFirstStr(err.details[0].message.replace(/['"]/g, ''))
+          );
+        }
+        req.body = data;
         return next();
-      }
-
-      return this.errorResponse(res, 400, message);
+      });
     };
   }
+
+	/**
+	 * Create user validation schema
+	 *
+	 * @static
+	 * @method getUserSchema
+	 * @returns {object} the user validation schema
+	 * @memberof userValidations
+	 */
+	static getUserSchema() {
+    const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
+    const name = Joi.string().required().regex(exp).error((errors) => {
+      const err = errors[0];
+      switch (err.type) {
+        case 'any.invalid': return `${err.path} is inavlid`;
+        default: return err;
+      }
+    });
+
+    return Joi.object().keys({
+      firstname: name,
+      lastname: name,
+      isAdmin: Joi.optional().default(false),
+      email: Joi.string().required().email().label('E-mail address').lowercase(),
+      password: Joi.string().required().min(8)
+    });
+	}
+
 
   /**
    * Validates if a user sign up credential has been used
@@ -53,6 +64,7 @@ export default class UserValidations extends UtilityService {
    * @param {string} string - the property name 
    * @param {string} message - the message to retun (optional)
    * @static
+   * @method isUnique
    * @returns {function} Returns an express middleswar function that does the validation
    * @memberof UserValidations
    */
@@ -71,35 +83,6 @@ export default class UserValidations extends UtilityService {
       return (isUnique)
         ? next()
         : this.errorResponse(res, 409, (message || `${string} has been used`));
-    };
-  }
-
-  /**
-   * Validates required fields
-   * 
-   * @static
-   * @returns {function} Returns an express middleware function that handles the validation for required fields
-   * @memberof UserValidations
-   */
-  static isRequired() {
-    return (req, res, next) => {
-      let attr;
-      const { 
-        email, password, firstname, lastname 
-      } = req.body;
-      if (_.isUndefined(email)) {
-        attr = 'E-mail address';
-      } else if ( _.isUndefined(password)) {
-        attr = 'Password';
-      } else if ( _.isUndefined(firstname)) {
-        attr = 'Firstname';
-      } else if ( _.isUndefined(lastname)) {
-        attr = 'Lastname';
-      }
-
-      return (_.isEmpty(attr))
-        ? next()
-        : this.errorResponse(res, 400, `${attr} is required!`);
     };
   }
 }

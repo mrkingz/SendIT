@@ -210,7 +210,12 @@ describe('Test parcel routes', () => {
 	it('It should create a parcel delivery order', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(201);
@@ -258,12 +263,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a order if weight is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[1], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[1] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Weight is required!');
+				expect(response.message).to.equal('Weight is required');
 				done();
 			});
 	});
@@ -271,12 +281,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if delivery method is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[2], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[2] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Delivery method is required!');
+				expect(response.message).to.equal('Delivery method is required');
 				done();
 			});
 	});
@@ -284,12 +299,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup address is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[3], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[3] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup address is required!');
+				expect(response.message).to.equal('Pickup address is required');
 				done();
 			});
 	});
@@ -297,12 +317,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup city is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[4], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[4] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup city is required!');
+				expect(response.message).to.equal('Pickup city is required');
 				done();
 			});
 	});
@@ -310,12 +335,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup state is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[5], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[5] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup state is required!');
+				expect(response.message).to.equal('Pickup state is required');
 				done();
 			});
 	});
@@ -323,12 +353,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup date is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[6], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[6] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup date is required!');
+				expect(response.message).to.equal('Pickup date is required');
 				done();
 			});
 	});
@@ -336,12 +371,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup time is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[7], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[7] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup time is required!');
+				expect(response.message).to.equal('Pickup time is required');
 				done();
 			});
 	});
@@ -349,12 +389,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination address is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[8], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[8] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Address to deliver parcel is required!');
+				expect(response.message).to.equal('Destination address is required');
 				done();
 			});
 	});
@@ -362,12 +407,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination city is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[9], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[9] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('City to deliver parcel is required!');
+				expect(response.message).to.equal('Destination city is required');
 				done();
 			});
 	});
@@ -375,12 +425,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination state is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[10], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[10] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('State to deliver parcel is required!');
+				expect(response.message).to.equal('Destination state is required');
 				done();
 			});
 	});
@@ -388,12 +443,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if receiver name is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[11], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[11] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Receiver name is required!');
+				expect(response.message).to.equal(`Receiver name is required`);
 				done();
 			});
 	});
@@ -401,12 +461,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if receiver phone is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[12], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[12] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Receiver\'s phone number is required!');
+				expect(response.message).to.equal(`Receiver phone number is required`);
 				done();
 			});
 	});
@@ -414,12 +479,17 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination state is undefined', (done) => {
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[10], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[10] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('State to deliver parcel is required!');
+				expect(response.message).to.equal('Destination state is required');
 				done();
 			});
 	});
@@ -429,12 +499,17 @@ describe('Test parcel routes', () => {
 		parcels[0].deliveryMethod = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Delivery method cannot be empty!');
+				expect(response.message).to.equal('Delivery method is not allowed to be empty');
 				done();
 			});
 	});
@@ -444,12 +519,17 @@ describe('Test parcel routes', () => {
 		parcels[0].pickupAddress = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup address cannot be empty!');
+				expect(response.message).to.equal('Pickup address is not allowed to be empty');
 				done();
 			});
 	});
@@ -459,12 +539,17 @@ describe('Test parcel routes', () => {
 		parcels[0].pickupCity = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup city cannot be empty!');
+				expect(response.message).to.equal('Pickup city is not allowed to be empty');
 				done();
 			});
 	});
@@ -474,12 +559,17 @@ describe('Test parcel routes', () => {
 		parcels[0].pickupState = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup state cannot be empty!');
+				expect(response.message).to.equal('Pickup state is not allowed to be empty');
 				done();
 			});
 	});
@@ -489,12 +579,17 @@ describe('Test parcel routes', () => {
 		parcels[0].pickupDate = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup date cannot be empty!');
+				expect(response.message).to.equal('Pickup date is not allowed to be empty');
 				done();
 			});
 	});
@@ -504,12 +599,17 @@ describe('Test parcel routes', () => {
 		parcels[0].pickupTime = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup time cannot be empty!');
+				expect(response.message).to.equal('Pickup time is not allowed to be empty');
 				done();
 			});
 	});
@@ -519,12 +619,17 @@ describe('Test parcel routes', () => {
 		parcels[0].destinationAddress = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Address to deliver parcel cannot be empty!');
+				expect(response.message).to.equal('Destination address is not allowed to be empty');
 				done();
 			});
 	});
@@ -534,12 +639,17 @@ describe('Test parcel routes', () => {
 		parcels[0].destinationCity = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('City to deliver parcel cannot be empty!');
+				expect(response.message).to.equal('Destination city is not allowed to be empty');
 				done();
 			});
 	});
@@ -549,12 +659,17 @@ describe('Test parcel routes', () => {
 		parcels[0].destinationState = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('State to deliver parcel cannot be empty!');
+				expect(response.message).to.equal('Destination state is not allowed to be empty');
 				done();
 			});
 	});
@@ -564,12 +679,17 @@ describe('Test parcel routes', () => {
 		parcels[0].receiverName = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Receiver name cannot be empty!');
+				expect(response.message).to.equal('Receiver name is not allowed to be empty');
 				done();
 			});
 	});
@@ -579,12 +699,17 @@ describe('Test parcel routes', () => {
 		parcels[0].receiverPhone = '';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Receiver\'s phone number cannot be empty!');
+				expect(response.message).to.equal('Receiver phone number is not allowed to be empty');
 				done();
 			});
 	});
@@ -594,12 +719,17 @@ describe('Test parcel routes', () => {
 		parcels[0].weight = 'foo';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Invalid entry for parcel weight');
+				expect(response.message).to.equal('Weight must be a number');
 				done();
 			});
 	});
@@ -609,13 +739,18 @@ describe('Test parcel routes', () => {
 		parcels[0].deliveryMethod = 'High';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
-					.to.equal('Invalid entry for delivery method. Must be Fast or Normal');
+					.to.equal('Delivery method must be one of [Fast, Normal]');
 				done();
 			});
 	});
@@ -625,13 +760,18 @@ describe('Test parcel routes', () => {
 		parcels[0].receiverPhone = '0805678tyyuy7';
 		server
 			.post('/api/v1/parcels')
-			.send({ ...parcels[0], token })
+            .set('Connection', 'keep alive')
+            .set('Accept', 'application/json')
+            .set('Content-Type', 'application/json')
+            .type('form')
+			.set('token', token)
+			.send({ ...parcels[0] })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(400);
+				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
-					.to.equal('Invalid entry for receiver\'s phone number');
+					.to.equal('Receiver phone number is inavlid');
 				done();
 			});
 	});
