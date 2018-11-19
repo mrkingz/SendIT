@@ -26,6 +26,7 @@
       "new-cap": 0,
       "no-tabs": 0,
       "eol-last": 0,
+      "quotes": 0,
       "no-console": 0,
       "prefer-const": 0,
       "no-plusplus": 0,
