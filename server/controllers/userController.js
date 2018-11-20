@@ -61,29 +61,24 @@ export default class UserController extends UtilityService {
   static signin() {
     return (req, res) => {
       let { email, password } = req.body;
-      email = _.isUndefined(email) ? email : email.toLowerCase();
-      let message = 'Invalid sign in credentials';
-
-      if ((_.isUndefined(email)) || _.isUndefined(password)) {
-        message = 'E-mail address and password are required';
-      } else {
-        const length = collections.getUsersCount();
-        for (let i = 0; i < length; i++) {
-          if (collections.getUsers()[i].email === email) {
-            if (!bcrypt.compareSync(password, collections.getUsers()[i].password)) {
-              message = 'Invalid sign in credentials';
-            } else {
-              const { userId, isAdmin } = collections.getUsers()[i];
-              return this.successResponse(res, 200, 'Successfully signed in', {
-                  token: this.generateToken({ userId, isAdmin, email })
-                }
-              );
-            }
-            break;
+      const query = {
+        name: 'signin-user',
+        text: `SELECT userid, isadmin, password FROM users WHERE email = $1`,
+        values: [email]
+      };
+      db.sqlQuery(query)
+      .then((result) => {
+        if (!_.isEmpty(result.rows)) {
+          if (bcrypt.compareSync(password, result.rows[0].password)) {
+            const { userid, isadmin } = result.rows[0];
+            return this.successResponse(res, 200, 'Successfully signed in', {
+              token: this.generateToken({ userid, isadmin, email })
+            });
           }
         }
-      }
-      return this.errorResponse(res, 401, message);
+        return this.errorResponse(res, 401, 'Invalid sign in credentials');
+      })
+      .catch(() => { this.errorResponse(res, 500, db.dbError()); });
     };
   }
 
