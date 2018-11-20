@@ -1,5 +1,6 @@
+import _ from 'lodash';
 import Joi from 'joi';
-import collections from '../dummyData';
+import db from '../database';
 import UtilityService from '../helpers/UtilityService';
 
 /**
@@ -70,19 +71,22 @@ export default class UserValidations extends UtilityService {
    */
   static isUnique(string, message) {
     return (req, res, next) => {
-      let isUnique = true;
-      let length = collections.getUsersCount();
+      const str = string.toLowerCase();
+      const query = {
+        name: 'is-unique',
+        text: `SELECT ${str} FROM users WHERE ${str} = $1 LIMIT 1`,
+        values: [req.body[str]]
+      };
 
-      for (let i = 0; i < length; i++) {
-        if (collections.getUsers()[i][string.toLowerCase()] === req.body[string.toLowerCase()]) {
-          isUnique = false;
-          break;
-        }
-      }
-
-      return (isUnique)
-        ? next()
-        : this.errorResponse(res, 409, (message || `${string} has been used`));
+      db.sqlQuery(query)
+      .then((result) => {  
+        return (_.isEmpty(result.rows))
+          ? next()
+          : this.errorResponse(res, 409, (message || `${string} has been used`));
+      })
+      .catch(() => {
+          return this.errorResponse(res, 500, db.dbError());
+      });
     };
   }
 }

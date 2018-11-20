@@ -2,6 +2,7 @@ import _ from 'lodash';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import db from '../database';
 import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
@@ -21,16 +22,31 @@ export default class UserController extends UtilityService {
 	 */
 	static register() {
 		return (req, res) => {
-			const hashSalt = bcrypt.genSaltSync(10);
-			req.body.password = bcrypt.hashSync(req.body.password, hashSalt);
-			req.body.userId = collections.getUsersCount() + 1;
-			req.body.isAdmin = _.isUndefined(req.body.isAdmin) ? false : Boolean(req.body.isAdmin);
+      const moment = new Date();
+      let {
+          email, firstname, lastname, isAdmin 
+      } = req.body;
+			const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+      isAdmin = _.isUndefined(isAdmin) ? false : Boolean(req.body.isAdmin);
+      
+      const query = {
+        name: 'insert-user',
+        text: `INSERT INTO 
+                  users (email, firstname, lastname, password, isadmin, createdat, updatedat) 
+                  VALUES($1, $2, $3, $4, $5, $6, $7) 
+                  RETURNING userId`,
+        values: [email, firstname, lastname, pass, isAdmin, moment, moment]
+      };
 
-			collections.addUsers(req.body);
-
-			const { password, ...data } = req.body;
-			data.createdAt = new Date();
-			return this.successResponse(res, 201, 'Registration was successfull', data );
+      db.sqlQuery(query)
+      .then((client) => {     
+        return this.successResponse(res, 201, 'Sign up was successful', {
+          userId: client.rows[0].userid, firstname, lastname, email, isAdmin, createdAt: moment
+        });
+      })
+      .catch(() => {
+          return this.errorResponse(res, 500, db.dbError());
+      });
 		};
 	}
 
