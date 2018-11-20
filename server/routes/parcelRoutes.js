@@ -6,13 +6,13 @@ const {
 	ParcelController,
 	UserController,
 } = controllers;
-const { ParcelValidations } = validations;
+const { ParcelValidator } = validations;
 
 const parcelRouter = express.Router();
 
 parcelRouter.route('/api/v1/parcels')
 .all(UserController.authenticateUser())
-.post(ParcelValidations.validateParcel(),
+.post(ParcelValidator.validateParcel(),
 	ParcelController.createParcel())
 .get(UserController.authorizeUser(),
 	ParcelController.getParcels());

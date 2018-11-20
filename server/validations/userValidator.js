@@ -1,33 +1,25 @@
 import _ from 'lodash';
 import Joi from 'joi';
 import db from '../database';
-import UtilityService from '../helpers/UtilityService';
+import Validator from './validator';
 
 /**
  * @export
- * @class UserValidations
+ * @class UserValidator
  * @extends {UtilityService}
  */
-export default class UserValidations extends UtilityService {
+export default class UserValidator extends Validator {
   /**
    * Validates user's sign up details
    * 
    * @static
    * @method validateUser
    * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof UserValidations
+   * @memberof UserValidator
    */
   static validateUser() {
     return (req, res, next) => {
-      return Joi.validate(this.trimAttr(req.body), this.getUserSchema(), (err, data) => {
-        if (err) {
-          return this.errorResponse(
-            res, 422, this.ucFirstStr(err.details[0].message.replace(/['"]/g, ''))
-          );
-        }
-        req.body = data;
-        return next();
-      });
+      return this.validate(req, res, next, this.getUserSchema());
     };
   }
 
@@ -37,7 +29,7 @@ export default class UserValidations extends UtilityService {
 	 * @static
 	 * @method getUserSchema
 	 * @returns {object} the user validation schema
-	 * @memberof userValidations
+	 * @memberof UserValidator
 	 */
 	static getUserSchema() {
     const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
@@ -58,6 +50,29 @@ export default class UserValidations extends UtilityService {
     });
 	}
 
+  /**
+   * Validate user authentication credentials
+   *
+   * @static
+   * @returns {function} An express middleware function that handles the validation
+   * @method validateSignin
+   * @memberof UserValidator
+   */
+  static validateSignin() {
+    return (req, res, next) => {
+      const message = (errors) => {
+        const error = errors[0];
+        return (error.type === 'string.required') 
+          ? 'E-mail address and password are required' 
+          : error;
+      };
+      const schema = Joi.object().keys({
+        email: Joi.string().lowercase().required().error(message),
+        password: Joi.string().required().error(message)
+      });
+      return this.validate(req, res, next, schema);
+    };
+  }
 
   /**
    * Validates if a user sign up credential has been used
@@ -67,7 +82,7 @@ export default class UserValidations extends UtilityService {
    * @static
    * @method isUnique
    * @returns {function} Returns an express middleswar function that does the validation
-   * @memberof UserValidations
+   * @memberof UserValidator
    */
   static isUnique(string, message) {
     return (req, res, next) => {

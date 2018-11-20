@@ -1,34 +1,25 @@
 import Joi from 'joi';
-import _ from 'lodash';
-import Validator from 'validator';
-import UtilityService from '../helpers/UtilityService';
+import Validator from './validator';
 
 /**
  * @export
- * @class ParcelValidations
+ * @class ParcelValidator
  * @extends {UtilityService}
  */
-export default class ParcelValidations extends UtilityService {
+export default class ParcelValidator extends Validator {
   /**
    * Validate for required parcel delivery order details
 	 * 
    * @static
 	 * @method validateParcel
    * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof ParcelValidations
+   * @memberof ParcelValidator
    */
   static validateParcel() {
 		return (req, res, next) => {
-			const { decoded, ...body } = req.body;
-			return Joi.validate(this.trimAttr(body), this.getParcelSchema(), (err, data) => {
-        if (err) {
-						return this.errorResponse(
-							res, 422, this.ucFirstStr(err.details[0].message.replace(/['"]/g, ''))
-						);
-				}
-				req.body = data;
-				req.body.decoded = decoded;
-				return next();
+			const { decoded } = req.body;
+			return this.validate(req, res, next, this.getParcelSchema(), () => {
+				req.body = decoded;
 			});
 		};
 	}
@@ -39,7 +30,7 @@ export default class ParcelValidations extends UtilityService {
 	 * @static
 	 * @method getParcelSchema
 	 * @returns {object} the parcel validation schema
-	 * @memberof ParcelValidations
+	 * @memberof ParcelValidator
 	 */
 	static getParcelSchema() {
 		const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;

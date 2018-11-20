@@ -1,8 +1,8 @@
-import UserValidations from './userValidations';
-import ParcelValidations from './parcelValidations';
+import UserValidator from './userValidator';
+import ParcelValidator from './parcelValidator';
 
 const validations = {
-	UserValidations,
-	ParcelValidations,
+	UserValidator,
+	ParcelValidator,
 };
 export default validations;
