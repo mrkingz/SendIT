@@ -3,7 +3,6 @@ import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import db from '../database';
-import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
 dotenv.load();
@@ -113,33 +112,50 @@ export default class UserController extends UtilityService {
       if (token) {
         const regex = new RegExp('/^Bearer (\S+)$/');
         const match = regex.exec(token);
-
         token = (match) ? match[1] : token;
-        let decoded;
         try {
-          decoded = jwt.verify(token, process.env.SECRET_KEY, {
+          const decoded = jwt.verify(token, process.env.SECRET_KEY, {
             issuer: process.env.ISSUER
           });
           if (decoded) {
-            const length = collections.getUsersCount();
-            for (let i = 0; i < length; i++) {
-              if (parseInt(collections.getUsers()[i].userId, 10) === parseInt(decoded.userId, 10)) {
+            return this.findUser(decoded.userid).then((user) => {
+              if (user) {
                 req.body.decoded = decoded;
                 return next();
               }
-            }
-            message = 'Sorry, user does not exist';
-          }
+              this.errorResponse(res, 401, 'Sorry, user does not exist')
+            });            
+          }  
         } catch (error) {
-          if (error.message === 'jwt expired') {
-            message = 'Access denied! Token has expired';
-          } else {
-            message = 'Access denied! Invalid authentication token';
-          }
+          message = (error.message === 'jwt expired')
+                      ? 'Access denied! Token has expired'
+                      : 'Access denied! Invalid authentication token';
         }
       }
       return this.errorResponse(res, 401, message);
     };
+  }
+
+  /**
+   * Find a user
+   *
+   * @static
+   * @param {int} id the user id
+   * @method findUser
+   * @returns {object} the user details, if found; otherwise null
+   * @memberof UserController
+   */
+  static findUser(id) {
+    const query = {
+      name: 'find-user',
+      text: `SELECT userid, firstname, lastname, isadmin FROM users WHERE userid = $1`,
+      values: [id]
+    };
+    return db.sqlQuery(query)
+            .then((result) => {
+              return _.isEmpty(result.rows) ? null : result.rows[0];
+            })
+            .catch(() => { return db.dbError(); });
   }
 
   /**

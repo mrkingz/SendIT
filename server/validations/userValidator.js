@@ -33,7 +33,7 @@ export default class UserValidator extends Validator {
 	 */
 	static getUserSchema() {
     const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
-    const name = Joi.string().required().regex(exp).error((errors) => {
+    const name = Joi.string().required().max(100).regex(exp).error((errors) => {
       const err = errors[0];
       switch (err.type) {
         case 'any.invalid': return `${err.path} is inavlid`;
@@ -45,8 +45,8 @@ export default class UserValidator extends Validator {
       firstname: name,
       lastname: name,
       isAdmin: Joi.optional().default(false),
-      email: Joi.string().required().email().label('E-mail address').lowercase(),
-      password: Joi.string().required().min(8)
+      email: Joi.string().required().email().max(100).label('E-mail address').lowercase(),
+      password: Joi.string().required().min(8).max(60)
     });
 	}
 

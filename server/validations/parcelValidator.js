@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import Joi from 'joi';
 import Validator from './validator';
 
@@ -18,8 +19,13 @@ export default class ParcelValidator extends Validator {
   static validateParcel() {
 		return (req, res, next) => {
 			const { decoded } = req.body;
+			delete req.body.decoded;
 			return this.validate(req, res, next, this.getParcelSchema(), () => {
-				req.body = decoded;
+				return {
+					price: Number(req.body.weight) * 100,
+					trackingNo: new Date().getTime(),
+					decoded
+				};
 			});
 		};
 	}
@@ -39,18 +45,18 @@ export default class ParcelValidator extends Validator {
 				Joi.number().integer().greater(0).positive(), 
 				Joi.number().precision(2).greater(0).positive()
 			]).required(),
-			description: Joi.string(),
-			deliveryMethod: Joi.string().valid('Fast', 'Normal').required().label('Delivery method'),
-			pickupAddress: Joi.string().required().label('Pickup address'),
-			pickupCity: Joi.string().required().label('Pickup city'), 
-			pickupState: Joi.string().required().label('Pickup state'),  
+			description: Joi.string().max(255),
+			deliveryMethod: Joi.string().valid('Fast', 'Normal').required()
+				.max(20).label('Delivery method'),
+			pickupAddress: Joi.string().required().max(150).label('Pickup address'),
+			pickupCity: Joi.string().required().max(100).label('Pickup city'), 
+			pickupState: Joi.string().required().max(100).label('Pickup state'),  
 			pickupDate: Joi.string().required().label('Pickup date'), 
-			pickupTime: Joi.string().required().label('Pickup time'), 
-			destinationAddress: Joi.string().required().label('Destination address'), 
-			destinationCity: Joi.string().required().label('Destination city'),
-			destinationState: Joi.string().required().label('Destination state'), 
-			receiverName: Joi.string().required().label(`Receiver name`),
-			receiverPhone: Joi.string().required().regex(phoneExp)
+			destinationAddress: Joi.string().required().max(150).label('Destination address'), 
+			destinationCity: Joi.string().required().max(100).label('Destination city'),
+			destinationState: Joi.string().required().max(100).label('Destination state'), 
+			receiverName: Joi.string().required().max(200).label(`Receiver name`),
+			receiverPhone: Joi.string().required().max(50).regex(phoneExp)
 				.label(`Receiver phone number`).error((errors) => {
 				const err = errors[0];
 				switch (err.type) {
