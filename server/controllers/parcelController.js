@@ -1,3 +1,4 @@
+import db from '../database';
 import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
@@ -16,22 +17,30 @@ export default class ParcelController extends UtilityService {
 	 */
 	static createParcel() {
 		return (req, res) => {
-			const days = { fast: '3 days', normal: '7 days' };
-      const { decoded, ...parcelDetails } = req.body;
-      const moment = new Date();
-			parcelDetails.parcelId = collections.getParcelsCount() + 1;
-			parcelDetails.userId = decoded.userId;
-			parcelDetails.price = Number(req.body.weight) * 100;
-			parcelDetails.deliveryStatus = 'Pending';
-      parcelDetails.presentLocation = 'Not available';
-      parcelDetails.trackingId = moment.getTime();
-			parcelDetails.deliveryDuration = days[req.body.deliveryMethod.toLowerCase()];
-			parcelDetails.createdAt = moment;
-			parcelDetails.updatedAt = moment;
-			collections.addParcels(parcelDetails);
-			return this.successResponse(res, 201, 'Parcel delivery order successfully created', {
-					...collections.getParcels()[collections.getParcels().length - 1],
-				});
+      const moment = new Date(), { 
+        weight, description, deliveryMethod, pickupAddress, pickupCity, pickupState,
+        pickupDate, destinationAddress, destinationCity, destinationState, 
+        trackingNo, price, receiverName, receiverPhone, decoded
+      } = req.body;
+      const query = {
+        name: 'create-parcel',
+        text: `INSERT INTO parcels (
+                  weight, description, deliverymethod, pickupaddress, pickupcity, pickupstate,
+                  pickupdate, destinationaddress, destinationcity, destinationstate, trackingno,
+                  price, userid, receivername, receiverphone, createdat, updatedat ) VALUES (
+                  $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
+                ) RETURNING *`,
+        values: [
+          weight, description, deliveryMethod, pickupAddress, pickupCity, pickupState,
+          pickupDate, destinationAddress, destinationCity, destinationState, trackingNo,
+          price, decoded.userid, receiverName, receiverPhone, moment, moment
+        ]
+      };
+      db.sqlQuery(query).then((result) => {     
+        return this.successResponse(res, 201, 'Parcel delivery order successfully created', {
+          ...result.rows[0]
+        });
+      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
 		};
 	}
 
