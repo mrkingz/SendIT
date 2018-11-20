@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import db from '../database';
 import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
@@ -99,9 +100,19 @@ export default class ParcelController extends UtilityService {
    */
   static getParcels() {
     return (req, res) => {
-      return (collections.getParcelsCount() > 0)
-        ? this.successResponse(res, 200, undefined, { parcels: collections.getParcels() })
-        : this.errorResponse(res, 404, 'No parcel found');
+      const query = {
+        name: 'all-parcels',
+        text: `SELECT * FROM parcels`
+      };
+
+      db.sqlQuery(query).then((result) => {
+        const parcels = result.rows;
+        return (_.isEmpty(parcels))
+        ? this.errorResponse(res, 404, 'No parcel found')
+        : this.successResponse(res, 200, undefined, { parcels });
+      }).catch(() => {
+        this.errorResponse(res, 500, db.dbError());
+      });
     };
 	}
 	
