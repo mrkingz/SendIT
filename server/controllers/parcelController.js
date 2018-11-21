@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import db from '../database';
-import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
 
@@ -185,9 +184,8 @@ export default class ParcelController extends UtilityService {
                    parcel: updated.rows[0] 
                 }
               );
-            }).catch(() => { this.errorResponse(
-                res, 500, 'Something went wrong! Update not successful'
-              );
+            }).catch(() => { 
+              this.errorResponse(res, 500, 'Something went wrong! Update not successful');
             });
           }
         }
