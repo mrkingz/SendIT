@@ -102,18 +102,24 @@ export default class ParcelController extends UtilityService {
    */
   static getUserParcels() {
     return (req, res) => {
-      const { userId } = req.body.decoded;
-      const parcels = [];
-      const length = collections.getParcelsCount();
-      for (let i = 0; i < length; i++) {
-        if (parseInt(collections.getParcels()[i].userId, 10) === parseInt(userId, 10)) {
-          parcels.push(collections.getParcels()[i]);
-        }
+      if (Number(req.body.decoded.userid) !== Number(req.params.userId)) {
+        this.errorResponse(res, 401, 'Sorry, not a valid logged in user');
+      } else {
+        const query = {
+          name: 'fetch-parcel',
+          text: `SELECT * FROM parcels WHERE userid = $1`,
+          values: [req.params.userId]
+        };
+        
+        db.sqlQuery(query).then((result) => {
+          const parcels = result.rows;
+          return (_.isEmpty(parcels))
+          ? this.errorResponse(res, 404, 'No parcel found')
+          : this.successResponse(res, 200, undefined, { parcels });
+        }).catch(() => {
+          this.errorResponse(res, 500, db.dbError());
+        });
       }
-
-      return (parcels.length > 0)
-        ? this.successResponse(res, 200, undefined, { parcels })
-        : this.errorResponse(res, 404, 'No parcel found');
     };
 	}
 	
