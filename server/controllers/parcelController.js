@@ -305,4 +305,50 @@ export default class ParcelController extends UtilityService {
       }).catch(() => { this.errorResponse(res, 500, db.dbErro()); });     
     };
   }
+
+  /**
+   * Update parcel destination
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method updateDestination
+   * @memberof RequestController
+   */
+  static updateDestination() {
+    return (req, res) => {
+      const parcelId = req.params.parcelId, { 
+        decoded, destinationAddress, destinationCity, destinationState
+       } = req.body;
+      const query = {
+        text: `SELECT * FROM parcels WHERE parcelid = $1 AND userid = $2`,
+        values: [parcelId, decoded.userid]
+      };
+      db.sqlQuery(query).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const parcel = result.rows[0], msg = 'destination cannot be updated';
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, `Parcel has been delivered, ${msg}`);
+          } else if (parcel.deliverystatus === 'Cancelled') {
+            this.errorResponse(res, 403, `Parcel has been cancelled, ${msg}`);
+          } else {
+            const updateQuery = {
+              text: `UPDATE parcels 
+                    SET destinationaddress = $1, destinationcity = $2, destinationstate = $3
+                    WHERE parcelid = $4 AND userid = $5 RETURNING *`,
+              values: [destinationAddress, destinationCity, destinationState, parcelId, decoded.userid]
+            };
+            db.sqlQuery(updateQuery).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Parcel destination successfully updated', {
+                   parcel: updated.rows[0] 
+                });
+            }).catch(() => { 
+              this.errorResponse(res, 500, 'Something went wrong! Update not successful');
+            });
+          }
+        }
+      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
+    };
+  }
 }
