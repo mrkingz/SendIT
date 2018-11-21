@@ -8,7 +8,7 @@ import Validator from './validator';
  */
 export default class ParcelValidator extends Validator {
   /**
-   * Validate for required parcel delivery order details
+   * Validate parcel delivery order details
 	 * 
    * @static
 	 * @method validateParcel
@@ -64,5 +64,28 @@ export default class ParcelValidator extends Validator {
 				}
 			}), 
 		});
+	}
+
+  /**
+   * Validate present location
+	 * 
+   * @static
+	 * @method validateLocation
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @memberof ParcelValidator
+   */
+	static validateLocation() {
+		return (req, res, next) => {
+			const { decoded } = req.body;
+			delete req.body.decoded;
+			const schema = Joi.object().keys({
+				presentLocation: Joi.string().required().max(100).label('Present location')
+			});
+			return this.validate(req, res, next, schema, () => {
+				return {
+					decoded
+				};				
+			});
+		};
 	}
 }
