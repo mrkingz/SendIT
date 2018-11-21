@@ -113,15 +113,39 @@ export default class ParcelController extends UtilityService {
         db.sqlQuery(query).then((result) => {
           const parcels = result.rows;
           return (_.isEmpty(parcels))
-          ? this.errorResponse(res, 404, 'No parcel found')
-          : this.successResponse(res, 200, undefined, { parcels });
+                  ? this.errorResponse(res, 404, 'No parcel found')
+                  : this.successResponse(res, 200, undefined, { parcels });
         }).catch(() => {
           this.errorResponse(res, 500, db.dbError());
         });
       }
     };
   }
-  
+
+  /**
+   * Gets a specific user parcel
+   * @static
+   * @returns {function} Returns an express middleware function that handles the GET request
+   * @memberof RequestController
+   */
+  static getUserParcel() {
+    return (req, res) => {
+      if (Number(req.body.decoded.userid) !== Number(req.params.userId)) {
+        this.errorResponse(res, 401, 'Sorry, not a valid logged in user');
+      } else {
+        const { userid } = req.body.decoded;
+        db.sqlQuery(this.getUserParcelQueryObj(userid, req.params.parcelId)).then((result) => {
+          const parcel = result.rows[0];
+          return (_.isEmpty(parcel))
+                  ? this.errorResponse(res, 404, 'No parcel found')
+                  : this.successResponse(res, 200, undefined, { parcel });
+        }).catch((e) => {
+          this.errorResponse(res, 500, e.toString());
+        });
+      }
+    };
+  }
+    
   /**
    * Create fetch user parcel query object
    *
