@@ -76,13 +76,7 @@ export default class ParcelController extends UtilityService {
    */
   static getParcel() {
     return (req, res) => {
-      const query = {
-        name: 'fetch-parcel',
-        text: `SELECT * FROM parcels WHERE parcelid = $1`,
-        values: [req.params.parcelId]
-      };
-
-      db.sqlQuery(query).then((result) => {
+      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         const parcel = result.rows;
         return (_.isEmpty(parcel))
         ? this.errorResponse(res, 404, 'No parcel found')
@@ -182,11 +176,28 @@ export default class ParcelController extends UtilityService {
       values: [status, parcelId, userId]
     };
   }
+
+  /**
+   * Create admin get parcel delivery order query object
+   *
+   * @static
+   * @param {int} parcelId the parcel id
+   * @returns {object} the query object
+   * @method getParcelQuery
+   * @memberof ParcelController
+   */
+  static getParcelQuery(parcelId) {
+    return {
+      text: `SELECT * FROM parcels WHERE parcelid = $1`,
+      values: [parcelId]
+    };
+  }
 	
   /**
    * Cancel parcel deivery order
    * @static
    * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method cancelParcelOrder
    * @memberof RequestController
    */
   static cancelParcelOrder() {
@@ -198,7 +209,7 @@ export default class ParcelController extends UtilityService {
         } else {
           const status = 'Cancelled', parcel = result.rows[0];
           if (parcel.deliverystatus === 'Delivered') {
-            this.errorResponse(res, 404, 'Delivered parcel cannot be cancelled');
+            this.errorResponse(res, 403, 'Delivered parcel cannot be cancelled');
           } else if (parcel.deliverystatus === status) {
             this.errorResponse(res, 200, 'Parcel has already been cancelled');
           } else {
@@ -214,6 +225,48 @@ export default class ParcelController extends UtilityService {
           }
         }
       }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
+    };
+  }
+
+  /**
+   * Update the current location of a parcel delivery order
+   *
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method updateLocation
+   * @memberof ParcelController
+   */
+  static updateLocation() {
+    return (req, res) => {
+      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const parcel = result.rows[0];
+          const msg = 'location cannot be updated';
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, `Parcel already delivered, ${msg}`);
+          } else if (parcel.deliverystatus === 'Cancelled') {
+            this.errorResponse(res, 403, `Delivery order has been cancelled, ${msg}`);
+          } else if (parcel.deliverystatus === 'Placed') {
+            this.errorResponse(res, 403, `Parcel not yet transiting, ${msg}`);
+          } else {
+            const updateQuery = {
+              text: `UPDATE parcels SET presentlocation = $1 WHERE parcelid = $2 RETURNING *`,
+              values: [req.body.presentLocation, req.params.parcelId]
+            };
+            db.sqlQuery(updateQuery).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Present location successfully updated', {
+                   parcel: updated.rows[0] 
+                }
+              );
+            }).catch(() => { 
+              this.errorResponse(res, 500, 'Something went wrong! Update not successful');
+            });
+          }
+        }
+      }).catch(() => { this.errorResponse(res, 500, db.dbErro()); });
     };
   }
 }
