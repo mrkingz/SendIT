@@ -70,18 +70,28 @@ export default class ParcelValidator extends Validator {
    * Validate present location
 	 * 
    * @static
+	 * @param {update} updateType the type of update operation
 	 * @method validateLocation
    * @returns {function} Returns an express middleware function that handles the validation
    * @memberof ParcelValidator
    */
-	static validateLocation() {
+	static validateAdminUpdate(updateType) {
 		return (req, res, next) => {
-			const { decoded } = req.body;
+			const { decoded, deliveryStatus } = req.body;
 			delete req.body.decoded;
-			const schema = Joi.object().keys({
-				presentLocation: Joi.string().required().max(100).label('Present location')
-			});
-			return this.validate(req, res, next, schema, () => {
+			req.body.deliveryStatus = (deliveryStatus)
+																	? this.ucFirstStr(deliveryStatus.toLowerCase()) 
+																	: deliveryStatus;
+			const schema = {
+				location: Joi.object().keys({
+										presentLocation: Joi.string().required().max(100).label('Present location')
+									}),
+				status: Joi.object().keys({
+										deliveryStatus: Joi.string().required().valid('Transiting', 'Delivered')
+											.max(100).label('Delivery status')
+								})
+			};
+			return this.validate(req, res, next, schema[updateType], () => {
 				return {
 					decoded
 				};				

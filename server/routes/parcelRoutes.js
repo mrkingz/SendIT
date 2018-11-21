@@ -34,10 +34,16 @@ parcelRouter.put('/api/v1/parcels/:parcelId/cancel',
 	UserController.authenticateUser(),
 	ParcelController.cancelParcelOrder());
 
-	parcelRouter.put('/api/v1/parcels/:parcelId/presentLocation',
+parcelRouter.put('/api/v1/parcels/:parcelId/presentLocation',
 	UserController.authenticateUser(),
 	UserController.authorizeUser(),
-	ParcelValidator.validateLocation(),
+	ParcelValidator.validateAdminUpdate('location'),
 	ParcelController.updateLocation());
+
+parcelRouter.put('/api/v1/parcels/:parcelId/status',
+	UserController.authenticateUser(),
+	UserController.authorizeUser(),
+	ParcelValidator.validateAdminUpdate('status'),
+	ParcelController.updateStatus());
 
 export default parcelRouter;

@@ -217,8 +217,7 @@ export default class ParcelController extends UtilityService {
               return this.successResponse(
                 res, 200, 'Parcel delivery order successfully cancelled', {
                    parcel: updated.rows[0] 
-                }
-              );
+                });
             }).catch(() => { 
               this.errorResponse(res, 500, 'Something went wrong! Update not successful');
             });
@@ -259,14 +258,51 @@ export default class ParcelController extends UtilityService {
               return this.successResponse(
                 res, 200, 'Present location successfully updated', {
                    parcel: updated.rows[0] 
-                }
-              );
+                });
             }).catch(() => { 
               this.errorResponse(res, 500, 'Something went wrong! Update not successful');
             });
           }
         }
       }).catch(() => { this.errorResponse(res, 500, db.dbErro()); });
+    };
+  }
+
+  /**
+   * Update parcel delivery order status
+   *
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method updateStatus
+   * @memberof ParcelController
+   */
+  static updateStatus() {
+    return (req, res) => {
+      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const parcel = result.rows[0], msg = 'status cannot be updated';
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, `Parcel already delivered, ${msg}`);
+          } else if (parcel.deliverystatus === 'Cancelled') {
+            this.errorResponse(res, 403, `Delivery order has been cancelled, ${msg}`);
+          } else if (parcel.deliverystatus === req.body.deliveryStatus) {
+            this.successResponse(res, 200, `Delivery order status already set to transiting`);
+          } else {
+            const updateQuery = {
+              text: `UPDATE parcels SET deliverystatus = $1 WHERE parcelid = $2 RETURNING *`,
+              values: [req.body.deliveryStatus, req.params.parcelId]
+            };
+            db.sqlQuery(updateQuery).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Delivery order status successfully updated', {
+                   parcel: updated.rows[0] 
+                });
+            }).catch((e) => { this.errorResponse(res, 500, e.toString()); });
+          }
+        }
+      }).catch(() => { this.errorResponse(res, 500, db.dbErro()); });     
     };
   }
 }
