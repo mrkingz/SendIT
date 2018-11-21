@@ -14,9 +14,11 @@ dotenv.load();
  */
 export default class UserController extends UtilityService {
 	/**
+   * Register new user
 	 * 
 	 * @static
 	 * @returns {function} aA middleware function that handles the POST request
+   * @method register
 	 * @memberof UserController
 	 */
 	static register() {
@@ -123,7 +125,7 @@ export default class UserController extends UtilityService {
                 req.body.decoded = decoded;
                 return next();
               }
-              this.errorResponse(res, 401, 'Sorry, user does not exist')
+              this.errorResponse(res, 401, 'Sorry, user does not exist');
             });            
           }  
         } catch (error) {
@@ -166,7 +168,7 @@ export default class UserController extends UtilityService {
    */
   static authorizeUser() {
     return (req, res, next) => {
-      return (!req.body.decoded.isAdmin) 
+      return (req.body.decoded.isAdmin) 
         ? next()
         : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
     };

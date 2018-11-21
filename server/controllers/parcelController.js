@@ -43,6 +43,30 @@ export default class ParcelController extends UtilityService {
         });
       }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
 		};
+  }
+  
+  /**
+   * Gets all parcels
+   * @static
+   * @returns {function} Returns an express middleware function that handles the GET request
+   * @memberof RequestController
+   */
+  static getParcels() {
+    return (req, res) => {
+      const query = {
+        name: 'all-parcels',
+        text: `SELECT * FROM parcels`
+      };
+
+      db.sqlQuery(query).then((result) => {
+        const parcels = result.rows;
+        return (_.isEmpty(parcels))
+        ? this.errorResponse(res, 404, 'No parcel found')
+        : this.successResponse(res, 200, undefined, { parcels });
+      }).catch(() => {
+        this.errorResponse(res, 500, db.dbError());
+      });
+    };
 	}
 
   /**
@@ -53,19 +77,20 @@ export default class ParcelController extends UtilityService {
    */
   static getParcel() {
     return (req, res) => {
-      let parcel;
-      const parcelId = req.params.parcelId;
-      const length = collections.getParcelsCount();
-      for (let i = 0; i < length; i++) {
-        if (parseInt(collections.getParcels()[i].parcelId, 10) === parseInt(parcelId, 10)) {
-          parcel = collections.getParcels()[i];
-          break;
-        }
-			}
-			
-      return (parcel) 
-				? this.successResponse(res, 200, undefined, parcel)
-				: this.errorResponse(res, 404, 'Parcel not found');
+      const query = {
+        name: 'fetch-parcel',
+        text: `SELECT * FROM parcels WHERE parcelid = $1`,
+        values: [req.params.parcelId]
+      };
+
+      db.sqlQuery(query).then((result) => {
+        const parcel = result.rows;
+        return (_.isEmpty(parcel))
+        ? this.errorResponse(res, 404, 'No parcel found')
+        : this.successResponse(res, 200, undefined, { parcel: parcel[0] });
+      }).catch(() => {
+        this.errorResponse(res, 500, db.dbError());
+      });
     };
 	}
 	
@@ -89,30 +114,6 @@ export default class ParcelController extends UtilityService {
       return (parcels.length > 0)
         ? this.successResponse(res, 200, undefined, { parcels })
         : this.errorResponse(res, 404, 'No parcel found');
-    };
-	}
-	
-  /**
-   * Gets all parcels
-   * @static
-   * @returns {function} Returns an express middleware function that handles the GET request
-   * @memberof RequestController
-   */
-  static getParcels() {
-    return (req, res) => {
-      const query = {
-        name: 'all-parcels',
-        text: `SELECT * FROM parcels`
-      };
-
-      db.sqlQuery(query).then((result) => {
-        const parcels = result.rows;
-        return (_.isEmpty(parcels))
-        ? this.errorResponse(res, 404, 'No parcel found')
-        : this.successResponse(res, 200, undefined, { parcels });
-      }).catch(() => {
-        this.errorResponse(res, 500, db.dbError());
-      });
     };
 	}
 	
