@@ -92,10 +92,32 @@ export default class ParcelValidator extends Validator {
 								})
 			};
 			return this.validate(req, res, next, schema[updateType], () => {
-				return {
-					decoded
-				};				
+				return { decoded };				
 			});
 		};
 	}
+
+  /**
+   * Validate present location
+	 * 
+   * @static
+	 * @param {update} updateType the type of update operation
+	 * @method validateLocation
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @memberof ParcelValidator
+   */
+	static validateDestination() {
+		return (req, res, next) => {
+			const { decoded } = req.body;
+			delete req.body.decoded;
+			const schema = Joi.object().keys({
+				destinationAddress: Joi.string().required().max(150).label('Destination address'), 
+				destinationCity: Joi.string().required().max(100).label('Destination city'),
+				destinationState: Joi.string().required().max(100).label('Destination state'),
+			});
+			return this.validate(req, res, next, schema, () => {
+				return { decoded };
+			});
+		};
+	}	
 }

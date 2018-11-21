@@ -46,4 +46,9 @@ parcelRouter.put('/api/v1/parcels/:parcelId/status',
 	ParcelValidator.validateAdminUpdate('status'),
 	ParcelController.updateStatus());
 
+	parcelRouter.put('/api/v1/parcels/:parcelId/destination',
+	UserController.authenticateUser(),
+	ParcelValidator.validateDestination(),
+	ParcelController.updateDestination());
+
 export default parcelRouter;
