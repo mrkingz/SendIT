@@ -121,7 +121,44 @@ export default class ParcelController extends UtilityService {
         });
       }
     };
-	}
+  }
+  
+  /**
+   * Create fetch user parcel query object
+   *
+   * @static
+   * @param {int} userId user id
+   * @param {int} parcelId parcel id
+   * @returns {Object} the query object
+   * @method getUserParcelQueryObj
+   * @memberof ParcelController
+   */
+  static getUserParcelQueryObj(userId, parcelId) {
+    return {
+      name: 'fetch-user-parcel',
+      text: `SELECT * FROM parcels WHERE userid = $1 AND parcelid = $2`,
+      values: [userId, parcelId]
+    };
+  }
+
+  /**
+   * Create cancel parcel delivery order query object
+   *
+   * @static
+   * @param {string} status
+   * @param {int} userId user id
+   * @param {int} parcelId parcel id
+   * @returns {Object} the query object
+   * @method getUserParcelQueryObj
+   * @memberof ParcelController
+   */
+  static getCancelOrderQueryObj(status, userId, parcelId) {
+    return {
+      text: `UPDATE parcels 
+            SET deliverystatus = $1 WHERE parcelid = $2 AND userid = $3 RETURNING *`,
+      values: [status, parcelId, userId]
+    };
+  }
 	
   /**
    * Cancel parcel deivery order
@@ -131,40 +168,30 @@ export default class ParcelController extends UtilityService {
    */
   static cancelParcelOrder() {
     return (req, res) => {
-			const parcelId = req.params.parcelId;
-			const { userId } = req.body.decoded;
-			const length = collections.getParcelsCount();
-
-      let parcel;
-      for (let i = 0; i < length; i++) {
-				if (parseInt(collections.getParcels()[i].userId, 10) === parseInt(userId, 10) 
-					&& parseInt(collections.getParcels()[i].parcelId, 10) === parseInt(parcelId, 10)) {
-          parcel = collections.getParcels()[i];
-          break;
+			const parcelId = req.params.parcelId, { userid } = req.body.decoded;
+      db.sqlQuery(this.getUserParcelQueryObj(userid, parcelId)).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const status = 'Cancelled', parcel = result.rows[0];
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 404, 'Delivered parcel cannot be cancelled');
+          } else if (parcel.deliverystatus === status) {
+            this.errorResponse(res, 200, 'Parcel has already been cancelled');
+          } else {
+            db.sqlQuery(this.getCancelOrderQueryObj(status, userid, parcelId)).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Parcel delivery order successfully cancelled', {
+                   parcel: updated.rows[0] 
+                }
+              );
+            }).catch(() => { this.errorResponse(
+                res, 500, 'Something went wrong! Update not successful'
+              );
+            });
+          }
         }
-      }
-
-			if (parcel) {
-        const status = 'Cancelled';
-				if (parcel.deliveryStatus === 'Delivered') {
-					return this.errorResponse(
-            res, 404, 'Already delivered parcel cannot be cancelled', undefined
-            );
-        }
-        
-        if (parcel.deliveryStatus === status) {
-          return this.errorResponse(
-            res, 200, 'Parcel has already been cancelled'
-            );
-        }
-
-				parcel.deliveryStatus = status;
-				return this.successResponse(
-          res, 200, 'Parcel delivery order successfully cancelled', parcel
-          );
-			}
-
-			return this.errorResponse(res, 404, 'No parcel found');
+      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
     };
   }
 }
