@@ -10,7 +10,7 @@
     "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 10000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate:test": "SET NODE_ENV=test && babel-node ./server/database/migrate.js --exit",
-    "migrate:dev": "SET NODE_ENV=development && babel-node ./server/database/migrate.js --exit"
+    "migrate:dev": "SET NODE_ENV=production && babel-node ./server/database/migrate.js --exit"
   },
   "nyc": {
     "exclude": [
