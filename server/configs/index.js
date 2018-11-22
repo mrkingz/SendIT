@@ -18,7 +18,16 @@ const devConfig = {
   host: process.env.DB_HOST,
 };
 
+const prodConfig = {
+  user: process.env.DB_USERNAME_PROD,
+  database: process.env.DB_NAME_PROD,
+  password: process.env.DB_PASSWORD_PROD,
+  port: process.env.DB_PORT_PROD,
+  host: process.env.DB_HOST_PROD,
+};
+
 export {
-   devConfig,
-   testConfig
+  devConfig,
+  prodConfig,
+  testConfig
 };

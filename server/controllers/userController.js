@@ -38,11 +38,11 @@ export default class UserController extends UtilityService {
                   RETURNING userId`,
         values: [email, firstname, lastname, pass, isAdmin, moment, moment]
       };
-
+      const isadmin = isAdmin;
       db.sqlQuery(query)
       .then((client) => {     
-        return this.successResponse(res, 201, 'Sign up was successful', {
-          userId: client.rows[0].userid, firstname, lastname, email, isAdmin, createdAt: moment
+        return this.successResponse(res, 201, 'Sign up was successfull', {
+          userid: client.rows[0].userid, firstname, lastname, email, isadmin, createdat: moment
         });
       })
       .catch(() => {

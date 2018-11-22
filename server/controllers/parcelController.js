@@ -133,8 +133,8 @@ export default class ParcelController extends UtilityService {
           return (_.isEmpty(parcel))
                   ? this.errorResponse(res, 404, 'No parcel found')
                   : this.successResponse(res, 200, undefined, { parcel });
-        }).catch((e) => {
-          this.errorResponse(res, 500, e.toString());
+        }).catch(() => {
+          this.errorResponse(res, 500, db.dbError());
         });
       }
     };
