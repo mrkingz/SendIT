@@ -11,6 +11,8 @@ cache:
     - "node_modules"
 branches: 
   only:
-    - 
+    - "develop"
+before_script: 
+  - psql -c 'create database sendit_db_test;' -U postgres
 after_success:
   - npm run coverage

@@ -2,10 +2,15 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import { 
   devConfig, 
+  prodConfig,
   testConfig 
 } from '../configs';
 
 dotenv.config();
+
+const env = typeof process.env.NODE_ENV !== 'undefined'
+             ? process.env.NODE_ENV.trim() 
+             : 'development';
 
 /**
  * @class Database
@@ -18,7 +23,7 @@ class Database {
    * @memberof Database
    */
   constructor(config) {
-    this._env = typeof config.env !== 'undefined' ? config.env.trim() : 'development';
+    this._env = config.env;
     this._pool = new Pool(config.dbConfig);
   }
 
@@ -74,7 +79,7 @@ class Database {
       text: `DROP TABLE IF EXISTS ${table}`
     };
     return this.sqlQuery(query).then(() => {
-      if (this._env === 'test') {
+      if (this._env === 'development') {
         console.log(`Table ${table} successfully dropped`);
       }
       return Promise.resolve(true);
@@ -93,14 +98,43 @@ class Database {
   createTable(meta) {
     const query = { text: meta.sql };
     return this.sqlQuery(query).then(() => {
-      if (this._env === 'test') {
+      if (this._env === 'development') {
         console.log(`Table ${meta.table} successfully created`);
       }
       return Promise.resolve(true);
-    }).catch((e) => {
-      return Promise.reject(e.toString());
+    }).catch((error) => {
+      return Promise.reject(error.toString());
     });
   }
+
+  /**
+   * Drop the database tables
+   *@returns {Promise.object} a promise
+   * @memberof Database
+   */
+  dropTables() {
+    return this.dropTable('parcels').then(() => {
+      return this.dropTable('users').then(() => {
+        return Promise.resolve(true);
+      }).catch((error) => {
+        return Promise.reject(error.toString());
+      });
+    }).catch(() => {
+      Promise.reject();
+    });
+  }
+
+ /**
+  * Create the database tables
+  * @returns {Promise.object} a promise
+  * @memberof Database
+  */
+  createTables() {
+    return this.createTable(this.getUserTableMeta()).then(() => {
+      return this.createTable(this.getParcelTableMeta()).then(() => {
+      }).catch(() => {});
+    }).catch(() => {});
+	}
 
 	/**
 	 * Get parcel table meta data
@@ -121,7 +155,7 @@ class Database {
 							pickupaddress VARCHAR (150) NOT NULL,
 							pickupcity VARCHAR (100) NOT NULL,
 							pickupstate VARCHAR (100) NOT NULL,
-							pickupdate DATE NOT NULL,
+							pickupdate VARCHAR NOT NULL,
 							destinationaddress VARCHAR (150) NOT NULL,
 							destinationcity VARCHAR (100) NOT NULL,
 							destinationstate VARCHAR (100) NOT NULL,
@@ -184,43 +218,13 @@ class Database {
 								OWNER to postgres;`
 				};
   }
-  
-  /**
-   * Drop the database tables
-   *@returns {Promise.object} a promise
-   * @memberof Database
-   */
-  dropTables() {
-    if (this._env === 'test') {
-      return this.dropTable('parcels')
-      .then(() => {
-        return this.dropTable('users').then(() => {
-          return Promise.resolve();
-        }).catch(() => {
-          return Promise.reject();
-        });
-      }).catch(() => {
-        Promise.reject();
-      });
-    }
-  }
-
- /**
-  * Create the database tables
-  * @returns {Promise.object} a promise
-  * @memberof Database
-  */
- createTables() {
-    return this.dropTables().then(() => {
-      return this.createTable(this.getUserTableMeta()).then(() => {
-        return this.createTable(this.getParcelTableMeta()).then(() => {
-        }).catch(() => {});
-      }).catch(() => {});
-    }).catch(() => {});
-	}
 }
 
-export default new Database({
-  env: process.env.NODE_ENV,
-  dbConfig: process.env.NODE_ENV === 'test' ? testConfig : devConfig
-});
+let dbConfig;
+if (env !== 'production') {
+  dbConfig = env === 'test' ? testConfig : devConfig;
+} else {
+  dbConfig = prodConfig;
+}
+
+export default new Database({ env, dbConfig });
