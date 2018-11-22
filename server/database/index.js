@@ -25,8 +25,8 @@ class Database {
   constructor(config) {
     this._env = config.env;
     this._pool = new Pool(
-      (env === 'test' && env === 'development')
-      ? { connectionString: config.dbConfig, ssl: true } 
+      (env !== 'test' && env !== 'development')
+      ? { connectionString: config.dbConfig } 
       : config.dbConfig);
   }
 
@@ -178,14 +178,7 @@ class Database {
 							REFERENCES public.users (userid) MATCH SIMPLE
 							ON UPDATE CASCADE
 							ON DELETE SET NULL
-						)
-						WITH (
-								OIDS = FALSE
-						)
-						TABLESPACE pg_default;
-						
-						ALTER TABLE public.parcels
-								OWNER to postgres;`
+						);`
 		};
   }
   
@@ -217,14 +210,7 @@ class Database {
 								updatedat timestamp with time zone NOT NULL,
 								CONSTRAINT users_pkey PRIMARY KEY (userid),
 								CONSTRAINT users_email_key UNIQUE (email)
-						)
-						WITH (
-								OIDS = FALSE
-						)
-						TABLESPACE pg_default;
-						
-						ALTER TABLE public.users
-								OWNER to postgres;`
+						);`
 				};
   }
 }
