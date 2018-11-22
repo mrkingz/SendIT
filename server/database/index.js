@@ -25,7 +25,7 @@ class Database {
   constructor(config) {
     this._env = config.env;
     this._pool = new Pool(
-      (this._env === 'production')
+      (env === 'test' && env === 'development')
       ? { connectionString: config.dbConfig, ssl: true } 
       : config.dbConfig);
   }
@@ -82,7 +82,7 @@ class Database {
       text: `DROP TABLE IF EXISTS ${table}`
     };
     return this.sqlQuery(query).then(() => {
-      if (this._env === 'development') {
+      if (env === 'test' || env === 'development') {
         console.log(`Table ${table} successfully dropped`);
       }
       return Promise.resolve(true);
@@ -101,7 +101,7 @@ class Database {
   createTable(meta) {
     const query = { text: meta.sql };
     return this.sqlQuery(query).then(() => {
-      if (this._env === 'development') {
+      if (env === 'test' || env === 'development') {
         console.log(`Table ${meta.table} successfully created`);
       }
       return Promise.resolve(true);

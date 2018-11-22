@@ -34,16 +34,16 @@ app.all('*', (req, res) => {
 
 try {
   const port = process.env.PORT || 8000;
-    if (env === 'production') {
+    if (env === 'test' && env === 'development') {
       db.createTables().then(() => {}).catch(() => {});
     }
     app.listen(port, () => {
-      if (env !== 'production') {
+      if (env === 'test' && env === 'development') {
         console.log(`Server running on port: ${port}`);
       }
     });
 } catch (err) {
-  if (env !== 'production') {
+  if (env === 'test' && env === 'development') {
     console.log(err);
   }
 }
