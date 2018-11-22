@@ -4,7 +4,6 @@ import {
   devConfig, 
   testConfig 
 } from '../configs';
-import { promises } from 'fs';
 
 dotenv.config();
 
@@ -192,7 +191,7 @@ class Database {
    * @memberof Database
    */
   dropTables() {
-    //if (this._env === 'test') {
+    if (this._env === 'test') {
       return this.dropTable('parcels')
       .then(() => {
         return this.dropTable('users').then(() => {
@@ -203,7 +202,7 @@ class Database {
       }).catch(() => {
         Promise.reject();
       });
-    //}
+    }
   }
 
  /**
