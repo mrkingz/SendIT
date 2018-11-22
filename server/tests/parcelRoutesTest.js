@@ -22,41 +22,41 @@ const parcel = {
 };
 
 describe('Test parcel routes', () => {
-  before((done) => {
-    server
-    .post('/api/v1/auth/login')
-    .send({
-      email: 'example@gmail.com',
-      password: 'Password1'
-    })
-    .end((err, res) => {
-      const response = res.body;
-      token = response.data.token;
-      done();
-    });
+	before((done) => {
+		server
+			.post('/api/v1/auth/login')
+			.send({
+				email: 'example@gmail.com',
+				password: 'Password1'
+			})
+			.end((err, res) => {
+				const response = res.body;
+				token = response.data.token;
+				done();
+			});
 	});
-	
-  it('It not create maintenance request for token not provided', (done) => {
-    server
-    .post('/api/v1/parcels')
-    .send(parcel)
-    .end((err, res) => {
-      const response = res.body;
-      expect(response).to.be.an('object');
-      expect(res.statusCode).to.equal(401);
-      expect(response.status).to.equal('Fail');
-      expect(response.message).to.equal('Access denied! Token not provided');
-      done();
-    });
-  });
+
+	it('It not create maintenance request for token not provided', (done) => {
+		server
+			.post('/api/v1/parcels')
+			.send(parcel)
+			.end((err, res) => {
+				const response = res.body;
+				expect(response).to.be.an('object');
+				expect(res.statusCode).to.equal(401);
+				expect(response.status).to.equal('Fail');
+				expect(response.message).to.equal('Access denied! Token not provided');
+				done();
+			});
+	});
 
 	it('It should create a parcel delivery order', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(parcel)
 			.end((err, res) => {
@@ -66,33 +66,33 @@ describe('Test parcel routes', () => {
 				expect(response.message).to.equal('Parcel delivery order successfully created');
 				expect(response.data).to.be.an('object');
 				expect(response.data).to.have.own.property('parcelid')
-				.to.be.a('number');
+					.to.be.a('number');
 				expect(response.data).to.have.own.property('weight')
-				.to.be.a('number').that.is.equal(parcel.weight);
+					.to.be.a('number').that.is.equal(parcel.weight);
 				expect(response.data).to.have.own.property('description')
-				.to.be.a('string').that.is.equal(parcel.description);
+					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data).to.have.own.property('deliverymethod')
-				.to.be.a('string').that.is.equal(parcel.deliveryMethod);
+					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
 				expect(response.data).to.have.own.property('pickupaddress')
-				.to.be.a('string').that.is.equal(parcel.pickupAddress);				
+					.to.be.a('string').that.is.equal(parcel.pickupAddress);
 				expect(response.data).to.have.own.property('pickupcity')
-				.to.be.a('string').that.is.equal(parcel.pickupCity);
+					.to.be.a('string').that.is.equal(parcel.pickupCity);
 				expect(response.data).to.have.own.property('pickupstate')
-				.to.be.a('string').that.is.equal(parcel.pickupState);
+					.to.be.a('string').that.is.equal(parcel.pickupState);
 				expect(response.data).to.have.own.property('pickupdate')
-				.to.be.a('string').that.is.equal(parcel.pickupDate);
+					.to.be.a('string').that.is.equal(parcel.pickupDate);
 				expect(response.data).to.have.property('userid')
 					.to.be.a('number');
 				expect(response.data).to.have.own.property('price')
-				.to.be.a('number');
+					.to.be.a('number');
 				expect(response.data).to.have.own.property('presentlocation')
-				.to.be.a('string');
+					.to.be.a('string');
 				expect(response.data).to.have.own.property('deliverystatus')
-				.to.be.a('string');
+					.to.be.a('string');
 				expect(response.data).to.have.own.property('receivername')
-				.to.be.a('string').that.is.equal(parcel.receiverName);
+					.to.be.a('string').that.is.equal(parcel.receiverName);
 				expect(response.data).to.have.own.property('receiverphone')
-				.to.be.a('string').that.is.equal(parcel.receiverPhone);
+					.to.be.a('string').that.is.equal(parcel.receiverPhone);
 				expect(response.data).to.have.property('createdat');
 				expect(response.data).to.have.property('updatedat');
 				done();
@@ -100,13 +100,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a order if weight is undefined', (done) => {
-        const { weight, ...noWeight } = parcel;
+		const { weight, ...noWeight } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noWeight)
 			.end((err, res) => {
@@ -119,13 +119,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if delivery method is undefined', (done) => {
-        const { deliveryMethod, ...noMethod } = parcel;
+		const { deliveryMethod, ...noMethod } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noMethod)
 			.end((err, res) => {
@@ -138,13 +138,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if pickup address is undefined', (done) => {
-        const { pickupAddress, ...noPAddress } = parcel;
+		const { pickupAddress, ...noPAddress } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noPAddress)
 			.end((err, res) => {
@@ -157,13 +157,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if pickup city is undefined', (done) => {
-        const { pickupCity, ...noPCity } = parcel;
+		const { pickupCity, ...noPCity } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noPCity)
 			.end((err, res) => {
@@ -176,13 +176,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if pickup state is undefined', (done) => {
-        const { pickupState, ...noPState } = parcel;
+		const { pickupState, ...noPState } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noPState)
 			.end((err, res) => {
@@ -195,13 +195,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if pickup date is undefined', (done) => {
-        const { pickupDate, ...noPDate } = parcel;
+		const { pickupDate, ...noPDate } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noPDate)
 			.end((err, res) => {
@@ -214,13 +214,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if destination address is undefined', (done) => {
-        const { destinationAddress, ...noDAddress } = parcel;
+		const { destinationAddress, ...noDAddress } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noDAddress)
 			.end((err, res) => {
@@ -233,13 +233,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if destination city is undefined', (done) => {
-        const { destinationCity, ...noDCity } = parcel;
+		const { destinationCity, ...noDCity } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noDCity)
 			.end((err, res) => {
@@ -252,13 +252,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if destination state is undefined', (done) => {
-        const { destinationState, ...noDState } = parcel;
+		const { destinationState, ...noDState } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noDState)
 			.end((err, res) => {
@@ -271,13 +271,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if receiver name is undefined', (done) => {
-        const { receiverName, ...noRName } = parcel;
+		const { receiverName, ...noRName } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noRName)
 			.end((err, res) => {
@@ -290,13 +290,13 @@ describe('Test parcel routes', () => {
 	});
 
 	it('It should not create a parcel order if receiver phone is undefined', (done) => {
-        const { receiverPhone, ...noRPhone } = parcel;
+		const { receiverPhone, ...noRPhone } = parcel;
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send(noRPhone)
 			.end((err, res) => {
@@ -311,10 +311,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if weight is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, weight: '' })
 			.end((err, res) => {
@@ -329,10 +329,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if delivery method is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, deliveryMethod: '' })
 			.end((err, res) => {
@@ -347,10 +347,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup address is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, pickupAddress: '' })
 			.end((err, res) => {
@@ -365,10 +365,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup city is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, pickupCity: '' })
 			.end((err, res) => {
@@ -383,10 +383,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup state is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, pickupState: '' })
 			.end((err, res) => {
@@ -401,10 +401,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if pickup date is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, pickupDate: '' })
 			.end((err, res) => {
@@ -419,10 +419,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination city is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, destinationAddress: '' })
 			.end((err, res) => {
@@ -437,10 +437,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination city is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, destinationCity: '' })
 			.end((err, res) => {
@@ -455,10 +455,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if destination state is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, destinationState: '' })
 			.end((err, res) => {
@@ -473,10 +473,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if name of receiver is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, receiverName: '' })
 			.end((err, res) => {
@@ -491,10 +491,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if phone number of receiver is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, receiverPhone: '' })
 			.end((err, res) => {
@@ -509,10 +509,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if weight is invalid', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, weight: 'foo' })
 			.end((err, res) => {
@@ -527,10 +527,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if delivery method is invalid', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, deliveryMethod: 'Quick' })
 			.end((err, res) => {
@@ -546,10 +546,10 @@ describe('Test parcel routes', () => {
 	it('It should not create a parcel order if phone number is invalid', (done) => {
 		server
 			.post('/api/v1/parcels')
-            .set('Connection', 'keep alive')
-            .set('Accept', 'application/json')
-            .set('Content-Type', 'application/json')
-            .type('form')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
 			.set('token', token)
 			.send({ ...parcel, receiverPhone: '080865tghghff7i87' })
 			.end((err, res) => {
