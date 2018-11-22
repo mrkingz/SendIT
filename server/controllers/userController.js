@@ -45,8 +45,9 @@ export default class UserController extends UtilityService {
           userid: client.rows[0].userid, firstname, lastname, email, isadmin, createdat: moment
         });
       })
-      .catch(() => {
-          return this.errorResponse(res, 500, db.dbError());
+      .catch((e) => {
+        console.log(e.toString());
+          return this.errorResponse(res, 500, e.toString());
       });
 		};
 	}
