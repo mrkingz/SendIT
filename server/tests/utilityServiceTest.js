@@ -21,7 +21,7 @@ describe('Test class UtilityService', () => {
 			email: 'something@gmail.com'
 		});
 
-		it('It should remove trailing  and leading white spaces from the object string property', () => {
+		it('It should remove trailing and leading white spaces from the object string property', () => {
 			expect(user).to.be.an('object');
 			expect(user).to.have.own.property('firstdescription').to.be.a('string')
 			.that.is.equal('John');
