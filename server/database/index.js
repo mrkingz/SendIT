@@ -24,7 +24,10 @@ class Database {
    */
   constructor(config) {
     this._env = config.env;
-    this._pool = new Pool(config.dbConfig);
+    this._pool = new Pool(
+      (this._env === 'production')
+      ? { connectionString: config.dbConfig, ssl: true } 
+      : config.dbConfig);
   }
 
   /**
@@ -130,10 +133,10 @@ class Database {
   * @memberof Database
   */
   createTables() {
-    return this.createTable(this.getUserTableMeta()).then(() => {
+    return this.createTable(this.getUserTableMeta()).then(() => { console.log('mghjhg hjghhjjhgh');
       return this.createTable(this.getParcelTableMeta()).then(() => {
       }).catch(() => {});
-    }).catch(() => {});
+    }).catch((e) => { console.log(e.toString());});
 	}
 
 	/**
@@ -146,7 +149,7 @@ class Database {
 	getParcelTableMeta() {
 		return {
 			table: 'parcels',
-			sql: `CREATE TABLE public.parcels
+			sql: `CREATE TABLE IF NOT EXISTS public.parcels
 						(
 							parcelid SERIAL,
 							weight FLOAT NOT NULL,
@@ -184,7 +187,13 @@ class Database {
 						ALTER TABLE public.parcels
 								OWNER to postgres;`
 		};
-	}
+  }
+  
+  // createRole() {
+  //   const = {
+  //     text: `CREATE ROLE postgres; GRANT `
+  //   }
+  // }
 
 	/**
 	 *
@@ -196,7 +205,7 @@ class Database {
 	getUserTableMeta() {
 		return {
 			table: 'users',
-			sql: `CREATE TABLE public.users
+			sql: `CREATE TABLE IF NOT EXISTS public.users
 						(
 								userid SERIAL,
 								firstname VARCHAR (100) NOT NULL,
@@ -221,7 +230,7 @@ class Database {
 }
 
 let dbConfig;
-if (env !== 'production') {
+if (env === 'test' && env === 'development') {
   dbConfig = env === 'test' ? testConfig : devConfig;
 } else {
   dbConfig = prodConfig;

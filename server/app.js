@@ -4,9 +4,11 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import routes from './routes';
+import db from './database/index';
 
 dotenv.config();
 const app = express();
+const env = process.env.NODE_ENV.trim();
 
 app.use(logger('dev'));
 
@@ -32,11 +34,18 @@ app.all('*', (req, res) => {
 
 try {
   const port = process.env.PORT || 8000;
-  app.listen(port, () => {
-    console.log(`Server running on port: ${port}`);
-  });
+    if (env === 'production') {
+      db.createTables().then(() => {}).catch(() => {});
+    }
+    app.listen(port, () => {
+      if (env !== 'production') {
+        console.log(`Server running on port: ${port}`);
+      }
+    });
 } catch (err) {
-    //
+  if (env !== 'production') {
+    console.log(err);
+  }
 }
 
 export default app;
