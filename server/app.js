@@ -8,7 +8,8 @@ import db from './database/index';
 
 dotenv.config();
 const app = express();
-const env = process.env.NODE_ENV.trim();
+let env = process.env.NODE_ENV;
+env = typeof env !== 'undefined' ? env.trim() : env;
 
 app.use(logger('dev'));
 
@@ -34,11 +35,9 @@ app.all('*', (req, res) => {
 
 try {
   const port = process.env.PORT || 8000;
-    if (env === 'test' && env === 'development') {
-      db.createTables().then(() => {}).catch(() => {});
-    }
+    db.createTables().then(() => {}).catch(() => {});
     app.listen(port, () => {
-      if (env === 'test' && env === 'development') {
+      if (env === 'test' || env === 'development') {
         console.log(`Server running on port: ${port}`);
       }
     });

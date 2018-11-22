@@ -18,7 +18,7 @@ const devConfig = {
   host: process.env.DB_HOST,
 };
 
-const prodConfig = process.env.DATABASE_URL;
+const prodConfig = process.env.DB_URL;
 
 export {
   devConfig,
