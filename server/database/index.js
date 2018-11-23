@@ -1,5 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
+import bcrypt from 'bcrypt';
+
 import { 
   devConfig, 
   prodConfig,
@@ -106,6 +108,7 @@ class Database {
       }
       return Promise.resolve(true);
     }).catch((error) => {
+      console.log(error.toString())
       return Promise.reject(error.toString());
     });
   }
@@ -130,12 +133,14 @@ class Database {
  /**
   * Create the database tables
   * @returns {Promise.object} a promise
-  * @memberof Database
+  * @memberof Database 
   */
   createTables() {
     return this.createTable(this.getUserTableMeta()).then(() => {
-      return this.createTable(this.getParcelTableMeta()).then(() => {
-      }).catch(() => {});
+      return this.seedAdmin().then((r) => {
+        return this.createTable(this.getParcelTableMeta()).then(() => {
+        });
+      })
     }).catch(() => {});
 	}
 
@@ -194,18 +199,30 @@ class Database {
 			table: 'users',
 			sql: `CREATE TABLE IF NOT EXISTS public.users
 						(
-								userid SERIAL,
-								firstname VARCHAR (100) NOT NULL,
-								lastname VARCHAR (100) NOT NULL,
-								email VARCHAR (100) NOT NULL,
-								password VARCHAR (100) NOT NULL,
-								isadmin boolean NOT NULL DEFAULT false,
-								createdat timestamp with time zone NOT NULL,
-								updatedat timestamp with time zone NOT NULL,
-								CONSTRAINT users_pkey PRIMARY KEY (userid),
-								CONSTRAINT users_email_key UNIQUE (email)
-						);`
-				};
+              userid SERIAL,
+              firstname VARCHAR (100) NOT NULL,
+              lastname VARCHAR (100) NOT NULL,
+              email VARCHAR (100) NOT NULL,
+              password VARCHAR (100) NOT NULL,
+              isadmin BOOLEAN NOT NULL DEFAULT false,
+              createdat TIMESTAMP WITH TIME ZONE NOT NULL,
+              updatedat TIMESTAMP WITH TIME ZONE NOT NULL,
+              CONSTRAINT users_pkey PRIMARY KEY (userid),
+              CONSTRAINT users_email_key UNIQUE (email)
+            );`
+				}; 
+  }
+
+  seedAdmin() {
+    const moment = new Date();
+    const password = bcrypt.hashSync('Password1', bcrypt.genSaltSync(10));
+    const query = {
+      text: `INSERT INTO users (firstname, lastname, isadmin, email, password, createdat, updatedat)
+             VALUES($1, $2, $3, $4, $5, $6, $7)`,
+      values: ['Admin', 'Admin', true, 'admin@gmail.com', password, moment, moment]
+    }
+    return this.sqlQuery(query).then((r) => Promise.resolve(true))
+    .catch((e) => Promise.reject(e.toString()))
   }
 }
 
