@@ -139,8 +139,8 @@ class Database {
     return this.createTable(this.getUserTableMeta()).then(() => {
       return this.seedAdmin().then((r) => {
         return this.createTable(this.getParcelTableMeta()).then(() => {
-        });
-      })
+        }).catch(() => {});
+      }).catch(() => {})
     }).catch(() => {});
 	}
 
