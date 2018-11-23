@@ -137,6 +137,7 @@ class Database {
   */
   createTables() {
     return this.createTable(this.getUserTableMeta()).then(() => {
+      //We need to provide a default admin
       return this.seedAdmin().then((r) => {
         return this.createTable(this.getParcelTableMeta()).then(() => {
         }).catch(() => {});
