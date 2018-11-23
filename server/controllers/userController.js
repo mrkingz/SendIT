@@ -160,7 +160,7 @@ export default class UserController extends UtilityService {
    */
   static authorizeUser() {
     return (req, res, next) => {
-      return (req.body.decoded.isAdmin) 
+      return (req.body.decoded.isadmin) 
         ? next()
         : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
     };
