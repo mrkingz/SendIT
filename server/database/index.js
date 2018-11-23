@@ -108,6 +108,7 @@ class Database {
       }
       return Promise.resolve(true);
     }).catch((error) => {
+      console.log(error.toString())
       return Promise.reject(error.toString());
     });
   }
@@ -136,10 +137,10 @@ class Database {
   */
   createTables() {
     return this.createTable(this.getUserTableMeta()).then(() => {
-      return this.seedAdmin().then(() => {
+      return this.seedAdmin().then((r) => {
         return this.createTable(this.getParcelTableMeta()).then(() => {
-        });
-      });
+        }).catch(() => {});
+      }).catch(() => {})
     }).catch(() => {});
 	}
 
@@ -212,12 +213,6 @@ class Database {
 				}; 
   }
 
-  /**
-   * Insert default admin
-   *
-   * @returns {Promise.object} a promise
-   * @memberof Database
-   */
   seedAdmin() {
     const moment = new Date();
     const password = bcrypt.hashSync('Password1', bcrypt.genSaltSync(10));
@@ -225,9 +220,9 @@ class Database {
       text: `INSERT INTO users (firstname, lastname, isadmin, email, password, createdat, updatedat)
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
       values: ['Admin', 'Admin', true, 'admin@gmail.com', password, moment, moment]
-    };
-    return this.sqlQuery(query).then(() => Promise.resolve(true))
-    .catch(e => Promise.reject(e.toString()));
+    }
+    return this.sqlQuery(query).then((r) => Promise.resolve(true))
+    .catch((e) => Promise.reject(e.toString()))
   }
 }
 
