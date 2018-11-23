@@ -56,13 +56,16 @@ provides courier quotes based on weight categories.
 * Change into the directory
 ```sh
 > $ `cd /SendIT`
-
 ```
-* Create your database schema using, and also create the following tables:
  
 * Install all required dependencies with
 ```sh
 > $ `npm install`
+```
+
+* Migrate your database schema using
+```sh
+> $ `npm run migrate:dev`
 ```
 
 ```
@@ -70,6 +73,61 @@ provides courier quotes based on weight categories.
  **see .env.example file as a sample**
 *Create a databse to be used with application
 ```
+
+* Run the following command to start the application
+```sh
+> $ `npm run start:dev`
+```
+
+
+## Using the Application
+#### Routes
+* POST `api/v1/auth/signup`: sign up a new user. Required fields are:
+  - `firstname`
+  - `lastname`
+  - `email`
+  - `password`
+  
+* POST `api/v1/auth/login`: sign in a registered user. Required fields are:
+  - `email`
+  - `password`
+  
+* POST `api/v1/parcels`: create a parcel delivery order. Required fields are:
+  - `weight`
+  - `description` (Optional)
+  - `deliveryMethod`
+  - `pickupAddress`
+  - `pickupCity`
+  - `pickupState`
+  - `pickupDate`
+  - `destinationAddress`
+  - `destinationCity`
+  - `destinationState`
+  - `destinationAddress`
+  - `receiverName`
+  - `destinationPhone`
+  
+* GET `api/v1/parcels`: Get all parcel delivery orders by admin.
+
+* GET `api/v1/parcels/:parcelId`: Get a specific parcel delivery order by admin.
+
+* GET `api/v1/users/:userId/parcels`: Get a user all parcel delivery orders.
+
+* GET `api/v1/users/:userId/parcels/:parcelId`: Get a user specific parcel delivery order.
+
+* PUT `api/v1/parcels/:parcelId/cancel`: Cancel a user a parcel delivery order.
+
+* PUT `api/v1/parcels/:parcelId/destination`: Update the destination of a parcel delivery order.
+  - `destinationAddress`
+  - `destinationCity`
+  - `destinationState`
+
+* PUT `api/v1/parcels/:parcelId/status`: Update the delivery status a parcel delivery order by admin.
+  - `deliveryStatus`
+
+* PUT `api/v1/parcels/:parcelId/presentLocation`: Update the present location of a parcel delivery order by admin. Required fields are
+  - `presentLocation`
+
 
 ## Testing
 * Run Test `$ npm run tests`
