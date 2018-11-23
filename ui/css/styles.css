@@ -1108,6 +1108,10 @@ button.menu-btn:focus {
     height: 120px;
 }
 
+.auth-margin-top {
+    margin-top: 70px
+}
+
 .avatar-wrapper {
     height: 100%;
     background: #fafafa;;
