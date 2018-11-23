@@ -82,7 +82,7 @@ class Database {
       text: `DROP TABLE IF EXISTS ${table}`
     };
     return this.sqlQuery(query).then(() => {
-      if (env === 'test' || env === 'development') {
+      if (env === 'development') {
         console.log(`Table ${table} successfully dropped`);
       }
       return Promise.resolve(true);
@@ -101,7 +101,7 @@ class Database {
   createTable(meta) {
     const query = { text: meta.sql };
     return this.sqlQuery(query).then(() => {
-      if (env === 'test' || env === 'development') {
+      if (env === 'development') {
         console.log(`Table ${meta.table} successfully created`);
       }
       return Promise.resolve(true);
@@ -133,10 +133,10 @@ class Database {
   * @memberof Database
   */
   createTables() {
-    return this.createTable(this.getUserTableMeta()).then(() => { console.log('mghjhg hjghhjjhgh');
+    return this.createTable(this.getUserTableMeta()).then(() => {
       return this.createTable(this.getParcelTableMeta()).then(() => {
       }).catch(() => {});
-    }).catch((e) => { console.log(e.toString());});
+    }).catch(() => {});
 	}
 
 	/**
@@ -181,12 +181,6 @@ class Database {
 						);`
 		};
   }
-  
-  // createRole() {
-  //   const = {
-  //     text: `CREATE ROLE postgres; GRANT `
-  //   }
-  // }
 
 	/**
 	 *
@@ -216,7 +210,7 @@ class Database {
 }
 
 let dbConfig;
-if (env === 'test' && env === 'development') {
+if (env === 'test' || env === 'development') {
   dbConfig = env === 'test' ? testConfig : devConfig;
 } else {
   dbConfig = prodConfig;

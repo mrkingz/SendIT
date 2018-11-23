@@ -35,7 +35,9 @@ app.all('*', (req, res) => {
 
 try {
   const port = process.env.PORT || 8000;
-    db.createTables().then(() => {}).catch(() => {});
+    if (env !== 'test' && env !== 'development') {
+      db.createTables().then(() => {}).catch(() => {});
+    }
     app.listen(port, () => {
       if (env === 'test' || env === 'development') {
         console.log(`Server running on port: ${port}`);

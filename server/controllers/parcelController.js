@@ -23,7 +23,6 @@ export default class ParcelController extends UtilityService {
         trackingNo, price, receiverName, receiverPhone, decoded
       } = req.body;
       const query = {
-        name: 'create-parcel',
         text: `INSERT INTO parcels (
                   weight, description, deliverymethod, pickupaddress, pickupcity, pickupstate,
                   pickupdate, destinationaddress, destinationcity, destinationstate, trackingno,
@@ -36,11 +35,10 @@ export default class ParcelController extends UtilityService {
           price, decoded.userid, receiverName, receiverPhone, moment, moment
         ]
       };
-      db.sqlQuery(query).then((result) => {     
-        return this.successResponse(res, 201, 'Parcel delivery order successfully created', {
-          ...result.rows[0]
-        });
-      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
+      db.sqlQuery(query).then((result) => { 
+        const parcel = result.rows[0];   
+        return this.successResponse(res, 201, 'Delivery order successfully created', { parcel });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
 		};
   }
   
@@ -52,19 +50,13 @@ export default class ParcelController extends UtilityService {
    */
   static getParcels() {
     return (req, res) => {
-      const query = {
-        name: 'all-parcels',
-        text: `SELECT * FROM parcels`
-      };
-
+      const query = { text: `SELECT * FROM parcels` };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
         return (_.isEmpty(parcels))
         ? this.errorResponse(res, 404, 'No parcel found')
-        : this.successResponse(res, 200, undefined, { parcels });
-      }).catch(() => {
-        this.errorResponse(res, 500, db.dbError());
-      });
+        : this.successResponse(res, 302, 'Parcels successfully retrieved', { parcels });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
 	}
 
@@ -80,10 +72,8 @@ export default class ParcelController extends UtilityService {
         const parcel = result.rows;
         return (_.isEmpty(parcel))
         ? this.errorResponse(res, 404, 'No parcel found')
-        : this.successResponse(res, 200, undefined, { parcel: parcel[0] });
-      }).catch(() => {
-        this.errorResponse(res, 500, db.dbError());
-      });
+        : this.successResponse(res, 302, 'Parcel successfully retrieved', { parcel: parcel[0] });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
 	}
 	
@@ -99,19 +89,15 @@ export default class ParcelController extends UtilityService {
         this.errorResponse(res, 401, 'Sorry, not a valid logged in user');
       } else {
         const query = {
-          name: 'fetch-parcel',
           text: `SELECT * FROM parcels WHERE userid = $1`,
           values: [req.params.userId]
-        };
-        
+        };        
         db.sqlQuery(query).then((result) => {
           const parcels = result.rows;
           return (_.isEmpty(parcels))
                   ? this.errorResponse(res, 404, 'No parcel found')
-                  : this.successResponse(res, 200, undefined, { parcels });
-        }).catch(() => {
-          this.errorResponse(res, 500, db.dbError());
-        });
+                  : this.successResponse(res, 302, 'Parcels successfully retrieved', { parcels });
+        }).catch(() => this.errorResponse(res, 500, db.dbError()));
       }
     };
   }
@@ -132,10 +118,8 @@ export default class ParcelController extends UtilityService {
           const parcel = result.rows[0];
           return (_.isEmpty(parcel))
                   ? this.errorResponse(res, 404, 'No parcel found')
-                  : this.successResponse(res, 200, undefined, { parcel });
-        }).catch(() => {
-          this.errorResponse(res, 500, db.dbError());
-        });
+                  : this.successResponse(res, 302, "Parcel successfully retrieved", { parcel });
+        }).catch(() => this.errorResponse(res, 500, db.dbError()));
       }
     };
   }
@@ -152,7 +136,6 @@ export default class ParcelController extends UtilityService {
    */
   static getUserParcelQueryObj(userId, parcelId) {
     return {
-      name: 'fetch-user-parcel',
       text: `SELECT * FROM parcels WHERE userid = $1 AND parcelid = $2`,
       values: [userId, parcelId]
     };
@@ -211,19 +194,17 @@ export default class ParcelController extends UtilityService {
           if (parcel.deliverystatus === 'Delivered') {
             this.errorResponse(res, 403, 'Delivered parcel cannot be cancelled');
           } else if (parcel.deliverystatus === status) {
-            this.errorResponse(res, 200, 'Parcel has already been cancelled');
+            this.successResponse(res, 200, 'Parcel has already been cancelled', { parcel });
           } else {
             db.sqlQuery(this.getCancelOrderQueryObj(status, userid, parcelId)).then((updated) => {
               return this.successResponse(
                 res, 200, 'Parcel delivery order successfully cancelled', {
                    parcel: updated.rows[0] 
                 });
-            }).catch(() => { 
-              this.errorResponse(res, 500, 'Something went wrong! Update not successful');
-            });
+            }).catch(() => this.errorResponse(res, 500, 'Sorry, could not cancel order'));
           }
         }
-      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
   }
 
@@ -259,12 +240,10 @@ export default class ParcelController extends UtilityService {
                 res, 200, 'Present location successfully updated', {
                    parcel: updated.rows[0] 
                 });
-            }).catch(() => { 
-              this.errorResponse(res, 500, 'Something went wrong! Update not successful');
-            });
+            }).catch(() => this.errorResponse(res, 500, 'Sorry, could not update location'));
           }
         }
-      }).catch(() => { this.errorResponse(res, 500, db.dbErro()); });
+      }).catch(() => this.errorResponse(res, 500, db.dbErro()));
     };
   }
 
@@ -288,7 +267,7 @@ export default class ParcelController extends UtilityService {
           } else if (parcel.deliverystatus === 'Cancelled') {
             this.errorResponse(res, 403, `Delivery order has been cancelled, ${msg}`);
           } else if (parcel.deliverystatus === req.body.deliveryStatus) {
-            this.successResponse(res, 200, `Delivery order status already set to transiting`);
+            this.successResponse(res, 200, `Delivery status already set to transiting`, { parcel });
           } else {
             const updateQuery = {
               text: `UPDATE parcels SET deliverystatus = $1 WHERE parcelid = $2 RETURNING *`,
@@ -299,10 +278,10 @@ export default class ParcelController extends UtilityService {
                 res, 200, 'Delivery order status successfully updated', {
                    parcel: updated.rows[0] 
                 });
-            }).catch((e) => { this.errorResponse(res, 500, e.toString()); });
+            }).catch(() => this.errorResponse(res, 500, db.dbError()));
           }
         }
-      }).catch(() => { this.errorResponse(res, 500, db.dbErro()); });     
+      }).catch(() => this.errorResponse(res, 500, db.dbErro()));     
     };
   }
 
@@ -336,19 +315,19 @@ export default class ParcelController extends UtilityService {
               text: `UPDATE parcels 
                     SET destinationaddress = $1, destinationcity = $2, destinationstate = $3
                     WHERE parcelid = $4 AND userid = $5 RETURNING *`,
-              values: [destinationAddress, destinationCity, destinationState, parcelId, decoded.userid]
+              values: [
+                destinationAddress, destinationCity, destinationState, parcelId, decoded.userid
+              ]
             };
             db.sqlQuery(updateQuery).then((updated) => {
               return this.successResponse(
                 res, 200, 'Parcel destination successfully updated', {
                    parcel: updated.rows[0] 
                 });
-            }).catch(() => { 
-              this.errorResponse(res, 500, 'Something went wrong! Update not successful');
-            });
+            }).catch(() => this.errorResponse(res, 500, 'Sorry, could not update destination'));
           }
         }
-      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
   }
 }
