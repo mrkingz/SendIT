@@ -30,11 +30,11 @@ provides courier quotes based on weight categories.
 - Users can Recover their lost password
 - Users can create a parcel delivery order
 - Users can view their  account details
-- Users can cancel their parcel delivery order that has not been delivered, only if it has not been delivered
-- Users can change the destination of their parcel delivery order, but only if it has not been delivered
+- Users can cancel their parcel delivery order, only if it has not been delivered
+- Users can change the destination of their parcel delivery order, only if it has not been delivered
 - Users can only view their individual parcel deliver order(s)
 - Only admin can change the status of a parcel delivery order, but only if it has not been delivered
-- Only admin can update the present location of a parcel delivery order, but only if it has not been delivered
+- Only admin can update the present location of a parcel delivery order, only if it has not been delivered
 - Only admin can view all parcel delivery order(s) in the database
 
 
