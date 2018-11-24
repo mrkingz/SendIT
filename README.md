@@ -63,17 +63,17 @@ provides courier quotes based on weight categories.
 > $ `npm install`
 ```
 
-* Create a databse for the application
+```
+* After successful installation, create a `.env` file which will be used to load environment variables 
+ > see .env.example file as a sample
+ ```
+
+* Create a databse for the application with the database name specified in your env file
 
 * Migrate your database schemas using
 ```sh
 > $ `npm run migrate:dev`
 ```
-
-```
-*After successful installation, create a `.env` file which will be used to load environment variables 
- > see .env.example file as a sample
- ```
  
 ```
 * Run the following command to start the application
