@@ -71,9 +71,9 @@ provides courier quotes based on weight categories.
 ```
 *After successful installation, create a `.env` file which will be used to load environment variables 
  **see .env.example file as a sample**
+ 
 *Create a databse to be used with application
 ```
-
 * Run the following command to start the application
 ```sh
 > $ `npm run start:dev`
@@ -115,17 +115,17 @@ provides courier quotes based on weight categories.
 
 * GET `api/v1/users/:userId/parcels/:parcelId`: Get a user specific parcel delivery order.
 
-* PUT `api/v1/parcels/:parcelId/cancel`: Cancel a user a parcel delivery order.
+* PUT `api/v1/parcels/:parcelId/cancel`: Cancel a user parcel delivery order.
 
-* PUT `api/v1/parcels/:parcelId/destination`: Update the destination of a parcel delivery order.
+* PUT `api/v1/parcels/:parcelId/destination`: Update the destination of a parcel delivery order. Required fields are:
   - `destinationAddress`
   - `destinationCity`
   - `destinationState`
 
-* PUT `api/v1/parcels/:parcelId/status`: Update the delivery status a parcel delivery order by admin.
+* PUT `api/v1/parcels/:parcelId/status`: Update the delivery status a parcel delivery order by admin. Required field is:
   - `deliveryStatus`
 
-* PUT `api/v1/parcels/:parcelId/presentLocation`: Update the present location of a parcel delivery order by admin. Required fields are
+* PUT `api/v1/parcels/:parcelId/presentLocation`: Update the present location of a parcel delivery order by admin. Required field is:
   - `presentLocation`
 
 
