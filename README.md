@@ -63,7 +63,7 @@ provides courier quotes based on weight categories.
 > $ `npm install`
 ```
 
-*Create a databse to be used with application
+* Create a databse to be used with application
 
 * Migrate your database schema using
 ```sh
