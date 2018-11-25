@@ -77,11 +77,13 @@ export default class ParcelValidator extends Validator {
    */
 	static validateAdminUpdate(updateType) {
 		return (req, res, next) => {
-			const { decoded, deliveryStatus } = req.body;
+			const { decoded, deliveryStatus, presentLocation } = req.body;
 			delete req.body.decoded;
-			req.body.deliveryStatus = (deliveryStatus)
-																	? this.ucFirstStr(deliveryStatus.toLowerCase()) 
-																	: deliveryStatus;
+			if (deliveryStatus) {
+				req.body.deliveryStatus = this.ucFirstStr(deliveryStatus.toLowerCase()); 
+			} else if (presentLocation) {
+				req.body.presentLocation = this.ucFirstStr(presentLocation.toLowerCase(), true); 
+			}
 			const schema = {
 				location: Joi.object().keys({
 										presentLocation: Joi.string().required().max(100).label('Present location')
