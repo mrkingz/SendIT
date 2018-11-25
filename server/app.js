@@ -27,7 +27,7 @@ app.all('/api', (req, res) => {
 });
 
 app.all('*', (req, res) => {
-  res.status('400').json({
+  res.status('404').json({
     status: 'Fail',
     message: 'Sorry, there is nothing here!'
   });
