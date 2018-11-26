@@ -1,5 +1,5 @@
+import _ from 'lodash';
 import db from '../database';
-import collections from '../dummyData';
 import UtilityService from '../helpers/UtilityService';
 
 
@@ -23,7 +23,6 @@ export default class ParcelController extends UtilityService {
         trackingNo, price, receiverName, receiverPhone, decoded
       } = req.body;
       const query = {
-        name: 'create-parcel',
         text: `INSERT INTO parcels (
                   weight, description, deliverymethod, pickupaddress, pickupcity, pickupstate,
                   pickupdate, destinationaddress, destinationcity, destinationstate, trackingno,
@@ -36,12 +35,29 @@ export default class ParcelController extends UtilityService {
           price, decoded.userid, receiverName, receiverPhone, moment, moment
         ]
       };
-      db.sqlQuery(query).then((result) => {     
-        return this.successResponse(res, 201, 'Parcel delivery order successfully created', {
-          ...result.rows[0]
-        });
-      }).catch(() => { return this.errorResponse(res, 500, db.dbError()); });
+      db.sqlQuery(query).then((result) => { 
+        const parcel = result.rows[0];   
+        return this.successResponse(res, 201, 'Delivery order successfully created', { parcel });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
 		};
+  }
+  
+  /**
+   * Gets all parcels
+   * @static
+   * @returns {function} Returns an express middleware function that handles the GET request
+   * @memberof RequestController
+   */
+  static getParcels() {
+    return (req, res) => {
+      const query = { text: `SELECT * FROM parcels` };
+      db.sqlQuery(query).then((result) => {
+        const parcels = result.rows;
+        return (_.isEmpty(parcels))
+        ? this.errorResponse(res, 404, 'No parcel found')
+        : this.successResponse(res, 302, 'Parcels successfully retrieved', { parcels });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
+    };
 	}
 
   /**
@@ -52,19 +68,12 @@ export default class ParcelController extends UtilityService {
    */
   static getParcel() {
     return (req, res) => {
-      let parcel;
-      const parcelId = req.params.parcelId;
-      const length = collections.getParcelsCount();
-      for (let i = 0; i < length; i++) {
-        if (parseInt(collections.getParcels()[i].parcelId, 10) === parseInt(parcelId, 10)) {
-          parcel = collections.getParcels()[i];
-          break;
-        }
-			}
-			
-      return (parcel) 
-				? this.successResponse(res, 200, undefined, parcel)
-				: this.errorResponse(res, 404, 'Parcel not found');
+      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
+        const parcel = result.rows;
+        return (_.isEmpty(parcel))
+        ? this.errorResponse(res, 404, 'No parcel found')
+        : this.successResponse(res, 302, 'Parcel successfully retrieved', { parcel: parcel[0] });
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
 	}
 	
@@ -76,77 +85,249 @@ export default class ParcelController extends UtilityService {
    */
   static getUserParcels() {
     return (req, res) => {
-      const { userId } = req.body.decoded;
-      const parcels = [];
-      const length = collections.getParcelsCount();
-      for (let i = 0; i < length; i++) {
-        if (parseInt(collections.getParcels()[i].userId, 10) === parseInt(userId, 10)) {
-          parcels.push(collections.getParcels()[i]);
-        }
+      if (Number(req.body.decoded.userid) !== Number(req.params.userId)) {
+        this.errorResponse(res, 401, 'Sorry, not a valid logged in user');
+      } else {
+        const query = {
+          text: `SELECT * FROM parcels WHERE userid = $1`,
+          values: [req.params.userId]
+        };        
+        db.sqlQuery(query).then((result) => {
+          const parcels = result.rows;
+          return (_.isEmpty(parcels))
+                  ? this.errorResponse(res, 404, 'No parcel found')
+                  : this.successResponse(res, 302, 'Parcels successfully retrieved', { parcels });
+        }).catch(() => this.errorResponse(res, 500, db.dbError()));
       }
-
-      return (parcels.length > 0)
-        ? this.successResponse(res, 200, undefined, { parcels })
-        : this.errorResponse(res, 404, 'No parcel found');
     };
-	}
-	
+  }
+
   /**
-   * Gets all parcels
+   * Gets a specific user parcel
    * @static
    * @returns {function} Returns an express middleware function that handles the GET request
    * @memberof RequestController
    */
-  static getParcels() {
+  static getUserParcel() {
     return (req, res) => {
-      return (collections.getParcelsCount() > 0)
-        ? this.successResponse(res, 200, undefined, { parcels: collections.getParcels() })
-        : this.errorResponse(res, 404, 'No parcel found');
+      if (Number(req.body.decoded.userid) !== Number(req.params.userId)) {
+        this.errorResponse(res, 401, 'Sorry, not a valid logged in user');
+      } else {
+        const { userid } = req.body.decoded;
+        db.sqlQuery(this.getUserParcelQueryObj(userid, req.params.parcelId)).then((result) => {
+          const parcel = result.rows[0];
+          return (_.isEmpty(parcel))
+                  ? this.errorResponse(res, 404, 'No parcel found')
+                  : this.successResponse(res, 302, "Parcel successfully retrieved", { parcel });
+        }).catch(() => this.errorResponse(res, 500, db.dbError()));
+      }
     };
-	}
+  }
+    
+  /**
+   * Create fetch user parcel query object
+   *
+   * @static
+   * @param {int} userId user id
+   * @param {int} parcelId parcel id
+   * @returns {Object} the query object
+   * @method getUserParcelQueryObj
+   * @memberof ParcelController
+   */
+  static getUserParcelQueryObj(userId, parcelId) {
+    return {
+      text: `SELECT * FROM parcels WHERE userid = $1 AND parcelid = $2`,
+      values: [userId, parcelId]
+    };
+  }
+
+  /**
+   * Create cancel parcel delivery order query object
+   *
+   * @static
+   * @param {string} status
+   * @param {int} userId user id
+   * @param {int} parcelId parcel id
+   * @returns {Object} the query object
+   * @method getUserParcelQueryObj
+   * @memberof ParcelController
+   */
+  static getCancelOrderQueryObj(status, userId, parcelId) {
+    return {
+      text: `UPDATE parcels 
+            SET deliverystatus = $1 WHERE parcelid = $2 AND userid = $3 RETURNING *`,
+      values: [status, parcelId, userId]
+    };
+  }
+
+  /**
+   * Create admin get parcel delivery order query object
+   *
+   * @static
+   * @param {int} parcelId the parcel id
+   * @returns {object} the query object
+   * @method getParcelQuery
+   * @memberof ParcelController
+   */
+  static getParcelQuery(parcelId) {
+    return {
+      text: `SELECT * FROM parcels WHERE parcelid = $1`,
+      values: [parcelId]
+    };
+  }
 	
   /**
    * Cancel parcel deivery order
    * @static
    * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method cancelParcelOrder
    * @memberof RequestController
    */
   static cancelParcelOrder() {
     return (req, res) => {
-			const parcelId = req.params.parcelId;
-			const { userId } = req.body.decoded;
-			const length = collections.getParcelsCount();
-
-      let parcel;
-      for (let i = 0; i < length; i++) {
-				if (parseInt(collections.getParcels()[i].userId, 10) === parseInt(userId, 10) 
-					&& parseInt(collections.getParcels()[i].parcelId, 10) === parseInt(parcelId, 10)) {
-          parcel = collections.getParcels()[i];
-          break;
+			const parcelId = req.params.parcelId, { userid } = req.body.decoded;
+      db.sqlQuery(this.getUserParcelQueryObj(userid, parcelId)).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const status = 'Cancelled', parcel = result.rows[0];
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, 'Delivered parcel cannot be cancelled');
+          } else if (parcel.deliverystatus === status) {
+            this.successResponse(res, 200, 'Parcel has already been cancelled', { parcel });
+          } else {
+            db.sqlQuery(this.getCancelOrderQueryObj(status, userid, parcelId)).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Parcel delivery order successfully cancelled', {
+                   parcel: updated.rows[0] 
+                });
+            }).catch(() => this.errorResponse(res, 500, 'Sorry, could not cancel order'));
+          }
         }
-      }
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
+    };
+  }
 
-			if (parcel) {
-        const status = 'Cancelled';
-				if (parcel.deliveryStatus === 'Delivered') {
-					return this.errorResponse(
-            res, 404, 'Already delivered parcel cannot be cancelled', undefined
-            );
+  /**
+   * Update the current location of a parcel delivery order
+   *
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method updateLocation
+   * @memberof ParcelController
+   */
+  static updateLocation() {
+    return (req, res) => {
+      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const parcel = result.rows[0];
+          const msg = 'location cannot be updated';
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, `Parcel already delivered, ${msg}`);
+          } else if (parcel.deliverystatus === 'Cancelled') {
+            this.errorResponse(res, 403, `Delivery order has been cancelled, ${msg}`);
+          } else if (parcel.deliverystatus === 'Placed') {
+            this.errorResponse(res, 403, `Parcel not yet transiting, ${msg}`);
+          } else {
+            const updateQuery = {
+              text: `UPDATE parcels SET presentlocation = $1 WHERE parcelid = $2 RETURNING *`,
+              values: [req.body.presentLocation, req.params.parcelId]
+            };
+            db.sqlQuery(updateQuery).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Present location successfully updated', {
+                   parcel: updated.rows[0] 
+                });
+            }).catch(() => this.errorResponse(res, 500, 'Sorry, could not update location'));
+          }
         }
-        
-        if (parcel.deliveryStatus === status) {
-          return this.errorResponse(
-            res, 200, 'Parcel has already been cancelled'
-            );
+      }).catch(() => this.errorResponse(res, 500, db.dbErro()));
+    };
+  }
+
+  /**
+   * Update parcel delivery order status
+   *
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method updateStatus
+   * @memberof ParcelController
+   */
+  static updateStatus() {
+    return (req, res) => {
+      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const parcel = result.rows[0], msg = 'status cannot be updated';
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, `Parcel already delivered, ${msg}`);
+          } else if (parcel.deliverystatus === 'Cancelled') {
+            this.errorResponse(res, 403, `Delivery order has been cancelled, ${msg}`);
+          } else if (parcel.deliverystatus === req.body.deliveryStatus) {
+            this.successResponse(res, 200, `Delivery status already set to transiting`, { parcel });
+          } else {
+            const updateQuery = {
+              text: `UPDATE parcels SET deliverystatus = $1 WHERE parcelid = $2 RETURNING *`,
+              values: [req.body.deliveryStatus, req.params.parcelId]
+            };
+            db.sqlQuery(updateQuery).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Delivery order status successfully updated', {
+                   parcel: updated.rows[0] 
+                });
+            }).catch(() => this.errorResponse(res, 500, db.dbError()));
+          }
         }
+      }).catch(() => this.errorResponse(res, 500, db.dbErro()));     
+    };
+  }
 
-				parcel.deliveryStatus = status;
-				return this.successResponse(
-          res, 200, 'Parcel delivery order successfully cancelled', parcel
-          );
-			}
-
-			return this.errorResponse(res, 404, 'No parcel found');
+  /**
+   * Update parcel destination
+   * @static
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method updateDestination
+   * @memberof RequestController
+   */
+  static updateDestination() {
+    return (req, res) => {
+      const parcelId = req.params.parcelId, { 
+        decoded, destinationAddress, destinationCity, destinationState
+       } = req.body;
+      const query = {
+        text: `SELECT * FROM parcels WHERE parcelid = $1 AND userid = $2`,
+        values: [parcelId, decoded.userid]
+      };
+      db.sqlQuery(query).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          this.errorResponse(res, 404, 'No parcel found');
+        } else {
+          const parcel = result.rows[0], msg = 'destination cannot be updated';
+          if (parcel.deliverystatus === 'Delivered') {
+            this.errorResponse(res, 403, `Parcel has been delivered, ${msg}`);
+          } else if (parcel.deliverystatus === 'Cancelled') {
+            this.errorResponse(res, 403, `Parcel has been cancelled, ${msg}`);
+          } else {
+            const updateQuery = {
+              text: `UPDATE parcels 
+                    SET destinationaddress = $1, destinationcity = $2, destinationstate = $3
+                    WHERE parcelid = $4 AND userid = $5 RETURNING *`,
+              values: [
+                destinationAddress, destinationCity, destinationState, parcelId, decoded.userid
+              ]
+            };
+            db.sqlQuery(updateQuery).then((updated) => {
+              return this.successResponse(
+                res, 200, 'Parcel destination successfully updated', {
+                   parcel: updated.rows[0] 
+                });
+            }).catch(() => this.errorResponse(res, 500, 'Sorry, could not update destination'));
+          }
+        }
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
   }
 }

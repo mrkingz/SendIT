@@ -14,9 +14,11 @@ dotenv.load();
  */
 export default class UserController extends UtilityService {
 	/**
+   * Register new user
 	 * 
 	 * @static
 	 * @returns {function} aA middleware function that handles the POST request
+   * @method register
 	 * @memberof UserController
 	 */
 	static register() {
@@ -29,23 +31,18 @@ export default class UserController extends UtilityService {
       isAdmin = _.isUndefined(isAdmin) ? false : Boolean(req.body.isAdmin);
       
       const query = {
-        name: 'insert-user',
         text: `INSERT INTO 
                   users (email, firstname, lastname, password, isadmin, createdat, updatedat) 
                   VALUES($1, $2, $3, $4, $5, $6, $7) 
-                  RETURNING userId`,
+                  RETURNING *`,
         values: [email, firstname, lastname, pass, isAdmin, moment, moment]
       };
-
       db.sqlQuery(query)
-      .then((client) => {     
-        return this.successResponse(res, 201, 'Sign up was successful', {
-          userId: client.rows[0].userid, firstname, lastname, email, isAdmin, createdAt: moment
-        });
+      .then((result) => {  
+        const { password, ...details } = result.rows[0];   
+        return this.successResponse(res, 201, 'Sign up was successfull', details);
       })
-      .catch(() => {
-          return this.errorResponse(res, 500, db.dbError());
-      });
+      .catch(() => this.errorResponse(res, 500, db.dbError()));
 		};
 	}
 
@@ -59,25 +56,23 @@ export default class UserController extends UtilityService {
 	 */
   static signin() {
     return (req, res) => {
-      let { email, password } = req.body;
       const query = {
-        name: 'signin-user',
-        text: `SELECT userid, isadmin, password FROM users WHERE email = $1`,
-        values: [email]
+        text: `SELECT userid, isadmin, email, password FROM users WHERE email = $1`,
+        values: [req.body.email]
       };
       db.sqlQuery(query)
       .then((result) => {
         if (!_.isEmpty(result.rows)) {
-          if (bcrypt.compareSync(password, result.rows[0].password)) {
-            const { userid, isadmin } = result.rows[0];
+          if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
+            const { password, ...details } = result.rows[0];
             return this.successResponse(res, 200, 'Successfully signed in', {
-              token: this.generateToken({ userid, isadmin, email })
+              token: this.generateToken(details)
             });
           }
         }
         return this.errorResponse(res, 401, 'Invalid sign in credentials');
       })
-      .catch(() => { this.errorResponse(res, 500, db.dbError()); });
+      .catch(() => this.errorResponse(res, 500, db.dbError()));
     };
   }
 
@@ -123,7 +118,7 @@ export default class UserController extends UtilityService {
                 req.body.decoded = decoded;
                 return next();
               }
-              this.errorResponse(res, 401, 'Sorry, user does not exist')
+              this.errorResponse(res, 401, 'Sorry, user does not exist');
             });            
           }  
         } catch (error) {
@@ -147,7 +142,6 @@ export default class UserController extends UtilityService {
    */
   static findUser(id) {
     const query = {
-      name: 'find-user',
       text: `SELECT userid, firstname, lastname, isadmin FROM users WHERE userid = $1`,
       values: [id]
     };
@@ -155,7 +149,7 @@ export default class UserController extends UtilityService {
             .then((result) => {
               return _.isEmpty(result.rows) ? null : result.rows[0];
             })
-            .catch(() => { return db.dbError(); });
+            .catch(() => db.dbError());
   }
 
   /**
@@ -166,7 +160,7 @@ export default class UserController extends UtilityService {
    */
   static authorizeUser() {
     return (req, res, next) => {
-      return (req.body.decoded.isAdmin) 
+      return (req.body.decoded.isadmin) 
         ? next()
         : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
     };

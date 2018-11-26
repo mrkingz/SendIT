@@ -26,8 +26,29 @@ parcelRouter.get('/api/v1/users/:userId/parcels',
 	UserController.authenticateUser(),
 	ParcelController.getUserParcels());
 
+parcelRouter.get('/api/v1/users/:userId/parcels/:parcelId',
+	UserController.authenticateUser(),
+	ParcelController.getUserParcel());
+
 parcelRouter.put('/api/v1/parcels/:parcelId/cancel',
 	UserController.authenticateUser(),
 	ParcelController.cancelParcelOrder());
+
+parcelRouter.put('/api/v1/parcels/:parcelId/presentLocation',
+	UserController.authenticateUser(),
+	UserController.authorizeUser(),
+	ParcelValidator.validateAdminUpdate('location'),
+	ParcelController.updateLocation());
+
+parcelRouter.put('/api/v1/parcels/:parcelId/status',
+	UserController.authenticateUser(),
+	UserController.authorizeUser(),
+	ParcelValidator.validateAdminUpdate('status'),
+	ParcelController.updateStatus());
+
+	parcelRouter.put('/api/v1/parcels/:parcelId/destination',
+	UserController.authenticateUser(),
+	ParcelValidator.validateDestination(),
+	ParcelController.updateDestination());
 
 export default parcelRouter;

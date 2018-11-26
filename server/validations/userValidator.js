@@ -62,7 +62,7 @@ export default class UserValidator extends Validator {
     return (req, res, next) => {
       const message = (errors) => {
         const error = errors[0];
-        return (error.type === 'string.required') 
+        return (error.type === 'any.required') 
           ? 'E-mail address and password are required' 
           : error;
       };
