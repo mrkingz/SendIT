@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>SendIT | Registration</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+    </head>
+    <body>
+        <header class="header align-bottom">
+            <div class="header-content">
+                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+                <div class="menu-div">
+                    <ul class="navbar">
+                        <li><a href="index.html" class="btn btn-link btn-sm">Home</a></li>
+                        <li><a href="login.html" class="btn btn-link btn-sm">Sign in</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>
+        <div class="row no-gutters mt-lg">
+            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+                
+                <div class="auth-container">
+                    <div class="row no-gutters">
+                        <div class="col-12">                        
+                            <div class="wrapper auth-padding">
+                                <div class="row">
+                                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+                                        <div class="align-center bold mt-lg"> <h2>Sign up</h2></div>
+                                        <form class="form" action="" method="POST">               
+                                            <div class="section mt-lg">
+                                                <div class="control-group">
+                                                    <label class="required" for="firstname">Firstname</label>
+                                                    <input type="text" class="control col-12" name="firstname" id="firstname" placeholder="Firstname" autocomplete="off">
+                                                </div>
+                                                <div class="control-group">
+                                                    <label class="required" for="lastname">Lastname</label>
+                                                    <input type="text" class="control col-12" name="lastname" id="lastname" placeholder="Lastname" autocomplete="off">
+                                                </div>
+                                                <div class="control-group">
+                                                    <label class="required" for="email">E-mail address</label>
+                                                    <input type="email" class="control col-12" name="email" id="email" placeholder="E-mail address" autocomplete="off">
+                                                </div>
+                                            
+                                                <div class="control-group mb-lg">
+                                                    <label class="required" for="password">Password</label>
+                                                    <input type="password" class="control col-12" name="" id="password" placeholder="Password">
+                                                </div>
+                                                <div id="message"></div>
+                                                <div class="control-group align-center">
+                                                    <p class="required-text mb-sm">All fields marked with<strong class="required"></strong> are required!</p>
+                                                    <button class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <footer class="footer">
+                    <div class="footer-content align-center">
+                        &copy; Andela bootcamp,
+                        <script>document.write(new Date().getFullYear())</script>. All right reserved
+                    </div>
+                </footer>
+            </div>
+        </div> 
+        <script src="../js/globals.js"></script>
+        <script src="../js/script.js"></script>
+        <script>
+            let signup = (e) => {
+                e.preventDefault();
+                const fields = ['firstname', 'lastname', 'email', 'password'];
+                const email = document.getElementById('email');
+                const password = document.getElementById('password');
+                if (!validateEmpty(fields) && isEmail(email) && isValidPassword(password)) {
+                    const request = new Request(`${baseUrl}/auth/signup`, {
+                        method: 'POST',
+                        body: getFormData(fields),
+                        headers: new Headers({ 
+                            'Accept': 'application/json', 
+                            'Content-Type': 'application/json',
+                        })
+                    });
+
+                    fetch(request).then((res) => res.json())
+                    .then((res)=> {
+                        if (res.status === 'Success') {
+                            message(res.message, true);
+                        }
+                    }).catch((error ) => {
+                        alert(error.toString())
+                    })
+                }
+            }
+        </script>
+    </body>
+</html>

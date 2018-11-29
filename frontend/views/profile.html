@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>SendIT | Profile</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+    </head>
+    <body>
+        <header class="header align-bottom">
+            <div class="header-content">
+                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+                <div class="menu-div">
+                    <ul class="navbar">
+                        <li><a href="dashboard.html" class="btn btn-link btn-sm red-color">Dashboard</a></li>
+                        <li><a href="index.html" class="btn btn-link btn-sm red-color">Sign out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>  
+        <div class="row no-gutters">
+            <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+                
+                <div class="wrapper mx-0 mb-0">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+                        </div>
+
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                <div style="padding-bottom: 30px">
+                                    <div>
+                                        <div class="content-header">
+                                            Profile info
+                                        </div>           
+                                                         
+                                        <div class="panel">
+                                            <div class="profile-div">
+                                                <div class="row no-gutters">
+                                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                                        <div class="align-center avatar-wrapper">
+                                                            <img class="avatar" src="../images/avatar.png" alt="">
+                                                        </div>
+
+                                                    </div>
+                                                    <div class="col-lg-8 col-md-8 col-sm-12">
+                                                        <div class="data-wrapper">
+                                                            <div class="data-row">
+                                                                <label for="firstname" class="data-label">Firstname</label>
+                                                                <div class="data-value">James</div>
+                                                            </div>
+                                                            <div class="data-row">
+                                                                <label for="firstname" class="data-label">Lastname</label>
+                                                                <div class="data-value">Ogugayo</div>
+                                                            </div>
+                                                            <div class="data-row">
+                                                                <label for="firstname" class="data-label">E-mail address</label>
+                                                                <div class="data-value">james.ogugayo@gmail.com</div>
+                                                            </div>
+
+                                                            <div class="data-row">
+                                                                <label for="firstname" class="data-label">Role</label>
+                                                                <div class="data-value">Administrator</div>
+                                                            </div>                                                                   
+                                                        </div>
+
+                                                    </div>
+                                                    
+                                                </div>
+
+                                                <div class="mt-md">
+                                                    <div class="more-details"> 
+                                                        <div class="nexted">
+
+                                                            <div class="card-header">
+                                                                <div class="card-title">
+                                                                    <label class="size-12 bold">My Contacts</label>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="card-wrapper">
+
+                                                                <div class="card-row">
+                                                                    <div class="data-header">Address</div>
+                                                                    <div class="data">16, Bola Ige Street</div>
+                                                                </div>
+
+                                                                <div class="card-row">
+                                                                    <div class="data-header">City/Town</div>
+                                                                    <div class="data">Ikeja</div>
+                                                                </div>
+
+                                                                <div class="card-row">
+                                                                    <div class="data-header">State</div>
+                                                                    <div class="data">Lagos</div>
+                                                                </div>
+
+                                                                <div class="card-row">
+                                                                    <div class="data-header">Phone number</div>
+                                                                    <div class="data">08035671906</div>
+                                                                </div>
+                                                            
+                                                            </div> 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="align-right mt-md">
+                                                    <button class="btn btn-link btn-sm size-11 skyblue-color" onclick="showModal('profile-modal')">Update Profile</button>
+                                                </div>
+                                            </div>
+                                             <div class="card">     
+
+                                                <div class="more-details mb-md"> 
+                                                    <div class="nexted">
+
+                                                        <div class="card-header">
+                                                            <div class="card-title">
+                                                                <label class="size-12 bold">Orders history</label>
+                                                            </div>
+                                                            <div class="dropdown">
+                                                                    <button onclick="dropdown('filter')" class="btn btn-link btn-sm dropbtn"> <i class="fa fa-caret-down"></i></button>
+                                                                    <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
+                                                                        <button class="menu-btn">All orders</button>
+                                                                        <button class="menu-btn">Pending orders</button>
+                                                                        <button class="menu-btn">In-transit orders</button>
+                                                                        <button class="menu-btn">Cancelled orders</button>
+                                                                        <button class="menu-btn">Delivered orders</button>
+                                                                    </div>
+                                                                </div>
+                                                        </div>
+
+                                                        <div class="card-wrapper">
+
+                                                            <div class="card-row">
+                                                                <div class="data-header">Cancelled orders</div>
+                                                                <div class="data">1</div>
+                                                            </div>
+
+                                                            <div class="card-row">
+                                                                <div class="data-header">Delivered orders</div>
+                                                                <div class="data">2</div>
+                                                            </div>
+
+                                                            <div class="card-row">
+                                                                <div class="data-header">In transit orders</div>
+                                                                <div class="data">1</div>
+                                                            </div>
+
+                                                            <div class="card-row">
+                                                                <div class="data-header">Pending orders</div>
+                                                                <div class="data">None</div>
+                                                            </div>
+
+                                                            <div class="card-row">
+                                                                <div class="data-header red-color">Total orders</div>
+                                                                <div class="data red-color">3</div>
+                                                            </div>
+                                                        
+                                                        </div> 
+                                                    </div>
+                                                </div>                                                                   
+                                            </div>
+                                            <div class="mt-lg align-right">
+                                                <button class="btn btn-link btn-sm size-11 skyblue-color" onclick="showModal('password-modal')">Change Password</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                            </div>
+                            
+                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+                        </div>
+                    </div>
+                </div>
+                
+                <footer class="footer mt-lg">
+                    <div class="footer-content align-center">
+                        &copy; Andela bootcamp,
+                        <script>document.write(new Date().getFullYear())</script>. All right reserved
+                    </div>
+                </footer>
+            </div>
+        </div> 
+
+
+        <!-- Profile Modal -->
+        <div id="profile-modal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Update profile</h3>
+                        <div class="panel">
+                            <form class="form" action="">
+                                <div class="row no-gutters">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="control-group">
+                                            <label class="required" for="firstname">Firstname</label>
+                                            <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" autocomplete="off">
+                                        </div>
+                                    </div>
+    
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="control-group">
+                                            <label class="required" for="lastname">Lastname</label>
+                                            <input type="text" class="control" name="lastname" id="lastname" placeholder="Lastname" autocomplete="off">
+                                        </div>
+                                    </div>
+                                </div>
+    
+                                <div class="control-group">
+                                    <label for="address">Address</label>
+                                    <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+                                </div>
+    
+                                <div class="row no-gutters">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="control-group">
+                                            <label class="required" for="city">City/Town</label>
+                                            <input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                                        </div>                                  
+                                    </div>
+    
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <div class="control-group">
+                                            <label for="destination">State</label>
+                                            <select name="destination" id="cdestination" class="control">
+                                                <option value="">Select state</option>
+                                                <option value="Lagos">Lagos</option>
+                                            </select>
+                                        </div>                          
+                                    </div>
+                                </div>
+    
+                                <div class="control-group">
+                                    <label for="phone">Phone number</label>
+                                    <input type="text" class="control col-lg-6 col-md-8 col-sm-12" name="phone" id="phone" placeholder="Phone number" autocomplete="off">
+                                </div>
+        
+                                <div class="my-lg">
+                                    <button class="btn btn-primary" onclick="return false">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Password Modal -->
+            <div id="password-modal" class="modal">
+    
+                    <!-- Modal content -->
+                    <div class="modal-content modal-md">
+                        <div class="modal-header">
+                            <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <h3>Change password</h3>
+                            <div class="panel">
+                                <form class="form" action="">
+        
+                                    <div class="control-group mb-lg">
+                                        <label class="required" for="old-password">Old Password</label>
+                                        <input type="password" class="control col-lg-8 col-md-8 col-sm-12" name="" id="old-password" placeholder="Old Password">
+                                    </div>
+    
+                                    <div class="control-group mb-lg">
+                                        <label class="required" for="new-password">New Password</label>
+                                        <input type="password" class="control col-lg-8 col-md-8 col-sm-12" name="" id="new-password" placeholder="New Password">
+                                    </div>
+            
+                                    <div class="my-lg">
+                                        <button class="btn btn-primary" onclick="return false">Save</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+        
+        <script src="../js/script.js"></script>
+    </body>
+</html>

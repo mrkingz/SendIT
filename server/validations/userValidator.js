@@ -44,7 +44,6 @@ export default class UserValidator extends Validator {
     return Joi.object().keys({
       firstname: name,
       lastname: name,
-      isAdmin: Joi.optional().default(false),
       email: Joi.string().required().email().max(100).label('E-mail address').lowercase(),
       password: Joi.string().required().min(8).max(60)
     });

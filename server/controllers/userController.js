@@ -24,18 +24,15 @@ export default class UserController extends UtilityService {
 	static register() {
 		return (req, res) => {
       const moment = new Date();
-      let {
-          email, firstname, lastname, isAdmin 
-      } = req.body;
+      let { email, firstname, lastname } = req.body;
 			const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-      isAdmin = _.isUndefined(isAdmin) ? false : Boolean(req.body.isAdmin);
       
       const query = {
         text: `INSERT INTO 
-                  users (email, firstname, lastname, password, isadmin, createdat, updatedat) 
-                  VALUES($1, $2, $3, $4, $5, $6, $7) 
+                  users (email, firstname, lastname, password, createdat, updatedat) 
+                  VALUES($1, $2, $3, $4, $5, $6) 
                   RETURNING *`,
-        values: [email, firstname, lastname, pass, isAdmin, moment, moment]
+        values: [email, firstname, lastname, pass, moment, moment]
       };
       db.sqlQuery(query)
       .then((result) => {  
