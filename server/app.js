@@ -1,5 +1,6 @@
 import express from 'express';
 import logger from 'morgan';
+import path from 'path';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -27,8 +28,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static('public'));
 app.use(routes.authRoutes);
 app.use(routes.parcelRoutes);
+app.use(routes.pageRoutes);
 
 app.all('/api', (req, res) => {
   res.status('200').send({

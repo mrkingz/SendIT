@@ -40,12 +40,13 @@ html {
     padding: 20px 0 !important;
 }
 
+.avatar-wrapper {
+    padding: 3rem;
+}
+
 .avatar {
-    border:1px solid rgb(206, 206, 231);
-    margin: 1rem; 
+    border:1px solid rgb(206, 206, 231); 
     border-radius: 50%; 
-    width: 110px; 
-    height: 120px;
 }
 
 .container {
@@ -215,7 +216,7 @@ html {
     border-radius: .2rem;
 }
 
-/* .container {
+.container {
     background-color: #fff;
     margin: 2rem;
     -webkit-box-shadow: 0 0 4px 2px rgba(14,14,54,.3);
@@ -223,7 +224,7 @@ html {
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
     border-radius: .2rem;
-} */
+} 
 
 .page-header {
     display: flex;
@@ -291,6 +292,11 @@ html {
     margin: .3rem 1.5rem;
 }
 
+.btn-primary:disabled:hover,
+.btn-primary:disabled {
+    cursor: not-allowed;
+}
+
 .btn-primary {
     color:#ffffff;
     text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
@@ -300,7 +306,7 @@ html {
     background-image: -o-linear-gradient(top, rgb(30, 30, 90), rgb(14, 14, 54));
     background-image: linear-gradient(to bottom, rgb(30, 30, 90), rgb(14, 14, 54));
     background-repeat: repeat-x;
-    border-color: rgba(14, 14, 54) rgba(14, 14, 54, 0.2);
+    border-color: rgba(14, 14, 54);
     -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
     -moz-box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -440,6 +446,7 @@ html {
     padding: .3rem .4rem;
     margin-top: .13rem;
     font-size: .8rem;
+    background-color: #ffffff;
     border: 1px solid rgb(158, 158, 228);
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
@@ -1023,7 +1030,7 @@ button.menu-btn:focus {
 .image-div {
     width: 100%;
     height: 200px;
-    padding: .5rem 0;
+    *padding: .5rem 0;
     border: 1px solid rgb(225, 225, 245)
 }
 

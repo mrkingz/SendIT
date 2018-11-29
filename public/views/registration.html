@@ -8,6 +8,7 @@
         <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/animate.css" />   
     </head>
     <body>
         <header class="header align-bottom">
@@ -15,13 +16,13 @@
                 <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
                 <div class="menu-div">
                     <ul class="navbar">
-                        <li><a href="index.html" class="btn btn-link btn-sm">Home</a></li>
-                        <li><a href="login.html" class="btn btn-link btn-sm">Sign in</a></li>
+                        <li><a href="/" class="btn btn-link btn-sm">Home</a></li>
+                        <li><a href="/signin" class="btn btn-link btn-sm">Sign in</a></li>
                     </ul>
                 </div>
             </div>
         </header>
-        <div class="row no-gutters mt-lg">
+        <div class="row no-gutters">
             <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
                 
                 <div class="auth-container">
@@ -43,7 +44,7 @@
                                                 </div>
                                                 <div class="control-group">
                                                     <label class="required" for="email">E-mail address</label>
-                                                    <input type="email" class="control col-12" name="email" id="email" placeholder="E-mail address" autocomplete="off">
+                                                    <input type="email" onblur="checkEmail(event)" class="control col-12" name="email" id="email" placeholder="E-mail address" autocomplete="off">
                                                 </div>
                                             
                                                 <div class="control-group mb-lg">
@@ -53,7 +54,7 @@
                                                 <div id="message"></div>
                                                 <div class="control-group align-center">
                                                     <p class="required-text mb-sm">All fields marked with<strong class="required"></strong> are required!</p>
-                                                    <button class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
+                                                    <button id="submit" class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -72,33 +73,43 @@
                 </footer>
             </div>
         </div> 
-        <script src="../js/globals.js"></script>
+        <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
-            let signup = (e) => {
+            const checkEmail = async (e) => {
+                let isExist = false;
+                const elem = e.target;
+                processing({ start: true, message: 'Verifying email...' })
+                await fetch(requestObj('/auth/email', ['email'])).then(res => res.json())
+                .then(res => {
+                    if (res['data'] && res.data.email === elem.value) {
+                        isUnique(elem, res.message)
+                        isExist = true;
+                    }
+                });
+
+                processing({ start: isExist, message: 'Sign up' })
+                return isExist;
+            }
+
+            const signup = async (e) => {
                 e.preventDefault();
+                processing({ start: true })
                 const fields = ['firstname', 'lastname', 'email', 'password'];
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
                 if (!validateEmpty(fields) && isEmail(email) && isValidPassword(password)) {
-                    const request = new Request(`${baseUrl}/auth/signup`, {
-                        method: 'POST',
-                        body: getFormData(fields),
-                        headers: new Headers({ 
-                            'Accept': 'application/json', 
-                            'Content-Type': 'application/json',
-                        })
-                    });
-
-                    fetch(request).then((res) => res.json())
+                    await fetch(requestObj('/auth/signup', fields)).then((res) => {
+                        $('input').val('');
+                        return res.json()
+                    })
                     .then((res)=> {
-                        if (res.status === 'Success') {
-                            message(res.message, true);
-                        }
+                        message(res.message, res.status); 
                     }).catch((error ) => {
-                        alert(error.toString())
+                        message(error.message, false);
                     })
                 }
+                processing({message: 'Sign up', start: false});
             }
         </script>
     </body>

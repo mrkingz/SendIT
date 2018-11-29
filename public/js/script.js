@@ -1,21 +1,67 @@
 let oDropdown, modal;
 const baseUrl = 'http://localhost:3000/api/v1';
 
-const getFormData = (fields) => {
-	const length = fields.length;
-	const data = {};
-	for (let i = 0; i < length; i++) {
-		data[fields[i]] = document.getElementById(fields[i]).value;
-	}
-	return JSON.stringify(data);
+$('.control').on('keypress blur', () => {
+  $('#message div').addClass('zoomOut animated faster').fadeOut(500);
+});
+
+const requestObj = (path, fields, method = 'POST') => {
+  return new Request(`${baseUrl.concat(path)}`, {
+    method,
+    body: getFormData(fields),
+    headers: new Headers({
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+    })
+  });
 };
 
+const getFormData = (fields) => {
+  const length = fields.length;
+  const data = {};
+  for (let i = 0; i < length; i++) {
+    data[fields[i]] = document.getElementById(fields[i]).value;
+  }
+  return JSON.stringify(data);
+};
+
+const addClass = (element, classes) => {
+  classes.forEach((value) => {
+    if (!element.classList.contains(value)) {
+      element.classList.add(value);
+    }
+  });
+};
+
+const removeClass = (element, classes) => {
+  classes.forEach((value) => {
+    if (element.classList.contains(value)) {
+      element.classList.remove(value);
+    }
+  });
+};
+
+
+const processing = (obj) => {
+  const btn = document.getElementById('submit');
+  btn.innerHTML = obj['message'] || 'Processing...';
+  if (obj['start']) {
+      btn.setAttribute('disabled', obj['start']);
+  } else {
+      btn.removeAttribute('disabled');
+  }
+}
+
 const message = (msg, status) => {
+  const type = {
+    success: 'alert-success',
+    fail: 'alert-danger'
+  };
+  document.getElementById('message').innerHTML = '';
   const parent = document.createElement('div');
   parent.classList.add('control-group');
   const div = document.createElement('div');
-  div.classList.add('alert');
-  div.classList.add((status || false) ? 'alert-success' : 'alert-danger');
+  addClass(div, ['alert', type[status.toLowerCase()], 'bounceIn', 'animated']);
   div.innerHTML = msg;
   parent.appendChild(div);
   document.getElementById('message').appendChild(parent);
@@ -26,6 +72,12 @@ toggle between hiding and showing the dropdown content */
 const dropdown = function (id) {
   oDropdown = document.getElementById(id);
   oDropdown.classList.toggle('show');
+};
+
+const isUnique = (field, msg) => {
+  addListeners(field);
+  addClass(field, ['invalid']);
+  displayError(field, msg);  
 };
 
 const validateEmpty = (fields) => {
@@ -47,11 +99,14 @@ const validateEmpty = (fields) => {
 };
 
 const displayError = (field, msg) => {
-  const span = document.createElement('span');
+  let span = document.querySelector(`span#${field.id}-error`);
+  if (span === null) {
+    span = document.createElement('span');
+    addClass(span, ['error']);
+    span.id = `${field.id}-error`;
+    field.parentNode.appendChild(span);
+  }
   span.innerHTML = msg || `${field.id} cannot be empty`;
-  span.classList.add('error');
-  span.id = `${field.id}-error`;
-  field.parentNode.appendChild(span);
 };
 
 const isEmail = (field) => {
@@ -84,6 +139,7 @@ const focusListener = (e) => {
 
 const keypressListener = (e) => {
   const span = document.getElementById(`${e.target.id}-error`);
+  document.getElementById('submit').removeAttribute('disabled');
   if (span !== null) {
     span.remove();
   }
