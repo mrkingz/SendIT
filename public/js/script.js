@@ -1,5 +1,5 @@
 let oDropdown, modal;
-const baseUrl = 'http://localhost:3000/api/v1';
+const baseUrl = '/api/v1';
 
 $('.control').on('keypress blur', () => {
   $('#message div').addClass('zoomOut animated faster').fadeOut(500);
