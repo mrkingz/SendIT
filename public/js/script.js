@@ -198,3 +198,7 @@ const toggleEnquiryForm = (event, isShow) => {
     div.style.maxHeight = '0px';
   }
 };
+
+const signout = () => { 
+  localStorage.removeItem('token');
+};

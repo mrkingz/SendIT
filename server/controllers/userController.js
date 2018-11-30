@@ -2,6 +2,7 @@ import _ from 'lodash';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import decode from 'jwt-decode';
 import db from '../database';
 import UtilityService from '../helpers/UtilityService';
 
@@ -21,12 +22,12 @@ export default class UserController extends UtilityService {
    * @method register
 	 * @memberof UserController
 	 */
-	static register() {
-		return (req, res) => {
+  static register() {
+    return (req, res) => {
       const moment = new Date();
       let { email, firstname, lastname } = req.body;
-			const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-      
+      const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+
       const query = {
         text: `INSERT INTO 
                   users (email, firstname, lastname, password, createdat, updatedat) 
@@ -35,13 +36,13 @@ export default class UserController extends UtilityService {
         values: [email, firstname, lastname, pass, moment, moment]
       };
       db.sqlQuery(query)
-      .then((result) => {  
-        const { password, ...details } = result.rows[0];   
-        return this.successResponse(res, 201, 'Sign up was successfull', details);
-      })
-      .catch(() => this.errorResponse(res, 500, db.dbError()));
-		};
-	}
+        .then((result) => {
+          const { password, ...details } = result.rows[0];
+          return this.successResponse(res, 201, 'Sign up was successfull', details);
+        })
+        .catch(() => this.errorResponse(res, 500, db.dbError()));
+    };
+  }
 
 	/**
 	 * Sign in a user with email and password
@@ -58,18 +59,18 @@ export default class UserController extends UtilityService {
         values: [req.body.email]
       };
       db.sqlQuery(query)
-      .then((result) => {
-        if (!_.isEmpty(result.rows)) {
-          if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
-            const { password, ...details } = result.rows[0];
-            return this.successResponse(res, 200, 'Successfully signed in', {
-              token: this.generateToken(details)
-            });
+        .then((result) => {
+          if (!_.isEmpty(result.rows)) {
+            if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
+              const { password, ...details } = result.rows[0];
+              return this.successResponse(res, 200, 'Successfully signed in', {
+                token: this.generateToken(details)
+              });
+            }
           }
-        }
-        return this.errorResponse(res, 401, 'Invalid sign in credentials');
-      })
-      .catch(() => this.errorResponse(res, 500, db.dbError()));
+          return this.errorResponse(res, 401, 'Invalid sign in credentials');
+        })
+        .catch(() => this.errorResponse(res, 500, db.dbError()));
     };
   }
 
@@ -82,12 +83,12 @@ export default class UserController extends UtilityService {
    */
   static generateToken(credentials) {
     return jwt.sign({
-        ...credentials
-        }, process.env.SECRET_KEY, {
-          issuer: process.env.ISSUER,
-          subject: process.env.SUBJECT,
-          expiresIn: process.env.EXPIRATION
-        });
+      ...credentials
+    }, process.env.SECRET_KEY, {
+        issuer: process.env.ISSUER,
+        subject: process.env.SUBJECT,
+        expiresIn: process.env.EXPIRATION
+      });
   }
 
 	/**
@@ -116,12 +117,12 @@ export default class UserController extends UtilityService {
                 return next();
               }
               this.errorResponse(res, 401, 'Sorry, user does not exist');
-            });            
-          }  
+            });
+          }
         } catch (error) {
           message = (error.message === 'jwt expired')
-                      ? 'Access denied! Token has expired'
-                      : 'Access denied! Invalid authentication token';
+            ? 'Access denied! Token has expired'
+            : 'Access denied! Invalid authentication token';
         }
       }
       return this.errorResponse(res, 401, message);
@@ -143,10 +144,10 @@ export default class UserController extends UtilityService {
       values: [id]
     };
     return db.sqlQuery(query)
-            .then((result) => {
-              return _.isEmpty(result.rows) ? null : result.rows[0];
-            })
-            .catch(() => db.dbError());
+      .then((result) => {
+        return _.isEmpty(result.rows) ? null : result.rows[0];
+      })
+      .catch(() => db.dbError());
   }
 
   /**
@@ -157,10 +158,49 @@ export default class UserController extends UtilityService {
    */
   static authorizeUser() {
     return (req, res, next) => {
-      return (req.body.decoded.isadmin) 
+      return (req.body.decoded.isadmin)
         ? next()
         : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
     };
+  }
+
+  /**
+	 * Check if a user is signed in
+	 *
+	 * @static
+	 * @returns {function} An express middleware that handles the GET request
+	 * @method checkAuth
+	 * @memberof UserController
+	 */
+  static checkAuth() {
+    return (req, res) => {
+      const { token } = req.params;
+
+      if (this.validateToken(token)) {
+        const decoded = decode(token);
+        return this.findUser(decoded.userid)
+          .then(user => this.successResponse(res, 302, 'Token confirmed', { user }))
+          .catch(() => { });
+      }
+    };
+  }
+
+  /**
+  * Validate token
+  * 
+  * @static
+  * @param {string} token
+  * @returns {boolean} boolean
+  * @method validateToken
+  * @memberof UserController
+  */
+  static validateToken(token) {
+    if (token) {
+      const currentTime = Date.now();
+      const tokenExp = decode(token).exp * 1000;
+      return currentTime < tokenExp;
+    }
+    return false;
   }
 
   /**
@@ -182,12 +222,12 @@ export default class UserController extends UtilityService {
         if (_.isEmpty(result.rows)) {
           return this.successResponse(
             res, 404, (message || `${this.ucFirstStr(field)} does not exist`));
-        } 
+        }
         return this.successResponse(
           res, 302,
           (message || `${this.ucFirstStr(field)} has been used`), { ...result.rows[0] }
         );
       }).catch(() => this.errorResponse(res, 500, db.dbError()));
     };
-  } 
+  }
 }
