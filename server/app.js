@@ -28,7 +28,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(express.static('public'));
+app.set("view options", { layout: false });
+app.use(express.static('./public'));
 app.use(routes.authRoutes);
 app.use(routes.parcelRoutes);
 app.use(routes.pageRoutes);
