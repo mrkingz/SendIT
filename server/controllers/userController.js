@@ -24,18 +24,15 @@ export default class UserController extends UtilityService {
 	static register() {
 		return (req, res) => {
       const moment = new Date();
-      let {
-          email, firstname, lastname, isAdmin 
-      } = req.body;
+      let { email, firstname, lastname } = req.body;
 			const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-      isAdmin = _.isUndefined(isAdmin) ? false : Boolean(req.body.isAdmin);
       
       const query = {
         text: `INSERT INTO 
-                  users (email, firstname, lastname, password, isadmin, createdat, updatedat) 
-                  VALUES($1, $2, $3, $4, $5, $6, $7) 
+                  users (email, firstname, lastname, password, createdat, updatedat) 
+                  VALUES($1, $2, $3, $4, $5, $6) 
                   RETURNING *`,
-        values: [email, firstname, lastname, pass, isAdmin, moment, moment]
+        values: [email, firstname, lastname, pass, moment, moment]
       };
       db.sqlQuery(query)
       .then((result) => {  
@@ -165,4 +162,32 @@ export default class UserController extends UtilityService {
         : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
     };
   }
+
+  /**
+   * Check if a field exist
+   *
+   * @static
+   * @param {string} field the field to check for
+   * @param {string} message the message to send back to client (Optional)
+   * @returns {function} An express middleware that handles the GET request
+   * @memberof UserController
+   */
+  static checkExist(field, message) {
+    return (req, res) => {
+      const query = {
+        text: `SELECT ${field} FROM users WHERE ${field} = $1`,
+        values: [req.body[field]]
+      };
+      db.sqlQuery(query).then((result) => {
+        if (_.isEmpty(result.rows)) {
+          return this.successResponse(
+            res, 404, (message || `${this.ucFirstStr(field)} does not exist`));
+        } 
+        return this.successResponse(
+          res, 302,
+          (message || `${this.ucFirstStr(field)} has been used`), { ...result.rows[0] }
+        );
+      }).catch(() => this.errorResponse(res, 500, db.dbError()));
+    };
+  } 
 }

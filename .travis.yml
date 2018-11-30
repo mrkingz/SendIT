@@ -12,7 +12,9 @@ cache:
 branches: 
   only:
     - "develop"
+services:
+  - postgresql
 before_script: 
-  - psql -c 'create database travis;' -U postgres
+  - psql -c 'drop database travis; create database travis;' -U postgres
 after_success:
   - npm run coverage

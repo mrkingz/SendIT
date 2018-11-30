@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>SendIT | Create order</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+    </head>
+    <body>
+        <header class="header align-bottom">
+            <div class="header-content">
+                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+                <div class="menu-div">
+                    <ul class="navbar">
+                        <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
+                        <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </header>  
+        <div class="row no-gutters">
+            <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+                
+                <div class="wrapper mx-0 mb-0">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+                            <div class="align-center panel">
+                                <div class="image-div mb-lg avatar-wrapper">
+                                    <img src="../images/avatar.png" alt="" class="side-image avatar">
+                                </div>
+                                <div class="size-12 more-details">
+                                    Kingsley Frank-Demesi!
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                
+                            <div class="content-header">
+                                New delivery order
+                            </div>                                                   
+                            <form class="form mx-0" action="" method="POST">
+                                <div class="section">
+                                    <div class="control-group">
+                                        <label for="">Parcel details</label>
+                                        <div class="panel">                                    
+                                            <div class="control-group">
+                                                <label class="required" for="weight">Parcel weight</label>
+                                                <input type="text" class="control col-lg-5 col-md-5 col-sm-12" name="weight" id="weight" placeholder="Parcel weight" autocomplete="off" autofocus>
+                                            </div>
+
+                                            <div class="control-group">
+                                                <label for="description">Description</label>
+                                                <input type="text" class="control col-lg-12 col-md-12 col-sm-12" name="description" id="Description" placeholder="Description" autocomplete="off">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="control-group">
+
+                                        <div class="control-group">
+                                            <label for="delivery-method">Choose your delivery method</label>
+                                            <div id="delivery-method" class="panel">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" id="fast" name="delivery_method">
+                                                    <label class="form-check-label" for="fast">Fast delivery</label>
+                                                </div>
+                                                <div class="form-check m-0">
+                                                    <input class="form-check-input" type="radio" id="normal" name="delivery_method" checked> 
+                                                    <label class="form-check-label" for="normal">Normal delivery</label>
+                                                </div>
+                                            </div>
+                                        </div> 
+                                        <br>
+                                        <div class="control-group">
+                                            <label for="delivery-method">Your pick up location</label>
+                                            <div class="panel">
+
+                                                <div class="details size-12">
+                                                    Fill in where you want us to pick up your parcel and date
+                                                </div>
+
+                                                <div class="control-group">
+                                                    <label class="required" for="address">Address</label>
+                                                    <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="control-group">
+                                                            <label class="required" for="city">City/Town</label>
+                                                            <input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                                        <div class="control-group">
+                                                            <label class="required" for="state">State</label>
+                                                            <select name="" id="" class="control">
+                                                                <option value="">Select state</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="control-group">
+                                                    <label class="required" for="date">Pick up date</label>
+                                                    <input type="date" class="control col-lg-5 col-md-5 col-sm-12" name="date" id="date" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="control-group">
+                                        <label for="parcel-destination">Parcel destination</label>
+                                        <div id="parcel-destination" class="panel">
+                                            <div class="details size-12">
+                                                Fill in the destination of your parcel
+                                            </div>
+
+                                            <div class="control-group">
+                                                <label class="required" for="address">Address</label>
+                                                <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="control-group">
+                                                        <label class="required" for="city">City/Town</label>
+                                                        <input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-sm-12">
+                                                    <div class="control-group">
+                                                        <label class="required" for="destination">State</label>
+                                                        <select name="destination" id="cdestination" class="control">
+                                                            <option value="">Select state</option>
+                                                            <option value="Lagos">Lagos</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <div class="control-group">
+                                        <label for="parce-destination">Receiver's details</label>
+                                        <div id="parcl-destination" class="panel">
+
+
+                                            <div class="details size-12">
+                                                Fill in receiver's details
+                                            </div>
+
+                                            <div class="control-group">
+                                                <label class="required" for="fullname">Receicver's full name</label>
+                                                <input type="text" class="control" name="" id="fullname" placeholder="Full name" autocomplete="off">
+                                            </div>         
+
+                                            <div class="control-group">
+                                                <label class="required" for="phone">Receicver's phone</label>
+                                                <input type="text" class="control col-lg-8 col-md-8 col-sm-12" name="phone" id="phone" placeholder="Phone" autocomplete="off">
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="mx-lg">
+                                        <p class="required-text">All fields marked with<strong class="required"></strong> are required!</p>
+                                        <button class="btn btn-primary">Continue</button>
+                                    </div>
+                                </div><br>                                          
+                            </form>
+                        </div>
+                            
+                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+                            <div class="panel">
+                                <div class="notification-header">Notifications</div>
+                                
+                                <div class="alert alert-info">No active orders at the moment</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <footer class="footer mt-lg">
+                    <div class="footer-content align-center">
+                        &copy; Andela bootcamp,
+                        <script>document.write(new Date().getFullYear())</script>. All right reserved
+                    </div>
+                </footer>
+            </div>
+        </div> 
+        
+        <script src="../js/jquery-3.2.1.min.js"></script>
+        <script src="../js/script.js"></script>
+    </body>
+</html>
