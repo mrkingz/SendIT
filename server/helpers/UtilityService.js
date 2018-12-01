@@ -123,16 +123,14 @@ export default class UtilityService {
   /**
    * Return an error message from the server
    * @static
-   * @param {any} response - the reponse object
-   * @param {any} code - the error code
-   * @param {any} message - the error message
+   * @param {object} obj - the object containing the response detail
    * @return {object} Returns the error response
    * @memberof UtilityService
    */
-  static errorResponse(response, code, message) {
-    return response.status(code).json({
+  static errorResponse(obj) {
+    return obj.res.status(obj['code'] || 500).json({
       status: 'Fail',
-      message
+      message: obj['message']
     });
   }
 
@@ -141,15 +139,15 @@ export default class UtilityService {
    * 
    * Return an error message from the server
    * @static
-   * @param {object} response - the reponse object
-   * @param {number} code - the error code
-   * @param {string} message - the error message
-   * @param {object} data - the json object to return
-   * @return {object} Returns the error response
+   * @param {object} obj - the object containing the response detail
+   * @return {object} Returns the response
    * @memberof UtilityService
    */
-  static successResponse(response, code, message, data) {
-    return response.status(code).json({
+  static successResponse(obj) {
+    const {
+      res, code, message, data
+    } = obj;
+    return res.status(code || 200).json({
       status: 'Success',
       message,
       data

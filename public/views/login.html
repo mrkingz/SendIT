@@ -73,7 +73,7 @@
                 const fields = ['email', 'password'];
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
-                if (!validateEmpty(fields)) {
+                if (!hasEmpty(fields)) {
                     await fetch(requestObj('/auth/login', fields)).then(res => res.json())
                     .then(res => {
                         if (res.status === 'Success') {

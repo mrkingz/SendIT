@@ -38,9 +38,11 @@ export default class UserController extends UtilityService {
       db.sqlQuery(query)
         .then((result) => {
           const { password, ...details } = result.rows[0];
-          return this.successResponse(res, 201, 'Sign up was successfull', details);
+          return this.successResponse({ 
+            res, code: 201, message: 'Sign up was successfull', data: details 
+          });
         })
-        .catch(() => this.errorResponse(res, 500, db.dbError()));
+        .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
@@ -63,14 +65,16 @@ export default class UserController extends UtilityService {
           if (!_.isEmpty(result.rows)) {
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
               const { password, ...details } = result.rows[0];
-              return this.successResponse(res, 200, 'Successfully signed in', {
-                token: this.generateToken(details)
+              return this.successResponse({
+                res, 
+                message: 'Successfully signed in',
+                data: { token: this.generateToken(details) } 
               });
             }
           }
-          return this.errorResponse(res, 401, 'Invalid sign in credentials');
+          return this.errorResponse({ res, code: 401, message: 'Invalid sign in credentials' });
         })
-        .catch(() => this.errorResponse(res, 500, db.dbError()));
+        .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
@@ -116,7 +120,7 @@ export default class UserController extends UtilityService {
                 req.body.decoded = decoded;
                 return next();
               }
-              this.errorResponse(res, 401, 'Sorry, user does not exist');
+              this.errorResponse({ res, code: 401, message: 'Sorry, user does not exist' });
             });
           }
         } catch (error) {
@@ -125,7 +129,7 @@ export default class UserController extends UtilityService {
             : 'Access denied! Invalid authentication token';
         }
       }
-      return this.errorResponse(res, 401, message);
+      return this.errorResponse({ res, code: 401, message });
     };
   }
 
@@ -160,7 +164,9 @@ export default class UserController extends UtilityService {
     return (req, res, next) => {
       return (req.body.decoded.isadmin)
         ? next()
-        : this.errorResponse(res, 401, 'You do not have the privilege for this operation');
+        : this.errorResponse({ 
+            res, code: 401, message: 'You do not have the privilege for this operation' 
+          });
     };
   }
 
@@ -179,8 +185,8 @@ export default class UserController extends UtilityService {
       if (this.validateToken(token)) {
         const decoded = decode(token);
         return this.findUser(decoded.userid)
-          .then(user => this.successResponse(res, 302, 'Token confirmed', { user }))
-          .catch(() => { });
+          .then(user => this.successResponse({ res, code: 302, data: { user } }))
+          .catch(() => {});
       }
     };
   }
@@ -208,11 +214,11 @@ export default class UserController extends UtilityService {
    *
    * @static
    * @param {string} field the field to check for
-   * @param {string} message the message to send back to client (Optional)
+   * @param {string} msg the message to send back to client (Optional)
    * @returns {function} An express middleware that handles the GET request
    * @memberof UserController
    */
-  static checkExist(field, message) {
+  static checkExist(field, msg) {
     return (req, res) => {
       const query = {
         text: `SELECT ${field} FROM users WHERE ${field} = $1`,
@@ -220,14 +226,15 @@ export default class UserController extends UtilityService {
       };
       db.sqlQuery(query).then((result) => {
         if (_.isEmpty(result.rows)) {
-          return this.successResponse(
-            res, 404, (message || `${this.ucFirstStr(field)} does not exist`));
+          return this.successResponse({
+            res, code: 404, message: (msg || `${this.ucFirstStr(field)} does not exist`) 
+          });
         }
-        return this.successResponse(
-          res, 302,
-          (message || `${this.ucFirstStr(field)} has been used`), { ...result.rows[0] }
-        );
-      }).catch(() => this.errorResponse(res, 500, db.dbError()));
+        const message = (message || `${this.ucFirstStr(field)} has been used`);
+        this.successResponse({ 
+          res, code: 302, message, data: { ...result.rows[0] } 
+        });
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 }

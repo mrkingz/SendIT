@@ -1,6 +1,5 @@
 import express from 'express';
 import logger from 'morgan';
-import path from 'path';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
@@ -51,7 +50,7 @@ app.all('*', (req, res) => {
 try {
   const port = process.env.PORT || 8000;
     if (env !== 'test' && env !== 'development') {
-      db.createTables().then(() => {}).catch(() => {});
+      db.createTables();
     }
     app.listen(port, () => {
       if (env === 'test' || env === 'development') {
