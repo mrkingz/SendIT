@@ -50,7 +50,7 @@ const processing = (obj) => {
   } else {
       btn.removeAttribute('disabled');
   }
-}
+};
 
 const message = (msg, status) => {
   const type = {
@@ -80,7 +80,7 @@ const isUnique = (field, msg) => {
   displayError(field, msg);  
 };
 
-const validateEmpty = (fields) => {
+const hasEmpty = (fields) => {
   const length = fields.length;
   let field;
   for (let i = 0; i < length; i++) {
@@ -197,4 +197,8 @@ const toggleEnquiryForm = (event, isShow) => {
   } else {
     div.style.maxHeight = '0px';
   }
+};
+
+const signout = () => { 
+  localStorage.removeItem('token');
 };

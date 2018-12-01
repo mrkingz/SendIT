@@ -96,11 +96,9 @@ export default class UserValidator extends Validator {
       .then((result) => {  
         return (_.isEmpty(result.rows))
           ? next()
-          : this.errorResponse(res, 409, (message || `${string} has been used`));
+          : this.errorResponse({ res, code: 409, message: (message || `${string} has been used`) });
       })
-      .catch(() => {
-          return this.errorResponse(res, 500, db.dbError());
-      });
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 }

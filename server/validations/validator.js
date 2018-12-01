@@ -25,9 +25,9 @@ export default class Validation extends UtilityService {
 	static validate(req, res, next, schema, callback = undefined) {
 		return Joi.validate(this.trimAttr(req.body), schema, (err, data) => {
 			if (err) {
-				return this.errorResponse(
-					res, 422, this.ucFirstStr(err.details[0].message.replace(/['"]/g, ''))
-				);
+				return this.errorResponse({
+					res, code: 422, message: this.ucFirstStr(err.details[0].message.replace(/['"]/g, ''))
+				});
 			}
 			req.body = _.isFunction(callback) ? _.merge(data, callback()) : data;
 			return next();
