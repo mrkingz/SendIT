@@ -57,18 +57,23 @@ export default class UserController extends UtilityService {
   static signin() {
     return (req, res) => {
       const query = {
-        text: `SELECT userid, isadmin, email, password FROM users WHERE email = $1`,
+        text: `SELECT * FROM users WHERE email = $1`,
         values: [req.body.email]
       };
       db.sqlQuery(query)
         .then((result) => {
           if (!_.isEmpty(result.rows)) {
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
-              const { password, ...details } = result.rows[0];
+              const { 
+                password, firstname, lastname, createdat, updatedat, ...details 
+              } = result.rows[0];
               return this.successResponse({
                 res, 
                 message: 'Successfully signed in',
-                data: { token: this.generateToken(details) } 
+                data: { 
+                  user: { firstname, lastname, ...details },
+                  token: this.generateToken(details)
+                 } 
               });
             }
           }
@@ -180,8 +185,7 @@ export default class UserController extends UtilityService {
 	 */
   static checkAuth() {
     return (req, res) => {
-      const { token } = req.params;
-
+      const { token } = req.body;
       if (this.validateToken(token)) {
         const decoded = decode(token);
         return this.findUser(decoded.userid)

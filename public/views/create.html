@@ -8,6 +8,8 @@
         <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+        <link rel="stylesheet" type="text/css" media="screen" href="../css/animate.css" />
+        <script src="../js/authorization.js"></script>
     </head>
     <body>
         <header class="header align-bottom">
@@ -32,146 +34,257 @@
                                     <img src="../images/avatar.png" alt="" class="side-image avatar">
                                 </div>
                                 <div class="size-12 more-details">
-                                    Kingsley Frank-Demesi!
+                                    <div id="name" class="bold my-lg" style="font-size: 20px;"></div>
+                                    <div id="role"></div>
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
-                                
-                            <div class="content-header">
-                                New delivery order
-                            </div>                                                   
-                            <form class="form mx-0" action="" method="POST">
-                                <div class="section">
-                                    <div class="control-group">
-                                        <label for="">Parcel details</label>
-                                        <div class="panel">                                    
-                                            <div class="control-group">
-                                                <label class="required" for="weight">Parcel weight</label>
-                                                <input type="text" class="control col-lg-5 col-md-5 col-sm-12" name="weight" id="weight" placeholder="Parcel weight" autocomplete="off" autofocus>
-                                            </div>
-
-                                            <div class="control-group">
-                                                <label for="description">Description</label>
-                                                <input type="text" class="control col-lg-12 col-md-12 col-sm-12" name="description" id="Description" placeholder="Description" autocomplete="off">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <br>
-                                    <div class="control-group">
-
+                            <div id="new-order">
+                                <div class="content-header"> New delivery order </div>                                                   
+                                <form class="form mx-0" action="" method="POST">
+                                    <div class="section">
                                         <div class="control-group">
-                                            <label for="delivery-method">Choose your delivery method</label>
-                                            <div id="delivery-method" class="panel">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio" id="fast" name="delivery_method">
-                                                    <label class="form-check-label" for="fast">Fast delivery</label>
-                                                </div>
-                                                <div class="form-check m-0">
-                                                    <input class="form-check-input" type="radio" id="normal" name="delivery_method" checked> 
-                                                    <label class="form-check-label" for="normal">Normal delivery</label>
-                                                </div>
-                                            </div>
-                                        </div> 
-                                        <br>
-                                        <div class="control-group">
-                                            <label for="delivery-method">Your pick up location</label>
-                                            <div class="panel">
-
-                                                <div class="details size-12">
-                                                    Fill in where you want us to pick up your parcel and date
+                                            <label for="">Parcel details</label>
+                                            <div class="panel">                                    
+                                                <div class="control-group">
+                                                    <label class="required" for="weight">Parcel weight</label>
+                                                    <input type="text" id="weight" class="control col-lg-5 col-md-5 col-sm-12" name="weight" placeholder="Parcel weight" autocomplete="off" autofocus>
                                                 </div>
 
                                                 <div class="control-group">
-                                                    <label class="required" for="address">Address</label>
-                                                    <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+                                                    <label for="description">Description</label>
+                                                    <input type="text" class="control col-lg-12 col-md-12 col-sm-12" name="description" id="description" placeholder="Description" autocomplete="off">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="control-group">
+
+                                            <div class="control-group">
+                                                <label for="delivery-method">Choose your delivery method</label>
+                                                <div id="delivery-method" class="panel">
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" id="fast" name="deliveryMethod" value="Fast">
+                                                        <label class="form-check-label" for="fast">Fast delivery</label>
+                                                    </div>
+                                                    <div class="form-check m-0">
+                                                        <input class="form-check-input" type="radio" id="normal" name="deliveryMethod" value="Normal" checked> 
+                                                        <label class="form-check-label" for="normal">Normal delivery</label>
+                                                    </div>
+                                                </div>
+                                            </div> 
+                                            <br>
+                                            <div class="control-group">
+                                                <label for="delivery-method">Your pick up location</label>
+                                                <div class="panel">
+
+                                                    <div class="details size-12">
+                                                        Fill in where you want us to pick up your parcel and date
+                                                    </div>
+
+                                                    <div class="control-group">
+                                                        <label class="required" for="pick-up-address">Address</label>
+                                                        <input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
+                                                    </div>
+
+                                                    <div class="row">
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="control-group">
+                                                                <label class="required" for="pick-up-city">City/Town</label>
+                                                                <input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" autocomplete="off">
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                                            <div class="control-group">
+                                                                <label class="required" for="pick-up-state">State</label>
+                                                                <select id="pick-up-state" name="pickupState" class="control">
+                                                                    <option value="">Select state</option>
+                                                                    <option value="Abuja">Abuja</option>
+                                                                    <option value="Lagos">Lagos</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="control-group">
+                                                        <label class="required" for="pick-up-date">Pick up date</label>
+                                                        <input type="date" class="control col-lg-5 col-md-5 col-sm-12" name="pickupDate" id="pick-up-date" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="control-group">
+                                            <label for="parcel-destination">Parcel destination</label>
+                                            <div id="parcel-destination" class="panel">
+                                                <div class="details size-12">
+                                                    Fill in the destination of your parcel
+                                                </div>
+
+                                                <div class="control-group">
+                                                    <label class="required" for="destination-address">Address</label>
+                                                    <input type="text" class="control" name="destinationAddress" id="destination-address" placeholder="Address" autocomplete="off">
                                                 </div>
 
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                                         <div class="control-group">
-                                                            <label class="required" for="city">City/Town</label>
-                                                            <input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                                                            <label class="required" for="destination-city">City/Town</label>
+                                                            <input type="text" class="control" name="destinationCity" id="destination-city" placeholder="City/Town" autocomplete="off">
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                                         <div class="control-group">
-                                                            <label class="required" for="state">State</label>
-                                                            <select name="" id="" class="control">
+                                                            <label class="required" for="destination-state">State</label>
+                                                            <select name="destinationState" id="destination-state" class="control">
                                                                 <option value="">Select state</option>
+                                                                <option value="Kano">Kano</option>
+                                                                <option value="Lagos">Lagos</option>
                                                             </select>
                                                         </div>
                                                     </div>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <br>
+                                        <div class="control-group">
+                                            <label for="parce-destination">Receiver's details</label>
+                                            <div id="parcl-destination" class="panel">
+
+
+                                                <div class="details size-12">
+                                                    Fill in receiver's details
+                                                </div>
 
                                                 <div class="control-group">
-                                                    <label class="required" for="date">Pick up date</label>
-                                                    <input type="date" class="control col-lg-5 col-md-5 col-sm-12" name="date" id="date" autocomplete="off">
+                                                    <label class="required" for="receiver-name">Receicver's full name</label>
+                                                    <input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name" autocomplete="off">
+                                                </div>         
+
+                                                <div class="control-group">
+                                                    <label class="required" for="receiver-phone">Receicver's phone</label>
+                                                    <input type="text" class="control col-lg-8 col-md-8 col-sm-12" name="receiverPhone" id="receiver-phone" placeholder="Phone" autocomplete="off">
                                                 </div>
+
                                             </div>
                                         </div>
-                                    </div>
 
-                                    <div class="control-group">
-                                        <label for="parcel-destination">Parcel destination</label>
-                                        <div id="parcel-destination" class="panel">
-                                            <div class="details size-12">
-                                                Fill in the destination of your parcel
-                                            </div>
-
-                                            <div class="control-group">
-                                                <label class="required" for="address">Address</label>
-                                                <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <div class="control-group">
-                                                        <label class="required" for="city">City/Town</label>
-                                                        <input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
+                                        <div class="mx-lg">
+                                            <p class="required-text">All fields marked with<strong class="required"></strong> are required!</p>
+                                            <button class="btn btn-primary" onclick="create(event)">Continue</button>
+                                        </div>
+                                    </div><br>                                          
+                                </form>
+                            </div>
+                            <div id="order-quotation">
+                                <div class="content-header">Confirm your order </div>  
+                                <div class="section">
+                                    <div class="panel">
+                            
+                                        <div class="more-details">
+                                            <div class="nexted">
+                                                <div class="card-header">
+                                                    <div class="card-title">
+                                                        <label class="size-12 bold">Delivery details</label>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6 col-sm-12">
-                                                    <div class="control-group">
-                                                        <label class="required" for="destination">State</label>
-                                                        <select name="destination" id="cdestination" class="control">
-                                                            <option value="">Select state</option>
-                                                            <option value="Lagos">Lagos</option>
-                                                        </select>
+                                                <div class="card-wrapper">
+
+                                                    <div class="card-row">
+                                                        <div class="data-header">Weight</div>
+                                                        <div class="data">64.2 kgs</div>
+                                                    </div>
+
+                                                    <div class="card-row">
+                                                        <div class="data-header">Parcel description</div>
+                                                        <div class="data">Binatone standing fan</div>
+                                                    </div>
+                                                    
+                                                    <div class="card-row">
+                                                        <div class="data-header">Delivery method</div>
+                                                        <div class="data">Fast delivery</div>
+                                                    </div>
+
+                                                    <div class="card-row">
+                                                        <div class="data-header">Pick up location</div>
+                                                        <div class="data">16, Oluwole Street, Ikeja, Lagos</div>
+                                                    </div>
+                                                    
+                                                    <div class="card-row">
+                                                        <div class="data-header">Pick up date</div>
+                                                        <div class="data">5th November, 2018</div>
+                                                    </div>
+
+                                                    <div class="card-row">
+                                                        <div class="data-header">Parcel destination</div>
+                                                        <div class="data">103, Alhaji Aminu Road, Abuja.</div>
+                                                    </div>
+
+                                                    <div class="card-row">
+                                                        <div class="data-header">Estimated date of arrival</div>
+                                                        <div class="data red-color">Maximum of three days from pick up date</div>
                                                     </div>
                                                 </div>
                                             </div>
+
+                                            <div class="nexted">
+                                                <div class="card-header">
+                                                    <div class="card-title">
+                                                        <label class="size-12 bold">Receiver details</label>
+                                                    </div>
+                                                </div>
+                                                <div class="card-wrapper">
+                                                    
+                                                    <div class="card-row">
+                                                        <div class="data-header">Full name</div>
+                                                        <div class="data">Ibrahim Babangida Ramani</div>
+                                                    </div>
+
+                                                    <div class="card-row">
+                                                        <div class="data-header">Phone number</div>
+                                                        <div class="data">08035178023</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div> <br>                                                       
+                                        <div class="more-details">
+                                            <div class="nexted">
+                                                <div class="alert alert-info cost">Delivery cost: &#8358; 24,100</div>
+                                            </div>
+                                        </div> <br> 
+                                        <div id="message"></div>
+                                        <div class="align-center">
+                                            <button class="btn btn-primary" id="submit" onclick="submitOrder(event)">Submit</button>
+                                            <button class="btn btn-link mx-sm fine-btn" onclick="editOrder(event)">Edit order</button>
+                                        </div>                                     
+                                    </div>
+                                </div>
+                            </div> 
+                            <div class="section" id="order-success"><br>
+                                <div class="panel my-lg">
+                                    <div id="success" class="align-center">
+                                        <div class="mb-lg">
+                                            <img class="success-img bounceInDown animated" src="../images/success.png" alt="">
+                                            <div id="message"></div><br>
+                                            <div id="trackingNo"></div>
+                                        </div>
+                                        <div class="section">
+                                            <div id="info">
+                                                <div class="alert alert-info">
+                                                    Your parcel delivery order creation was successfull. <br>
+                                                    You will be notified once processing begins... <br>
+                                                   <h3>Thanks for your patronage!</h3>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-lg">
+                                            <a href="/create" class="btn btn-primary" style="padding: .4rem 2rem">Done</a>
                                         </div>
                                     </div>
-                                    <br>
-                                    <div class="control-group">
-                                        <label for="parce-destination">Receiver's details</label>
-                                        <div id="parcl-destination" class="panel">
-
-
-                                            <div class="details size-12">
-                                                Fill in receiver's details
-                                            </div>
-
-                                            <div class="control-group">
-                                                <label class="required" for="fullname">Receicver's full name</label>
-                                                <input type="text" class="control" name="" id="fullname" placeholder="Full name" autocomplete="off">
-                                            </div>         
-
-                                            <div class="control-group">
-                                                <label class="required" for="phone">Receicver's phone</label>
-                                                <input type="text" class="control col-lg-8 col-md-8 col-sm-12" name="phone" id="phone" placeholder="Phone" autocomplete="off">
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-                                    <div class="mx-lg">
-                                        <p class="required-text">All fields marked with<strong class="required"></strong> are required!</p>
-                                        <button class="btn btn-primary">Continue</button>
-                                    </div>
-                                </div><br>                                          
-                            </form>
+                                </div>
+                                <br>
+                            </div>
                         </div>
                             
                         <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
@@ -195,5 +308,60 @@
         
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
+        <script>
+            let data;
+            const create = async (e) => {
+                e.preventDefault();
+                const fields = [
+                    'weight', 'pick-up-address', 'pick-up-city', 'pick-up-state', 'pick-up-date',
+                    'destination-address', 'destination-city', 'destination-state', 'receiver-name', 'receiver-phone'
+                ];
+                const phone = document.getElementById('receiver-phone');
+                const weigth = document.getElementById('weight')
+                if (!hasEmpty(fields) && isValidWeight(weigth) && isValidPhone(phone)) {
+                    fields.push('description')
+                    data = await getFormData(fields, (data) => {
+                        data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value
+                        return data;
+                    });
+                    toggleOrder({ show: false, animation: 'bounceInRight' });
+                }
+            }
+
+            const submitOrder = async (e) => {
+                e.preventDefault();
+                processing({ start: true });
+                await fetch(request({
+                    path: '/parcels', data, token: localStorage.getItem('token') 
+                })).then(res => {
+                    if (res.status === 201) {
+                        $('input, select').val('');
+                        document.getElementById('normal').checked = true;
+                    }
+                    return res.json()
+                })
+                .then(res => {     
+                    if (res.status === 'Success') {         
+                        document.querySelector('#success #message').innerHTML = res.message;
+                        document.getElementById('trackingNo').innerHTML = res.data.parcel.trackingno;
+                        const orderQuote = document.getElementById('order-quotation');
+                        const orderSuccess = document.getElementById('order-success');
+                        toggleOrderSteps(orderQuote, false, ['bounceOut', 'Animated']).then(() => {
+                            toggleOrderSteps(orderSuccess, true, ['bounceIn', 'animated'])
+                        })
+                    } else {
+                        message(res.message, res.status);
+                    }
+                })
+                .catch(error => {
+                message(error.message, error.status)})
+                processing({message: 'Submit', start: false});
+            }
+
+            const editOrder = (e) => {
+                e.preventDefault();
+                toggleOrder({ show: true, animation: 'bounceInLeft'});
+            }
+        </script>
     </body>
 </html>

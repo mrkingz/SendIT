@@ -5,24 +5,32 @@ $('.control').on('keypress blur', () => {
   $('#message div').addClass('zoomOut animated faster').fadeOut(500);
 });
 
-const requestObj = (path, fields, method = 'POST') => {
-  return new Request(`${baseUrl.concat(path)}`, {
-    method,
-    body: getFormData(fields),
-    headers: new Headers({
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-    })
+const request = (obj) => {
+  const headers = new Headers({
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  });
+  if (obj['token']) {
+    headers.append('token', obj['token']);
+  }
+  return new Request(`${baseUrl.concat(obj.path)}`, {
+    method: obj['method'] || 'POST',
+    body: obj['data'] || getFormData(obj.fields),
+    headers
   });
 };
 
-const getFormData = (fields) => {
+const getFormData = (fields, callback) => {
   const length = fields.length;
   const data = {};
+  let field;
   for (let i = 0; i < length; i++) {
-    data[fields[i]] = document.getElementById(fields[i]).value;
+    field = document.getElementById(fields[i]);
+    data[field.name] = field.value;
   }
-  return JSON.stringify(data);
+  return (typeof callback === 'function')
+    ? JSON.stringify(callback(data)) 
+    : JSON.stringify(data);
 };
 
 const addClass = (element, classes) => {
@@ -55,7 +63,8 @@ const processing = (obj) => {
 const message = (msg, status) => {
   const type = {
     success: 'alert-success',
-    fail: 'alert-danger'
+    fail: 'alert-danger',
+    info: 'alert-info'
   };
   document.getElementById('message').innerHTML = '';
   const parent = document.createElement('div');
@@ -75,8 +84,6 @@ const dropdown = function (id) {
 };
 
 const isUnique = (field, msg) => {
-  addListeners(field);
-  addClass(field, ['invalid']);
   displayError(field, msg);  
 };
 
@@ -89,9 +96,7 @@ const hasEmpty = (fields) => {
     removeElement(document.getElementById(`${fields[i]}-error`));
     removeListeners(field);
     if (field.value.trim() === '') {
-      field.classList.add('invalid');
       displayError(field);
-      addListeners(field);
       return true;
     }
   }
@@ -106,15 +111,29 @@ const displayError = (field, msg) => {
     span.id = `${field.id}-error`;
     field.parentNode.appendChild(span);
   }
-  span.innerHTML = msg || `${field.id} cannot be empty`;
+  const errorMessage = (field.nodeName.toLowerCase() === 'select')
+                    ? `Please select ${field.id.replace(/[-]+/g, ' ')}`
+                    : `${field.id.replace(/[-]+/g, ' ')} cannot be empty`;
+  span.innerHTML = msg || errorMessage;
+  field.focus();
+  
+  addClass(field, ['invalid']);
+  addListeners(field);
+};
+
+const isValidPhone = (field) => {
+  const exp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
+  const isValid = field.value.match(exp);
+  if (!isValid) {
+    displayError(field, 'Enter a valid phone number');
+  }
+  return isValid;
 };
 
 const isEmail = (field) => {
   const exp = /([a-zA-Z0-9_\-.]+)@(([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9]+\.)+))([a-zA-Z]{2,4}|[0-9]{1.3})/;
   const isValid = field.value.match(exp);
   if (!isValid) {
-    addListeners(field);
-    field.classList.add('invalid');
     displayError(field, 'Enter a valid email address');
   }
   return isValid;
@@ -123,12 +142,20 @@ const isEmail = (field) => {
 const isValidPassword = (field) => {
   const isValid = field.value.length > 8;
   if (!isValid) {
-    addListeners(field);
-    field.classList.add('invalid');
     displayError(field, 'Password must be at least 8 characters long');
   }
   return isValid;
 };
+
+isValidWeight = (field) => {
+  const intExp = /^[0-9]+$/;
+  const floatExp = /(^[0-9]*[.]{1}[0-9]*$)/;
+  const isValid = field.value.match(intExp) || field.value.match(floatExp) ? true : false;
+  if (!isValid) {
+    displayError(field, 'Enter a valid number for weight');
+  }
+  return isValid;
+}
 
 const focusListener = (e) => {
   const element = e.target;
@@ -137,9 +164,27 @@ const focusListener = (e) => {
   }
 };
 
+const changeListener = (e) => {
+  const element = e.target;
+  element.classList.remove('invalid');
+  const span = document.getElementById(`${element.id}-error`);
+  const button = document.getElementById('submit');
+  if (button !== null ) {
+    button.removeAttribute('disabled');
+  }
+  if (span !== null) {
+    span.remove();
+  }
+};
+
 const keypressListener = (e) => {
-  const span = document.getElementById(`${e.target.id}-error`);
-  document.getElementById('submit').removeAttribute('disabled');
+  const element = e.target;
+  element.classList.remove('invalid');
+  const span = document.getElementById(`${element.id}-error`);
+  const button = document.getElementById('submit');
+  if (button !== null ) {
+    button.removeAttribute('disabled');
+  }
   if (span !== null) {
     span.remove();
   }
@@ -153,12 +198,20 @@ const removeElement = (element) => {
 
 const addListeners = (element) => {
   element.addEventListener('focus', focusListener);
-  element.addEventListener('keypress', keypressListener);
+  if (element.nodeName.toLowerCase() === 'select') {
+    element.addEventListener('change', changeListener);
+  } else {
+    element.addEventListener('keypress', keypressListener);
+  }
 };
 
 const removeListeners = (element) => {
   element.removeEventListener('focus', focusListener);
-  element.removeEventListener('keypress', keypressListener);
+  if (element.nodeName.toLowerCase() === 'select') {
+    element.removeEventListener('change', changeListener);
+  } else {
+    element.removeEventListener('keypress', keypressListener);
+  }
 };
 
 // Close the dropdown menu if the user clicks outside of it
@@ -197,6 +250,34 @@ const toggleEnquiryForm = (event, isShow) => {
   } else {
     div.style.maxHeight = '0px';
   }
+};
+
+const toggleOrder = async (obj) => {
+  document.getElementById('message').innerHTML = '';
+  const newOrder = document.getElementById('new-order');
+  if (obj.show) {
+    toggleOrderSteps(newOrder.nextElementSibling, false, obj.animation).then(() => {
+      toggleOrderSteps(newOrder, true, obj.animation);
+    });
+  } else {
+    toggleOrderSteps(newOrder, false, obj.slide).then((elem) => {
+      toggleOrderSteps(elem.nextElementSibling, true, obj.animation);
+    });
+  }
+};
+
+const toggleOrderSteps = async (elem, isShow, animation) => {
+  await removeClass(elem, [
+    'bounceInLeft', 'bounceInRight', 'bounceOut', 'bounceIn', 'animated'
+  ]);
+  if (!isShow) {
+    await addClass(elem, ['bounceOut', 'animated']);
+    await $.when($(`#${elem.id}`).fadeOut());
+  } else {
+    $(`#${elem.id}`).show();
+    addClass(elem, [`${animation}`, 'animated']);
+  }
+  return Promise.resolve(elem);
 };
 
 const signout = () => { 

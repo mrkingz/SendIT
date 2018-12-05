@@ -8,6 +8,7 @@
         <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+        <script src="../js/authorization.js"></script>
     </head>
     <body>
         <header class="header align-bottom">
@@ -32,7 +33,8 @@
                                     <img src="../images/avatar.png" alt="" class="side-image avatar">
                                 </div>
                                 <div class="size-12 more-details">
-                                    Kingsley Frank-Demesi!
+                                    <div id="name" class="bold my-lg" style="font-size: 20px;"></div>
+                                    <div id="role"></div>
                                 </div>
                             </div>
                         </div>
@@ -45,7 +47,7 @@
                                     <div class="panel">
                                         <div class="filter-div">
                                             <div class="dropdown">
-                                                <button onclick="dropdown('filter')" class="btn btn-link dropbtn filter-btn">Filter orders <i class="fa fa-caret-down"></i></button>
+                                                <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm fine-btn">Filter orders <i class="fa fa-caret-down"></i></button>
                                                 <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
                                                     <button class="menu-btn">All orders</button>
                                                     <button class="menu-btn">Pending orders</button>
@@ -216,6 +218,7 @@
             </div>
         </div> 
         
+        <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
     </body>
 </html>
