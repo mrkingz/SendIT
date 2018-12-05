@@ -18,7 +18,7 @@ authRouter.post('/api/v1/auth/login',
 authRouter.post('/api/v1/auth/email', 
   UserController.checkExist('email'));
 
-authRouter.get('/api/v1/auth/:token/verify', 
+authRouter.post('/api/v1/auth/verifyAuth', 
   UserController.checkAuth());
 
 export default authRouter;

@@ -39,7 +39,7 @@
                                             
                                                 <div class="control-group">
                                                     <label for="password">Password</label>
-                                                    <input type="password" class="control col-12" name="" id="password" placeholder="Password">
+                                                    <input type="password" class="control col-12" name="password" id="password" placeholder="Password">
                                                 </div>
                                                 <div id="message"></div>
                                                 <div class="control-group mb-sm">
@@ -68,13 +68,14 @@
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
+            
             let login = async (e) => {
                 e.preventDefault();
                 const fields = ['email', 'password'];
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
                 if (!hasEmpty(fields)) {
-                    await fetch(requestObj('/auth/login', fields)).then(res => res.json())
+                    await fetch(request({ path: '/auth/login', fields })).then(res => res.json())
                     .then(res => {
                         if (res.status === 'Success') {
                             localStorage.setItem('token', res.data.token);
@@ -83,7 +84,7 @@
                             message(res.message, res.status);
                             password.value = '';
                         }
-                    }).catch(error => message(error.message))
+                    }).catch(error => message(error.message, error.status))
                 }
             }
         </script>

@@ -49,7 +49,7 @@
                                             
                                                 <div class="control-group mb-lg">
                                                     <label class="required" for="password">Password</label>
-                                                    <input type="password" class="control" name="" id="password" placeholder="Password">
+                                                    <input type="password" class="control" name="password" id="password" placeholder="Password">
                                                 </div>
                                                 <div id="message"></div>
                                                 <div class="control-group align-center">
@@ -77,7 +77,7 @@
         <script src="../js/script.js"></script>
         <script>
             const isUniqueEmail = (elem) => {
-                return fetch(requestObj('/auth/email', ['email'])).then(res => res.json())
+                return fetch(request({path: '/auth/email', fields: ['email'] })).then(res => res.json())
                 .then(res => {
                     if (res['data'] && res.data.email === elem.value) {
                         isUnique(elem, res.message)
@@ -95,12 +95,14 @@
                 const password = document.getElementById('password');
                 if (!hasEmpty(fields) && isEmail(email) && await isUniqueEmail(email)
                     && isValidPassword(password)) {
-                    await fetch(requestObj('/auth/signup', fields)).then(res => {
-                        $('input').val('');
+                    await fetch(request({path: '/auth/signup', fields })).then(res => {
+                        if (res.status === 201){
+                            $('input').val('');
+                        }
                         return res.json()
                     })
                     .then(res => message(res.message, res.status))
-                    .catch(error => message(error.message, res.status))
+                    .catch(error => message(error.message, error.status))
                 }
                 processing({message: 'Sign up', start: false});
             }
