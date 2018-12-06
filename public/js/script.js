@@ -18,6 +18,15 @@ const request = (obj) => {
   if (obj['token']) {
     headers.append('token', obj['token']);
   }
+  // We don't body in a GET request
+  // So we'll just create the request object with the method and headers 
+  if (obj['method'] === 'GET') {
+    return new Request(`${baseUrl.concat(obj.path)}`, {
+      method: obj['method'],
+      headers
+    }); 
+  }
+
   return new Request(`${baseUrl.concat(obj.path)}`, {
     method: obj['method'] || 'POST',
     body: obj['data'] || getFormData(obj.fields),
@@ -221,7 +230,7 @@ const removeListeners = (element) => {
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = (event) => {
-  if (event.target === modal) {
+  if (event.target === modal && !modal.classList.contains('static')) {
     modal.style.display = 'none';
   }
 

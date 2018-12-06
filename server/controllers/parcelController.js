@@ -56,7 +56,7 @@ export default class ParcelController extends UtilityService {
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
         return (_.isEmpty(parcels))
-        ? this.errorResponse({ res, code: 404, message: 'No parcel found' })
+        ? this.errorResponse({ res, code: 404, message: 'No parcel delivery order found' })
         : this.successResponse({ 
             res, code: 302, message: 'Parcels successfully retrieved', data: { parcels } 
           });
@@ -75,7 +75,7 @@ export default class ParcelController extends UtilityService {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         const parcel = result.rows;
         return (_.isEmpty(parcel))
-        ? this.errorResponse({ res, code: 404, message: 'No parcel found' })
+        ? this.errorResponse({ res, code: 404, message: 'No parcel delivery order found' })
         : this.successResponse({
             res, code: 302, message: 'Parcel successfully retrieved', data: { parcel: parcel[0] }
           });
@@ -101,7 +101,9 @@ export default class ParcelController extends UtilityService {
         db.sqlQuery(query).then((result) => {
           const parcels = result.rows;
           return (_.isEmpty(parcels))
-                  ? this.errorResponse({ res, code: 404, message: 'No parcel found' })
+                  ? this.errorResponse({ 
+                    res, code: 404, message: 'No parcel delivery order found'
+                   })
                   : this.successResponse({
                       res, code: 302, message: 'Parcels successfully retrieved', data: { parcels } 
                     });
@@ -125,7 +127,7 @@ export default class ParcelController extends UtilityService {
         db.sqlQuery(this.getUserParcelQueryObj(userid, req.params.parcelId)).then((result) => {
           const parcel = result.rows[0];
           return (_.isEmpty(parcel))
-                  ? this.errorResponse(res, 404, 'No parcel found')
+                  ? this.errorResponse(res, 404, 'No parcel delivery order found')
                   : this.successResponse({ 
                       res, code: 302, message: "Parcel successfully retrieved", data: { parcel }
                     });
@@ -198,7 +200,7 @@ export default class ParcelController extends UtilityService {
 			const parcelId = req.params.parcelId, { userid } = req.body.decoded;
       db.sqlQuery(this.getUserParcelQueryObj(userid, parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse({ res, code: 404, message: 'No parcel found' });
+          this.errorResponse({ res, code: 404, message: 'No parcel delivery order found' });
         } else {
           const status = 'Cancelled', parcel = result.rows[0];
           if (parcel.deliverystatus === 'Delivered') {
@@ -232,7 +234,7 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse(res, 404, 'No parcel found');
+          this.errorResponse(res, 404, 'No parcel delivery order found');
         } else {
           const parcel = result.rows[0];
           const msg = 'location cannot be updated';
@@ -272,7 +274,7 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse({ res, code: 404, message: 'No parcel found' });
+          this.errorResponse({ res, code: 404, message: 'No parcel delivery order found' });
         } else {
           const parcel = result.rows[0], msg = 'status cannot be updated';
           if (parcel.deliverystatus === 'Delivered') {
@@ -320,7 +322,7 @@ export default class ParcelController extends UtilityService {
       };
       db.sqlQuery(query).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse({ res, code: 404, message: 'No parcel found' });
+          this.errorResponse({ res, code: 404, message: 'No parcel delivery order found' });
         } else {
           const parcel = result.rows[0], msg = 'destination cannot be updated';
           if (parcel.deliverystatus === 'Delivered') {

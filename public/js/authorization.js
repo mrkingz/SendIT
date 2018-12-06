@@ -18,10 +18,11 @@ const checkAuth = async () => {
 			return res.data.user;
 		});
 	}
-
 	if (!user) {
 		window.location.href = '/signin';
 	}
+
+	return { userid: user.userid, isadmin: user.isadmin };
 };
 
-checkAuth();
+const authUser = checkAuth();

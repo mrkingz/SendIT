@@ -633,6 +633,10 @@ div.nexted ~ div.nexted {
     min-height: 100px;
 }
 
+.hide {
+    display: none;
+}
+
 html, body {
     height: 100;
 }
@@ -1072,7 +1076,7 @@ select option {
 }
 
 .show {
-    display:block;
+    display: block !important;
 }
 
 .side-image {
