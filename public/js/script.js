@@ -5,6 +5,11 @@ $('.control').on('keypress blur', () => {
   $('#message div').addClass('zoomOut animated faster').fadeOut(500);
 });
 
+$('select').on('change', (e) => {
+  const elem = $(e.target);
+  elem.css({ color: elem.val().trim() === '' ? '#636c72' : 'initial' });
+});
+
 const request = (obj) => {
   const headers = new Headers({
     Accept: 'application/json',

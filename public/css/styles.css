@@ -298,6 +298,10 @@ button.menu-btn {
     border-right: 1px solid rgb(232, 232, 252);
 }
 
+#data-weight::after {
+    content: ' kgs';
+}
+
 .details-link-div {
     margin: .5rem 0;
     text-align: right;
@@ -1031,6 +1035,16 @@ html {
 
 .section {
     padding: 1rem; 
+}
+
+select option:first-child,
+select {
+    color: #636c72;
+}
+
+select option {
+    color: initial;
+    background-color: #ffffff;
 }
 
 .side-panel {

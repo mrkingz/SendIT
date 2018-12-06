@@ -186,44 +186,44 @@
                                             <div class="nexted">
                                                 <div class="card-header">
                                                     <div class="card-title">
-                                                        <label class="size-12 bold">Delivery details</label>
+                                                        <label class="size-12 bold">Order details</label>
                                                     </div>
                                                 </div>
                                                 <div class="card-wrapper">
 
                                                     <div class="card-row">
                                                         <div class="data-header">Weight</div>
-                                                        <div class="data">64.2 kgs</div>
+                                                        <div class="data" id="data-weight"></div>
                                                     </div>
 
                                                     <div class="card-row">
                                                         <div class="data-header">Parcel description</div>
-                                                        <div class="data">Binatone standing fan</div>
+                                                        <div class="data" id="data-description"></div>
                                                     </div>
                                                     
                                                     <div class="card-row">
                                                         <div class="data-header">Delivery method</div>
-                                                        <div class="data">Fast delivery</div>
+                                                        <div class="data" id="data-deliveryMethod"></div>
                                                     </div>
 
                                                     <div class="card-row">
                                                         <div class="data-header">Pick up location</div>
-                                                        <div class="data">16, Oluwole Street, Ikeja, Lagos</div>
+                                                        <div class="data" id="data-pickup"></div>
                                                     </div>
                                                     
                                                     <div class="card-row">
                                                         <div class="data-header">Pick up date</div>
-                                                        <div class="data">5th November, 2018</div>
+                                                        <div class="data" id="data-pickupDate"></div>
                                                     </div>
 
                                                     <div class="card-row">
                                                         <div class="data-header">Parcel destination</div>
-                                                        <div class="data">103, Alhaji Aminu Road, Abuja.</div>
+                                                        <div class="data" id="data-destination"></div>
                                                     </div>
 
                                                     <div class="card-row">
                                                         <div class="data-header">Estimated date of arrival</div>
-                                                        <div class="data red-color">Maximum of three days from pick up date</div>
+                                                        <div class="data red-color" id="data-estimated"></div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -238,19 +238,19 @@
                                                     
                                                     <div class="card-row">
                                                         <div class="data-header">Full name</div>
-                                                        <div class="data">Ibrahim Babangida Ramani</div>
+                                                        <div class="data" id="data-receiverName"></div>
                                                     </div>
 
                                                     <div class="card-row">
                                                         <div class="data-header">Phone number</div>
-                                                        <div class="data">08035178023</div>
+                                                        <div class="data" id="data-receiverPhone"></div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div> <br>                                                       
                                         <div class="more-details">
                                             <div class="nexted">
-                                                <div class="alert alert-info cost">Delivery cost: &#8358; 24,100</div>
+                                                <div class="alert alert-info cost">Delivery cost: &#8358; <span id="cost"></span></div>
                                             </div>
                                         </div> <br> 
                                         <div id="message"></div>
@@ -324,8 +324,42 @@
                         data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value
                         return data;
                     });
+                    await preview(JSON.parse(data));
                     toggleOrder({ show: false, animation: 'bounceInRight' });
                 }
+            }
+
+            const computeCost = (weight) => {
+                const cost = Number(weight) * 1000;
+                document.getElementById('cost').innerHTML = cost;
+            }
+
+            const preview = async (data) => {
+                let elem, text;
+                const elemArr = [
+                    'weight', 'description', 'deliveryMethod', 'pickup',
+                    'pickupDate', 'estimated', 'destination', 'receiverName', 'receiverPhone'
+                ];
+                computeCost(data.weight)
+                await elemArr.forEach((str) => {
+                    elem = document.getElementById(`data-${str}`);
+                    switch(str) {
+                        case 'pickup': 
+                            text = `${data['pickupAddress']}, ${data['pickupCity']}, ${data['pickupState']}`;
+                            break;
+                        case 'destination': 
+                            text = `${data['destinationAddress']}, ${data['destinationCity']}, ${data['destinationState']}`;
+                            break;
+                        case 'estimated':
+                            text = `Maximum of ${ (data['deliveryMethod'] === 'Fast') ? 3 : 7 } days from pick up date`;
+                            break;
+                        case 'description':
+                            text = data['description'].trim() !== '' ? data['description'] : 'N/A';
+                            break;
+                        default: text = data[str];
+                    }
+                    elem.innerHTML = text;
+                })
             }
 
             const submitOrder = async (e) => {
