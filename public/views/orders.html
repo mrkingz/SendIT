@@ -50,10 +50,10 @@
                                                 <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm fine-btn">Filter orders <i class="fa fa-caret-down"></i></button>
                                                 <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
                                                     <button class="menu-btn" onclick="getOrders()">All orders</button>
-                                                    <button class="menu-btn">Cancelled orders</button>
-                                                    <button class="menu-btn">Delivered orders</button>
-                                                    <button class="menu-btn">Pending orders</button>
-                                                    <button class="menu-btn">Transiting orders</button>
+                                                    <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
+                                                    <button class="menu-btn" onclick="getOrders('delivered')">Delivered orders</button>
+                                                    <button class="menu-btn" onclick="getOrders('placed')">Pending orders</button>
+                                                    <button class="menu-btn" onclick="getOrders('transiting')">Transiting orders</button>
                                                 </div>
                                             </div>
                                         </div> 
@@ -86,24 +86,42 @@
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
-            const getOrders = (type) => {
+            const getOrders = (filter) => {
+                if (filter) {
+                    showSpinner()
+                }
                 authUser.then((user) => {
                     const path  = user.isadmin ? `/parcels` : `/users/${user.userid}/parcels`;
                     fetch(request({ 
-                        path, token: localStorage.getItem('token'), method: 'GET' 
+                        path: filter ? path.concat(`?filter=${filter}`) : path, 
+                        token: localStorage.getItem('token'),
+                        method: 'GET' 
                     }))
                     .then(res => res.json())
                     .then((res) => {
                         if (res.status === 'Success') {
+                            const orders = document.getElementById('orders');
+                            document.getElementById('message').innerHTML = '';
+                            orders.innerHTML = '';
                             res.data.parcels.forEach((order) => {
-                                document.getElementById('orders').appendChild(orderCard(order));
+                                orders.appendChild(orderCard(order));
                             })
                             document.getElementById('filter-div').classList.remove('hide');
+                            document.querySelector('.content-header').innerHTML = `${filter ? filter : 'Delivery'} orders`;
+                            hideSpinner();
+                        } else if (filter) {
+                            toggleSpinner(res.message, res.status);
                         } else {
                             message(res.message, 'info');
                         }
                     })
-                    .catch(error => message(error.message, error.status));
+                    .catch(error => {
+                        if (filter) {
+                            toggleSpinner(error.message, error.status);
+                        } else {
+                            message(error.message, error.status);
+                        }
+                    });
                 });
             }
 
@@ -142,16 +160,6 @@
                     </div>`;
                 return card;
             }
-
         </script>
-
-            <div id="processing" class="modal static">
-                <div class="modal-content modal-sm">
-                    <div class="processing bold">
-                        <div><img style="height: 120px;" src="../images/processing.gif" alt=""></div>
-                        <div>Please wait...</div>
-                    </div>
-                </div>
-            </div>
     </body>
 </html>

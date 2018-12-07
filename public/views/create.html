@@ -319,8 +319,9 @@
                 const phone = document.getElementById('receiver-phone');
                 const weigth = document.getElementById('weight')
                 if (!hasEmpty(fields) && isValidWeight(weigth) && isValidPhone(phone)) {
-                    fields.push('description')
                     data = await getFormData(fields, (data) => {
+                        const description = document.getElementById('description').value;
+                        data['description'] = description !== '' ? description : 'N/A';
                         data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value
                         return data;
                     });

@@ -419,6 +419,10 @@ div.nexted ~ div.nexted {
     border-bottom:1px solid rgb(212, 212, 231);
 }
 
+.content-header::first-letter {
+    text-transform: uppercase;
+}
+
 .control {
     width: 100%;
     padding: .35rem .4rem;
@@ -774,8 +778,8 @@ html {
     background: rgb(241, 241, 253)
 }
 
-.processing {
-    margin: 1rem .5rem;
+.spinner {
+    padding: 1rem .5rem !important;
     text-align: center;
 
 }

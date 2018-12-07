@@ -130,10 +130,11 @@ export default class ParcelController extends UtilityService {
    */
   static filterParcels() {
     return (req, res) => {
-      if (Number(req.body.decoded.userid) !== Number(req.params.userId)) {
+      const isadmin = req.body.decoded.isadmin;
+      if (!isadmin && (Number(req.body.decoded.userid) !== Number(req.params.userId))) {
         this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
       } else {
-        const filter = this.ucFirstStr(req.query.filter), isadmin = req.body.decoded.isadmin;
+        const filter = this.ucFirstStr(req.query.filter);
         const where = isadmin ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
         const values = isadmin ? [filter] : [req.params.userId, filter];
         const query = { text: `SELECT * FROM parcels WHERE ${where}`, values };        
@@ -216,15 +217,13 @@ export default class ParcelController extends UtilityService {
    *
    * @static
    * @param {int} parcelId the parcel id
-   * @param {string} filter the filtering option
    * @returns {object} the query object
    * @method getParcelQuery
    * @memberof ParcelController
    */
-  static getParcelQuery(parcelId, filter = '') {
-    filter = _.isUndefined(filter) ? "" : `AND ${filter}`;
+  static getParcelQuery(parcelId) {
     return {
-      text: `SELECT * FROM parcels WHERE parcelid = $1 ${filter}`,
+      text: `SELECT * FROM parcels WHERE parcelid = $1`,
       values: [parcelId]
     };
   }
@@ -299,7 +298,7 @@ export default class ParcelController extends UtilityService {
             .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
           }
         }
-      }).catch(() => this.errorResponse({ res, message: db.dbErro() }));
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
@@ -341,7 +340,7 @@ export default class ParcelController extends UtilityService {
             }).catch(() => this.errorResponse({ res, message: db.dbError() }));
           }
         }
-      }).catch(() => this.errorResponse({ res, message: db.dbErro() }));     
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));     
     };
   }
 

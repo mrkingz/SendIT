@@ -44,7 +44,7 @@ export default class ParcelValidator extends Validator {
 				Joi.number().integer().greater(0).positive(),
 				Joi.number().precision(2).greater(0).positive()
 			]).required(),
-			description: Joi.string().max(255),
+			description: Joi.string().max(255).default('N/A'),
 			deliveryMethod: Joi.string().valid('Fast', 'Normal').required()
 				.max(20).label('Delivery method'),
 			pickupAddress: Joi.string().required().max(150).label('Pickup address'),
