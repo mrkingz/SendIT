@@ -774,6 +774,12 @@ html {
     background: rgb(241, 241, 253)
 }
 
+.processing {
+    margin: 1rem .5rem;
+    text-align: center;
+
+}
+
 .right-panel {
     border-left:1px solid rgb(205, 205, 245);
 }
