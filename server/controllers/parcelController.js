@@ -167,7 +167,7 @@ export default class ParcelController extends UtilityService {
         db.sqlQuery(this.getUserParcelQuery(userid, req.params.parcelId)).then((result) => {
           const parcel = result.rows[0];
           return (_.isEmpty(parcel))
-                  ? this.errorResponse(res, 404, 'No delivery order found')
+                  ? this.errorResponse({ res, code: 404, message: 'No delivery order found' })
                   : this.successResponse({ 
                       res, code: 302, message: "Parcel successfully retrieved", data: { parcel }
                     });
