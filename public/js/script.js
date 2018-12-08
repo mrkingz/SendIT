@@ -80,12 +80,13 @@ const message = (msg, status, elem) => {
     fail: 'alert-danger',
     info: 'alert-info'
   };
+  status = status ? status.toLowerCase() : 'fail';
   const messageElem = elem || document.getElementById('message');
   messageElem.innerHTML = '';
   const parent = document.createElement('div');
   parent.classList.add('control-group');
   const div = document.createElement('div');
-  addClass(div, ['alert', type[status.toLowerCase()], 'bounceIn', 'animated']);
+  addClass(div, ['alert', type[status], 'bounceIn', 'animated']);
   div.innerHTML = msg;
   parent.appendChild(div);
   messageElem.appendChild(parent);
