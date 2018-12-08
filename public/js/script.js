@@ -18,6 +18,15 @@ const request = (obj) => {
   if (obj['token']) {
     headers.append('token', obj['token']);
   }
+  // We don't body in a GET request
+  // So we'll just create the request object with the method and headers 
+  if (obj['method'] === 'GET') {
+    return new Request(`${baseUrl.concat(obj.path)}`, {
+      method: obj['method'],
+      headers
+    }); 
+  }
+
   return new Request(`${baseUrl.concat(obj.path)}`, {
     method: obj['method'] || 'POST',
     body: obj['data'] || getFormData(obj.fields),
@@ -65,20 +74,22 @@ const processing = (obj) => {
   }
 };
 
-const message = (msg, status) => {
+const message = (msg, status, elem) => {
   const type = {
     success: 'alert-success',
     fail: 'alert-danger',
     info: 'alert-info'
   };
-  document.getElementById('message').innerHTML = '';
+  status = status ? status.toLowerCase() : 'fail';
+  const messageElem = elem || document.getElementById('message');
+  messageElem.innerHTML = '';
   const parent = document.createElement('div');
   parent.classList.add('control-group');
   const div = document.createElement('div');
-  addClass(div, ['alert', type[status.toLowerCase()], 'bounceIn', 'animated']);
+  addClass(div, ['alert', type[status], 'bounceIn', 'animated']);
   div.innerHTML = msg;
   parent.appendChild(div);
-  document.getElementById('message').appendChild(parent);
+  messageElem.appendChild(parent);
 };
 
 /* When the user clicks on the button, 
@@ -221,7 +232,7 @@ const removeListeners = (element) => {
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = (event) => {
-  if (event.target === modal) {
+  if (event.target === modal && !modal.classList.contains('static')) {
     modal.style.display = 'none';
   }
 
@@ -246,6 +257,38 @@ const showModal = (modalId) => {
 const hideModal = () => {
   modal.style.display = 'none';
 };
+
+const showSpinner = () => {
+  const modal = document.createElement('div')
+  modal.id = "spinner";
+  addClass(modal, ['modal', 'static']);
+  modal.innerHTML = ` <div class="modal-content modal-sm spinner">
+                          <div class="bold" id="spinner-img">
+                              <div><img style="height: 120px;" src="../images/processing.gif" alt=""></div>
+                              <div>Please wait...</div>
+                          </div>
+                          <div class="hide" id="spinner-message">
+                              <div id='message'></div>
+                              <div class=''><button class='btn btn-primary' onclick="hideSpinner()">Close</button></div>
+                          </div>
+                      </div>`;
+  document.querySelector('body').appendChild(modal);
+  showModal('spinner');
+}
+
+const toggleSpinner = (msg, status) => {
+  const spinnerImg = document.getElementById('spinner-img');
+  const spinnerMsg = document.getElementById('spinner-message');
+  addClass(spinnerImg, ['hide']);
+  removeClass(spinnerMsg, ['hide']);
+  message(msg, status, document.querySelector('#spinner-message #message'));
+}
+
+const hideSpinner = () => {
+  const spinner = document.getElementById('spinner');
+  spinner.style.display = 'none';
+  document.querySelector('body').removeChild(spinner)
+}
 
 const toggleEnquiryForm = (event, isShow) => {
   event.preventDefault();

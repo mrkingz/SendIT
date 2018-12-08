@@ -419,6 +419,10 @@ div.nexted ~ div.nexted {
     border-bottom:1px solid rgb(212, 212, 231);
 }
 
+.content-header::first-letter {
+    text-transform: uppercase;
+}
+
 .control {
     width: 100%;
     padding: .35rem .4rem;
@@ -633,6 +637,10 @@ div.nexted ~ div.nexted {
     min-height: 100px;
 }
 
+.hide {
+    display: none;
+}
+
 html, body {
     height: 100;
 }
@@ -768,6 +776,12 @@ html {
 .panel {
     padding: 1rem;
     background: rgb(241, 241, 253)
+}
+
+.spinner {
+    padding: 1rem .5rem !important;
+    text-align: center;
+
 }
 
 .right-panel {
@@ -1072,7 +1086,7 @@ select option {
 }
 
 .show {
-    display:block;
+    display: block !important;
 }
 
 .side-image {

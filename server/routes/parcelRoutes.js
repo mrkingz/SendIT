@@ -11,20 +11,22 @@ const { ParcelValidator } = validations;
 const parcelRouter = express.Router();
 
 parcelRouter.route('/api/v1/parcels')
-.all(UserController.authenticateUser())
-.post(ParcelValidator.validateParcel(),
-	ParcelController.createParcel())
-.get(UserController.authorizeUser(),
-	ParcelController.getParcels());
+	.all(UserController.authenticateUser())
+	.post(ParcelValidator.validateParcel(),
+		ParcelController.createParcel())
+	.get(UserController.authorizeUser(),
+		ParcelController.getParcels(),
+		ParcelController.filterParcels());
 
 parcelRouter.get('/api/v1/parcels/:parcelId',
 	UserController.authenticateUser(),
 	UserController.authorizeUser(),
-  ParcelController.getParcel());
+	ParcelController.getParcel());
 
 parcelRouter.get('/api/v1/users/:userId/parcels',
 	UserController.authenticateUser(),
-	ParcelController.getUserParcels());
+	ParcelController.getUserParcels(),
+	ParcelController.filterParcels());
 
 parcelRouter.get('/api/v1/users/:userId/parcels/:parcelId',
 	UserController.authenticateUser(),
@@ -46,7 +48,7 @@ parcelRouter.put('/api/v1/parcels/:parcelId/status',
 	ParcelValidator.validateAdminUpdate('status'),
 	ParcelController.updateStatus());
 
-	parcelRouter.put('/api/v1/parcels/:parcelId/destination',
+parcelRouter.put('/api/v1/parcels/:parcelId/destination',
 	UserController.authenticateUser(),
 	ParcelValidator.validateDestination(),
 	ParcelController.updateDestination());

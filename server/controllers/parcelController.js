@@ -51,12 +51,16 @@ export default class ParcelController extends UtilityService {
    * @memberof RequestController
    */
   static getParcels() {
-    return (req, res) => {
+    return (req, res, next) => {
+      if (req.query.filter) {
+        return next();
+      }
+
       const query = { text: `SELECT * FROM parcels` };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
         return (_.isEmpty(parcels))
-        ? this.errorResponse({ res, code: 404, message: 'No parcel found' })
+        ? this.errorResponse({ res, code: 404, message: 'No delivery order found' })
         : this.successResponse({ 
             res, code: 302, message: 'Parcels successfully retrieved', data: { parcels } 
           });
@@ -75,7 +79,7 @@ export default class ParcelController extends UtilityService {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         const parcel = result.rows;
         return (_.isEmpty(parcel))
-        ? this.errorResponse({ res, code: 404, message: 'No parcel found' })
+        ? this.errorResponse({ res, code: 404, message: 'No delivery order found' })
         : this.successResponse({
             res, code: 302, message: 'Parcel successfully retrieved', data: { parcel: parcel[0] }
           });
@@ -85,12 +89,17 @@ export default class ParcelController extends UtilityService {
 	
   /**
    * Gets all user's parcels
+   * 
    * @static
    * @returns {function} Returns an express middleware function that handles the GET request
    * @memberof RequestController
    */
   static getUserParcels() {
-    return (req, res) => {
+    return (req, res, next) => {
+      if (req.query.filter) {
+        return next();
+      }
+
       if (Number(req.body.decoded.userid) !== Number(req.params.userId)) {
         this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
       } else {
@@ -101,12 +110,45 @@ export default class ParcelController extends UtilityService {
         db.sqlQuery(query).then((result) => {
           const parcels = result.rows;
           return (_.isEmpty(parcels))
-                  ? this.errorResponse({ res, code: 404, message: 'No parcel found' })
+                  ? this.errorResponse({ 
+                    res, code: 404, message: 'No delivery order found'
+                   })
                   : this.successResponse({
                       res, code: 302, message: 'Parcels successfully retrieved', data: { parcels } 
                     });
         }).catch(() => this.errorResponse({ res, message: db.dbError() }));
       }
+    };
+  }
+
+  /**
+   * Filter parcels
+   *
+   * @static
+   * @returns {function} Returns an express middleware function that handles the GET request
+   * @memberof ParcelController
+   */
+  static filterParcels() {
+    return (req, res) => {
+      const isadmin = req.body.decoded.isadmin;
+      if (!isadmin && (Number(req.body.decoded.userid) !== Number(req.params.userId))) {
+        this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
+      } else {
+        const filter = this.ucFirstStr(req.query.filter);
+        const where = isadmin ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
+        const values = isadmin ? [filter] : [req.params.userId, filter];
+        const query = { text: `SELECT * FROM parcels WHERE ${where}`, values };        
+        db.sqlQuery(query).then((result) => {
+          const parcels = result.rows;
+          const message = `No ${filter.toLowerCase()} delivery order found`;
+          const msg = `${filter} parcels successfully retrieved`;
+          return (_.isEmpty(parcels))
+                  ? this.errorResponse({ res, code: 404, message })
+                  : this.successResponse({
+                      res, code: 302, message: msg, data: { parcels } 
+                    });
+        }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+      }    
     };
   }
 
@@ -122,10 +164,10 @@ export default class ParcelController extends UtilityService {
         this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
       } else {
         const { userid } = req.body.decoded;
-        db.sqlQuery(this.getUserParcelQueryObj(userid, req.params.parcelId)).then((result) => {
+        db.sqlQuery(this.getUserParcelQuery(userid, req.params.parcelId)).then((result) => {
           const parcel = result.rows[0];
           return (_.isEmpty(parcel))
-                  ? this.errorResponse(res, 404, 'No parcel found')
+                  ? this.errorResponse(res, 404, 'No delivery order found')
                   : this.successResponse({ 
                       res, code: 302, message: "Parcel successfully retrieved", data: { parcel }
                     });
@@ -141,10 +183,10 @@ export default class ParcelController extends UtilityService {
    * @param {int} userId user id
    * @param {int} parcelId parcel id
    * @returns {Object} the query object
-   * @method getUserParcelQueryObj
+   * @method getUserParcelQuery
    * @memberof ParcelController
    */
-  static getUserParcelQueryObj(userId, parcelId) {
+  static getUserParcelQuery(userId, parcelId) {
     return {
       text: `SELECT * FROM parcels WHERE userid = $1 AND parcelid = $2`,
       values: [userId, parcelId]
@@ -159,10 +201,10 @@ export default class ParcelController extends UtilityService {
    * @param {int} userId user id
    * @param {int} parcelId parcel id
    * @returns {Object} the query object
-   * @method getUserParcelQueryObj
+   * @method getUserParcelQuery
    * @memberof ParcelController
    */
-  static getCancelOrderQueryObj(status, userId, parcelId) {
+  static getCancelOrderQuery(status, userId, parcelId) {
     return {
       text: `UPDATE parcels 
             SET deliverystatus = $1 WHERE parcelid = $2 AND userid = $3 RETURNING *`,
@@ -196,9 +238,9 @@ export default class ParcelController extends UtilityService {
   static cancelParcelOrder() {
     return (req, res) => {
 			const parcelId = req.params.parcelId, { userid } = req.body.decoded;
-      db.sqlQuery(this.getUserParcelQueryObj(userid, parcelId)).then((result) => {
+      db.sqlQuery(this.getUserParcelQuery(userid, parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse({ res, code: 404, message: 'No parcel found' });
+          this.errorResponse({ res, code: 404, message: 'No delivery order found' });
         } else {
           const status = 'Cancelled', parcel = result.rows[0];
           if (parcel.deliverystatus === 'Delivered') {
@@ -208,7 +250,7 @@ export default class ParcelController extends UtilityService {
               res, message: 'Parcel has already been cancelled', data: { parcel }
            });
           } else {
-            db.sqlQuery(this.getCancelOrderQueryObj(status, userid, parcelId)).then((updated) => {
+            db.sqlQuery(this.getCancelOrderQuery(status, userid, parcelId)).then((updated) => {
               const message = 'Parcel delivery order successfully cancelled';
               this.successResponse({
                 res, message, data: { parcel: updated.rows[0] }
@@ -232,7 +274,7 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse(res, 404, 'No parcel found');
+          this.errorResponse(res, 404, 'No delivery order found');
         } else {
           const parcel = result.rows[0];
           const msg = 'location cannot be updated';
@@ -256,7 +298,7 @@ export default class ParcelController extends UtilityService {
             .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
           }
         }
-      }).catch(() => this.errorResponse({ res, message: db.dbErro() }));
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
@@ -272,7 +314,7 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse({ res, code: 404, message: 'No parcel found' });
+          this.errorResponse({ res, code: 404, message: 'No delivery order found' });
         } else {
           const parcel = result.rows[0], msg = 'status cannot be updated';
           if (parcel.deliverystatus === 'Delivered') {
@@ -298,7 +340,7 @@ export default class ParcelController extends UtilityService {
             }).catch(() => this.errorResponse({ res, message: db.dbError() }));
           }
         }
-      }).catch(() => this.errorResponse({ res, message: db.dbErro() }));     
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));     
     };
   }
 
@@ -320,7 +362,7 @@ export default class ParcelController extends UtilityService {
       };
       db.sqlQuery(query).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse({ res, code: 404, message: 'No parcel found' });
+          this.errorResponse({ res, code: 404, message: 'No delivery order found' });
         } else {
           const parcel = result.rows[0], msg = 'destination cannot be updated';
           if (parcel.deliverystatus === 'Delivered') {
