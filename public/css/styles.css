@@ -1125,7 +1125,7 @@ select option {
 }
 
 #trackingNo::before {
-    content: 'Tracking No.: '
+    content: 'Tracking #: '
 }
 
 .tracking-container {

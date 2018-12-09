@@ -12,10 +12,12 @@ const checkAuth = async () => {
 		}))
 		.then(res => res.json())
 		.then((res) => {
-			const { firstname, lastname, isadmin } = res.data.user;
-			document.getElementById('name').innerHTML = `${firstname} ${lastname}`;
-			document.getElementById('role').innerHTML = isadmin ? `(Administrator)` : '';
-			return res.data.user;
+			if (res.data.user) {
+				const { firstname, lastname, isadmin } = res.data.user;
+				document.getElementById('name').innerHTML = `${firstname} ${lastname}`;
+				document.getElementById('role').innerHTML = isadmin ? `(Administrator)` : '';
+				return res.data.user;
+			}
 		});
 	}
 	if (!user) {
