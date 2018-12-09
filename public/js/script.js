@@ -171,7 +171,7 @@ isValidWeight = (field) => {
     displayError(field, 'Enter a valid number for weight');
   }
   return isValid;
-}
+};
 
 const focusListener = (e) => {
   const element = e.target;
@@ -274,7 +274,7 @@ const showSpinner = () => {
                       </div>`;
   document.querySelector('body').appendChild(modal);
   showModal('spinner');
-}
+};
 
 const toggleSpinner = (msg, status) => {
   const spinnerImg = document.getElementById('spinner-img');
@@ -282,13 +282,15 @@ const toggleSpinner = (msg, status) => {
   addClass(spinnerImg, ['hide']);
   removeClass(spinnerMsg, ['hide']);
   message(msg, status, document.querySelector('#spinner-message #message'));
-}
+};
 
 const hideSpinner = () => {
   const spinner = document.getElementById('spinner');
-  spinner.style.display = 'none';
-  document.querySelector('body').removeChild(spinner)
-}
+  if (spinner) {
+    spinner.style.display = 'none';
+    document.querySelector('body').removeChild(spinner);
+  }
+};
 
 const toggleEnquiryForm = (event, isShow) => {
   event.preventDefault();

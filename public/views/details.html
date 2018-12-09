@@ -10,7 +10,7 @@
         <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
         <script src="../js/authorization.js"></script>
     </head>
-    <body>
+    <body onload="getDetails()">
         <header class="header align-bottom">
             <div class="header-content">
                 <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
@@ -40,22 +40,14 @@
                         </div>
                         <div class="col-lg-6 col-md-6 col-sm-12">
                             <div style="padding-bottom: 30px">
-                                <div>
+                                <div id="order-details">
                                     <div class="content-header">
                                         Order details
                                     </div>                                                  
                                     <div class="panel">
                                         <div class="flex justify-content-between mb-sm">
                                             <div> <a href="/orders" class="btn btn-link size-11 skyblue-color">Go back</a></div>
-                                            <div class="dropdown">
-                                                <button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn"><i class="fa fa-bars bold"></i></button>
-                                                <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">
-                                                    <button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>
-                                                    <button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
-                                                    <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>
-                                                    <button class="menu-btn">Delete</button>
-                                                </div>
-                                            </div>
+                                            <div class="dropdown" id="dropdown"></div>
                                         </div> 
 
                                         <div class="card">     
@@ -64,41 +56,40 @@
                                                 <div class="nexted">
                                                     <div class="card-header">
                                                         <div class="card-title">
-                                                            <label class="size-12 bold">Tracking #: 45557676766</label>
+                                                            <label class="size-12 bold">Tracking #: <span id="trackingno"></span></label>
                                                         </div>
                                                         <button class="btn btn-link btn-sm skyblue-color">Edit</button>
                                                     </div>
-                                                    <div class="card-wrapper">
-                                    
+                                                    <div class="card-wrapper">                                
 
                                                         <div class="card-row">
                                                             <div class="data-header">Weight</div>
-                                                            <div class="data">64.2 kgs</div>
+                                                            <div class="data weight" id="weight">2</div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">Parcel description</div>
-                                                            <div class="data">Binatone standing fan</div>
+                                                            <div class="data" id="description"></div>
                                                         </div>
                                                                                                                     
                                                         <div class="card-row">
                                                             <div class="data-header">Date sent</div>
-                                                            <div class="data">5th November, 2018</div>
+                                                            <div class="data" id="senton"></div>
                                                         </div>
                                                         
                                                         <div class="card-row">
                                                             <div class="data-header">Delivery method</div>
-                                                            <div class="data">Fast delivery</div>
+                                                            <div class="data" id="deliverymethod"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">Status</div>
-                                                            <div class="data red-color">In transit</div>
+                                                            <div class="data red-color" id="deliverystatus"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">Present location</div>
-                                                            <div class="data">Ibadan</div>
+                                                            <div class="data" id="presentlocation"></div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -115,28 +106,24 @@
                                                     <div class="card-wrapper">
                                                         <div class="card-row">
                                                             <div class="data-header">Address</div>
-                                                            <div class="data">16, Fajuyi Street, Adebayo</div>
+                                                            <div class="data" id="pickupaddress"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">City/Town</div>
-                                                            <div class="data">Ado Ekiti</div>
+                                                            <div class="data" id="pickupcity"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">State</div>
-                                                            <div class="data">Ekiti</div>
+                                                            <div class="data" id="pickupstate"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">Date</div>
-                                                            <div class="data">17th November, 2018</div>
+                                                            <div class="data" id="pickupdate"></div>
                                                         </div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Time</div>
-                                                            <div class="data">12:30 PM</div>
-                                                        </div>
                                                     </div>
                                                 </div> 
 
@@ -153,17 +140,17 @@
 
                                                         <div class="card-row">
                                                             <div class="data-header">State</div>
-                                                            <div class="data">Lagos</div>
+                                                            <div class="data" id="destinationstate"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">City/Town</div>
-                                                            <div class="data">Iyana Ipaja</div>
+                                                            <div class="data" id="destinationcity"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">Address</div>
-                                                            <div class="data">56, Bola Ajayi Street</div>
+                                                            <div class="data" id="destinationaddress"></div>
                                                         </div>
                                                     
                                                     </div> 
@@ -181,12 +168,12 @@
                                                     <div class="card-wrapper">
                                                         <div class="card-row">
                                                             <div class="data-header">Full name</div>
-                                                            <div class="data">John Adekunle</div>
+                                                            <div class="data" id="receivername"></div>
                                                         </div>
 
                                                         <div class="card-row">
                                                             <div class="data-header">Phone No.</div>
-                                                            <div class="data">08023416792</div>
+                                                            <div class="data" id="receiverphone"></div>
                                                         </div>
                                                     
                                                     </div> 
@@ -196,6 +183,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="message"></div>
                         </div>
                             
                         <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
@@ -356,5 +344,56 @@
         
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
+        <script>
+            const getDetails = (id) => {
+                authUser.then((user) => {
+                    const parcelId = location.pathname.split('/')[2];
+                    fetch(request({ 
+                        path: user.isadmin ? `/parcels/${1}` : `/users/${user.userid}/parcels/${parcelId}`, 
+                        token: localStorage.getItem('token'),
+                        method: 'GET' 
+                    })).then(res => res.json())
+                    .then((res) => {
+                        if (res.status === 'Success') {
+                            const data = res.data.parcel;
+                            let elem;
+                            Object.keys(data).forEach((key) => {
+                                elem = document.getElementById(key);
+                                if (elem) {
+                                    elem.innerHTML = data[key] ? data[key] : 'Not available';
+                                    appendMenu(data.userid);
+                                }
+                            })
+                        } else {
+                            document.getElementById('order-details').classList.add('hide')
+                            message(res.message);
+                        }
+                    })
+                })
+            }
+
+            const appendMenu = async (userId) => {
+                const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn">
+                                <i class="fa fa-bars bold"></i>
+                            </button>
+                            <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
+                const close = `<button class="menu-btn">Delete</button></div>`;
+                let menu = await authUser.then((user) => {
+                    let str
+                    if (user.isadmin && user.userid === userId) {
+                        str = `<button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>
+                                <button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
+                                <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
+                    } else if (user.isadmin && user.userid !== userId) {
+                        str = `<button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
+                                <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;                       
+                    } else {
+                        str = `<button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>`;
+                    }
+                    return user.userid === userId ? str.concat(close) : str.concat('</div>');
+                });
+                document.getElementById('dropdown').innerHTML = open.concat(menu);
+            }
+        </script>
     </body>
 </html>
