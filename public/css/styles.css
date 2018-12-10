@@ -282,6 +282,10 @@ button.menu-btn {
     font-size: .7rem;
 }
 
+#confirm-title::before {
+    content: "Confirm\00a0";
+}
+
 .data {
     width: 65%;
     font-weight: normal;
@@ -524,6 +528,11 @@ div.nexted ~ div.nexted {
 
 #deliverymethod::after {
     content: "\00a0 delivery";
+}
+
+.edit-btn {
+    visibility: hidden;
+    color: #3498DB;
 }
 
 #enquiry {

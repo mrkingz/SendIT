@@ -1,4 +1,4 @@
-let oDropdown, modal;
+let oDropdown, modal, pageReload = false;
 const baseUrl = '/api/v1';
 
 $('.control').on('keypress blur', () => {
@@ -28,8 +28,8 @@ const request = (obj) => {
   }
 
   return new Request(`${baseUrl.concat(obj.path)}`, {
-    method: obj['method'] || 'POST',
-    body: obj['data'] || getFormData(obj.fields),
+    method: obj.method || 'POST',
+    body: (obj.data || obj.fields) ? obj.data || getFormData(obj.fields) : null,
     headers
   });
 };
@@ -259,7 +259,7 @@ const hideModal = () => {
 };
 
 const showSpinner = () => {
-  const modal = document.createElement('div')
+  const modal = document.createElement('div');
   modal.id = "spinner";
   addClass(modal, ['modal', 'static']);
   modal.innerHTML = ` <div class="modal-content modal-sm spinner">
@@ -284,11 +284,14 @@ const toggleSpinner = (msg, status) => {
   message(msg, status, document.querySelector('#spinner-message #message'));
 };
 
-const hideSpinner = () => {
+const hideSpinner = async () => {
   const spinner = document.getElementById('spinner');
   if (spinner) {
     spinner.style.display = 'none';
-    document.querySelector('body').removeChild(spinner);
+    await document.querySelector('body').removeChild(spinner);
+  }
+  if (pageReload) {
+    window.location.reload();
   }
 };
 
