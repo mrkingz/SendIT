@@ -310,7 +310,7 @@
             <div id="status-modal" class="modal">
     
                 <!-- Modal content -->
-                <div class="modal-content modal-md">
+                <div class="modal-content modal-sm">
                     <div class="modal-header">
                         <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
                     </div>
@@ -319,17 +319,16 @@
                         <div class="panel">
                             <form class="form" action="">
                                 <div class="control-group">
-                                    <label class="required" for="destination">Delivery status</label>
-                                    <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
+                                    <label class="required" for="new-delivery-status">Delivery status</label>
+                                    <select name="deliveryStatus" id="new-delivery-status" class="control">
                                         <option value="">Select status</option>
                                         <option value="Delivered">Delivered</option>
-                                        <option value="In Transit">In transit</option>
-                                        <option value="Pending">Pending</option>
+                                        <option value="Transiting">Transiting</option>
                                     </select>
                                 </div>
         
                                 <div class="my-lg">
-                                    <button class="btn btn-primary" onclick="return false">Save</button>
+                                    <button class="btn btn-primary btn-block" onclick="updateDeliveryStatus(event)">Save</button>
                                 </div>
                             </form>
                         </div>
@@ -419,7 +418,30 @@
                     } else {
                         message(res.message, res.status);
                     }
-                }).catch(error => message(error.message, error.status));
+                }).catch(error => toggleSpinner(error.message, error.status));
+            }
+
+            const updateDeliveryStatus = async (e) => {
+                e.preventDefault();
+                const fields = ['new-delivery-status'];
+                if (!hasEmpty(fields)) {
+                    await hideModal('');
+                    await showSpinner();
+                    fetch(request({ 
+                        path: `/parcels/${getParcelId()}/status`, 
+                        token: localStorage.getItem('token'),
+                        fields,
+                        method: 'PUT' 
+                    })).then(res => res.json())
+                    .then((res) => {
+                        if (res.status === 'Success') {
+                            pageReload = true;
+                            toggleSpinner(res.message, res.status);
+                        } else {
+                            message(res.message, res.status);
+                        }
+                    }).catch(error => toggleSpinner(error.message, error.status));
+                }       
             }
         </script>
     </body>
