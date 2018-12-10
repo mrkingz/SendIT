@@ -58,7 +58,7 @@
                                                         <div class="card-title">
                                                             <label class="size-12 bold">Tracking #: <span id="trackingno"></span></label>
                                                         </div>
-                                                        <button class="btn btn-link btn-sm skyblue-color">Edit</button>
+                                                        <button class="btn btn-link btn-sm edit-btn">Edit</button>
                                                     </div>
                                                     <div class="card-wrapper">                                
 
@@ -101,7 +101,7 @@
                                                         <div class="card-title">
                                                             <label class="size-12 bold" for="pickup-details">Pick up details</label>
                                                         </div>
-                                                        <button class="btn btn-link btn-sm skyblue-color">Edit</button>
+                                                        <button class="btn btn-link btn-sm edit-btn">Edit</button>
                                                     </div>
                                                     <div class="card-wrapper">
                                                         <div class="card-row">
@@ -133,7 +133,7 @@
                                                         <div class="card-title">
                                                             <label class="size-12 bold">Destination details</label>
                                                         </div>
-                                                        <button class="btn btn-link btn-sm skyblue-color" onclick="showModal('destination-modal')">Edit</button>
+                                                        <button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal')">Edit</button>
                                                     </div>
 
                                                     <div class="card-wrapper">
@@ -162,7 +162,7 @@
                                                         <div class="card-title">
                                                             <label class="size-12 bold" for="pickup-details">Receiver's details</label>
                                                         </div>
-                                                        <button class="btn btn-link btn-sm skyblue-color">Edit</button>
+                                                        <button class="btn btn-link btn-sm edit-btn">Edit</button>
                                                     </div>
 
                                                     <div class="card-wrapper">
@@ -211,25 +211,20 @@
 
         <div id="confirm-modal" class="modal">
 
-                <!-- Modal content -->
-                <div class="modal-content modal-sm">
-                    <div class="modal-header">
-                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <div class="red-color size-12 bold align-center">Confirm alert</div>
-                        <div class="warning">
-                            <span>
-                                Are you sure you want to cancel this order?<br>
-                                Click continue to confirm this operation
-                            </span>
-                        </div>
-                        <div class="my-lg align-center">
-                            <button class="btn btn-primary btn-sm">Continue</button>
-                            <button class="btn btn-primary btn-sm" onclick="hideModal()">Quit</button>
-                        </div>
+            <!-- Modal content -->
+            <div class="modal-content modal-sm">
+                <div class="modal-header">
+                    <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <div class="red-color size-12 bold align-center" id=confirm-title></div>
+                    <div class="warning"></div>
+                    <div class="my-lg align-center">
+                        <button class="btn btn-primary btn-sm" id="confirm-btn">Continue</button>
+                        <button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
                     </div>
                 </div>
+            </div>
     
         </div>
     
@@ -314,42 +309,43 @@
             <!-- Status Modal -->
             <div id="status-modal" class="modal">
     
-                    <!-- Modal content -->
-                    <div class="modal-content modal-md">
-                        <div class="modal-header">
-                            <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-                        </div>
-                        <div class="modal-body">
-                            <h3>Update status</h3>
-                            <div class="panel">
-                                <form class="form" action="">
-                                    <div class="control-group">
-                                        <label class="required" for="destination">Delivery status</label>
-                                        <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
-                                            <option value="">Select status</option>
-                                            <option value="Delivered">Delivered</option>
-                                            <option value="In Transit">In transit</option>
-                                            <option value="Pending">Pending</option>
-                                        </select>
-                                    </div>
-            
-                                    <div class="my-lg">
-                                        <button class="btn btn-primary" onclick="return false">Save</button>
-                                    </div>
-                                </form>
-                            </div>
+                <!-- Modal content -->
+                <div class="modal-content modal-md">
+                    <div class="modal-header">
+                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+                    </div>
+                    <div class="modal-body">
+                        <h3>Update status</h3>
+                        <div class="panel">
+                            <form class="form" action="">
+                                <div class="control-group">
+                                    <label class="required" for="destination">Delivery status</label>
+                                    <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
+                                        <option value="">Select status</option>
+                                        <option value="Delivered">Delivered</option>
+                                        <option value="In Transit">In transit</option>
+                                        <option value="Pending">Pending</option>
+                                    </select>
+                                </div>
+        
+                                <div class="my-lg">
+                                    <button class="btn btn-primary" onclick="return false">Save</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
+            </div>
         
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
+            const getParcelId = () => location.pathname.split('/')[2];
+
             const getDetails = (id) => {
                 authUser.then((user) => {
-                    const parcelId = location.pathname.split('/')[2];
                     fetch(request({ 
-                        path: user.isadmin ? `/parcels/${1}` : `/users/${user.userid}/parcels/${parcelId}`, 
+                        path: user.isadmin ? `/parcels/${getParcelId()}` : `/users/${user.userid}/parcels/${getParcelId()}`, 
                         token: localStorage.getItem('token'),
                         method: 'GET' 
                     })).then(res => res.json())
@@ -361,38 +357,69 @@
                                 elem = document.getElementById(key);
                                 if (elem) {
                                     elem.innerHTML = data[key] ? data[key] : 'Not available';
-                                    appendMenu(data.userid);
                                 }
                             })
+                            appendMenu(data.userid, data.deliverystatus);
                         } else {
                             document.getElementById('order-details').classList.add('hide')
                             message(res.message);
                         }
-                    })
+                    }).catch(error => message(error.message, error.status));
                 })
             }
 
-            const appendMenu = async (userId) => {
+            const appendMenu = async (userId, deliveryStatus) => {
                 const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn">
-                                <i class="fa fa-bars bold"></i>
-                            </button>
-                            <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
-                const close = `<button class="menu-btn">Delete</button></div>`;
-                let menu = await authUser.then((user) => {
-                    let str
-                    if (user.isadmin && user.userid === userId) {
-                        str = `<button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>
-                                <button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
-                                <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
-                    } else if (user.isadmin && user.userid !== userId) {
-                        str = `<button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
-                                <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;                       
-                    } else {
-                        str = `<button class="menu-btn" onclick="showModal('confirm-modal')">Cancel order</button>`;
+                              <i class="fa fa-bars bold"></i></button>
+                              <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
+                const deleteBtn = `<button class="menu-btn" onclick="showConfirmModal('delete', deleteOrder)">Delete order</button></div>`;
+                const menu = await authUser.then((user) => {
+                    let str = "";
+                    if (deliveryStatus !== 'Cancelled' && deliveryStatus !== 'Delivered') {
+                        if (user.isadmin) {
+                            const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+                            str = `${ user.userid === userId ? cancelBtn : "" }
+                                    <button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
+                                    <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;                       
+                        } else {
+                            str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+                        }
+                        
+                    } 
+                    if (deliveryStatus === 'Placed' && user.userid === userId) {
+                        document.querySelectorAll('.edit-btn')
+                        .forEach(elem => elem.style.visibility = 'visible')
                     }
-                    return user.userid === userId ? str.concat(close) : str.concat('</div>');
+                    return user.userid === userId ? str.concat(deleteBtn) : str;
                 });
-                document.getElementById('dropdown').innerHTML = open.concat(menu);
+                document.getElementById('dropdown').innerHTML = menu ? open.concat(`${menu}</div>`) : '';
+            }
+
+            const showConfirmModal = (type, callback) => {
+                document.querySelector('.modal-body #confirm-title').innerHTML = type;
+                document.querySelector('.modal-body .warning')
+                .innerHTML = `Are you sure you want to ${type} this order?<br>
+                            Click continue to confirm this operation`;
+                document.getElementById('confirm-btn').addEventListener('click', callback);
+                showModal('confirm-modal');
+            }
+
+            const cancelOrder = async () => {
+                await hideModal('');
+                await showSpinner();
+                fetch(request({ 
+                    path: `/parcels/${getParcelId()}/cancel`, 
+                    token: localStorage.getItem('token'),
+                    method: 'PUT' 
+                })).then(res => res.json())
+                .then((res) => {
+                    if (res.status === 'Success') {
+                        pageReload = true;
+                        toggleSpinner(res.message, res.status);
+                    } else {
+                        message(res.message, res.status);
+                    }
+                }).catch(error => message(error.message, error.status));
             }
         </script>
     </body>
