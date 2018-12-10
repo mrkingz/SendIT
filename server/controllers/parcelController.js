@@ -312,6 +312,7 @@ export default class ParcelController extends UtilityService {
    */
   static updateStatus() {
     return (req, res) => {
+      console.log(req.body)
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
           this.errorResponse({ res, code: 404, message: 'No delivery order found' });
