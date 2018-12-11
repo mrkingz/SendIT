@@ -95,9 +95,7 @@
 													</div>
 												</div>
 											</div>
-										</div>
 
-										<div class="more-details">
 											<div class="nexted">
 												<div class="card-header">
 													<div class="card-title">
@@ -135,7 +133,7 @@
 													<div class="card-title">
 														<label class="size-12 bold">Destination details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal')">Edit</button>
+													<button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal'); currentDestination()">Edit</button>
 												</div>
 
 												<div class="card-wrapper">
@@ -235,7 +233,7 @@
 	<div id="destination-modal" class="modal">
 
 		<!-- Modal content -->
-		<div class="modal-content modal-md">
+		<div class="modal-content modal-sm">
 			<div class="modal-header">
 				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
 			</div>
@@ -245,28 +243,24 @@
 					<form class="form" action="">
 						<div class="control-group">
 							<label class="required" for="address">Address</label>
-							<input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+							<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
 						</div>
 
-						<div class="row">
-							<div class="col-lg-6 col-md-6 col-sm-12">
-								<div class="control-group">
-									<label class="required" for="city">City/Town</label>
-									<input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
-								</div>
-							</div>
-							<div class="col-lg-6 col-md-6 col-sm-12">
-								<div class="control-group">
-									<label class="required" for="state">State</label>
-									<select name="" id="" class="control">
-										<option value="">Select state</option>
-									</select>
-								</div>
-							</div>
+						<div class="control-group">
+							<label class="required" for="state">State</label>
+							<select name="destinationState" id="state" class="control">
+									<option value="Kano">Kano</option>
+								<option value="Lagos">Lagos</option>
+							</select>
 						</div>
 
-						<div class="my-lg">
-							<button class="btn btn-primary" onclick="return false">Save</button>
+						<div class="control-group">
+							<label class="required" for="city">City/Town</label>
+							<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
+						</div>
+
+						<div class="control-group">
+							<button class="btn btn-primary" onclick="updateDestination(event)">Save</button>
 						</div>
 				</div>
 				</form>
@@ -438,13 +432,33 @@
 				updateOrder({
 					path: `/${getParcelId()}/presentLocation`,
 					data: await getFormData(fields, (data) => {
-						return { 
+						return {
 							deliveryStatus: document.getElementById('current-delivery-status').value,
-							presentLocation: `${data.city}, ${data.state}` 
+							presentLocation: `${data.city}, ${data.state}`
 						};
 					})
 				});
 			}
+		}
+
+		const updateDestination = (e) => {
+			e.preventDefault();
+			const fields = ['address', 'state', 'city'];
+			if (!hasEmpty(fields)) {
+				updateOrder({
+					path: `/${getParcelId()}/destination`,
+					data: getFormData(fields),
+					method: 'PUT'
+				})
+			}
+		}
+
+		const currentDestination = () => {
+			const state = document.getElementById('state');
+			document.getElementById('address').value = document.getElementById('destinationaddress').innerHTML;
+			state.value = document.getElementById('destinationstate').innerHTML;
+			document.getElementById('city').value = document.getElementById('destinationcity').innerHTML;
+			state.style.color = 'initial';
 		}
 
 		const updateOrder = async (obj) => {
