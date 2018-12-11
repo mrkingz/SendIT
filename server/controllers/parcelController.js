@@ -274,20 +274,26 @@ export default class ParcelController extends UtilityService {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
-          this.errorResponse(res, 404, 'No delivery order found');
+          this.errorResponse({ res, code: 404, message: 'No delivery order found' });
         } else {
           const parcel = result.rows[0];
           const msg = 'location cannot be updated';
           if (parcel.deliverystatus === 'Delivered') {
-            this.errorResponse(res, 403, `Parcel already delivered, ${msg}`);
+            this.errorResponse({ res, code: 403, message: `Parcel already delivered, ${msg}` });
           } else if (parcel.deliverystatus === 'Cancelled') {
-            this.errorResponse(res, 403, `Delivery order has been cancelled, ${msg}`);
-          } else if (parcel.deliverystatus === 'Placed') {
-            this.errorResponse(res, 403, `Parcel not yet transiting, ${msg}`);
+            this.errorResponse({ 
+              res, code: 403, message: `Delivery order already cancelled, ${msg}` 
+            });
           } else {
             const updateQuery = {
-              text: `UPDATE parcels SET presentlocation = $1 WHERE parcelid = $2 RETURNING *`,
-              values: [req.body.presentLocation, req.params.parcelId]
+              text: `UPDATE parcels 
+                     SET presentlocation = $1, deliverystatus = $2 
+                     WHERE parcelid = $3 RETURNING *`,
+              values: [
+                this.ucFirstStr(req.body.presentLocation, { bool: true }),
+                req.body.deliveryStatus, 
+                req.params.parcelId
+              ]
             };
             db.sqlQuery(updateQuery).then((updated) => {
               const message = 'Present location successfully updated';
@@ -312,7 +318,6 @@ export default class ParcelController extends UtilityService {
    */
   static updateStatus() {
     return (req, res) => {
-      console.log(req.body)
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
         if (_.isEmpty(result.rows)) {
           this.errorResponse({ res, code: 404, message: 'No delivery order found' });

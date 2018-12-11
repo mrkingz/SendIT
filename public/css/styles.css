@@ -874,6 +874,16 @@ html {
     background: rgb(241, 241, 253)
 }
 
+.profile-div {
+    background-color: #fefefe;
+    border: 1px solid rgb(214, 214, 241);
+    margin-bottom: .5rem;
+    padding: .5rem;
+    -webkit-border-radius:.2rem;
+        -moz-border-radius: .2rem;
+            border-radius: .2rem;
+}
+
 .right-panel {
     border-left:1px solid rgb(205, 205, 245);
 }
@@ -1046,16 +1056,6 @@ html {
     display: none;
 }
 
-.profile-div {
-    background-color: #fefefe;
-    border: 1px solid rgb(214, 214, 241);
-    margin-bottom: .5rem;
-    padding: .5rem;
-    -webkit-border-radius:.2rem;
-        -moz-border-radius: .2rem;
-            border-radius: .2rem;
-}
-
 .section ~ * {
     margin-bottom: 1rem
 }
@@ -1064,7 +1064,7 @@ html {
     padding: 1rem; 
 }
 
-select option:first-child,
+select option:first-child:empty,
 select {
     color: #636c72;
 }
