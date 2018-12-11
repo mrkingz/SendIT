@@ -26,7 +26,6 @@ const request = (obj) => {
       headers
     }); 
   }
-
   return new Request(`${baseUrl.concat(obj.path)}`, {
     method: obj.method || 'POST',
     body: (obj.data || obj.fields) ? obj.data || getFormData(obj.fields) : null,
@@ -252,6 +251,8 @@ window.onclick = (event) => {
 const showModal = (modalId) => {
   modal = document.getElementById(modalId);
   modal.style.display = 'block';
+  $('.control').removeClass('invalid');
+  $('.control + span').remove();
 };
 
 const hideModal = () => {

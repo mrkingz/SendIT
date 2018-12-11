@@ -86,6 +86,8 @@ export default class ParcelValidator extends Validator {
 			}
 			const schema = {
 				location: Joi.object().keys({
+					deliveryStatus: Joi.string().required().valid('Transiting', 'Delivered')
+					.max(100).label('Delivery status'),
 					presentLocation: Joi.string().required().max(100).label('Present location')
 				}),
 				status: Joi.object().keys({

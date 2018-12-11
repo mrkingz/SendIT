@@ -1,448 +1,472 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>SendIT | Order details</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
-        <script src="../js/authorization.js"></script>
-    </head>
-    <body onload="getDetails()">
-        <header class="header align-bottom">
-            <div class="header-content">
-                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-                <div class="menu-div">
-                    <ul class="navbar">
-                        <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-                        <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-                    </ul>
-                </div>
-            </div>
-        </header>  
-        <div class="row no-gutters">
-            <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-                
-                <div class="wrapper mx-0 mb-0">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-                            <div class="align-center panel">
-                                <div class="image-div mb-lg avatar-wrapper">
-                                    <img src="../images/avatar.png" alt="" class="side-image avatar">
-                                </div>
-                                <div class="size-12 more-details">
-                                    <div id="name" class="bold my-lg" style="font-size: 20px;"></div>
-                                    <div id="role"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div style="padding-bottom: 30px">
-                                <div id="order-details">
-                                    <div class="content-header">
-                                        Order details
-                                    </div>                                                  
-                                    <div class="panel">
-                                        <div class="flex justify-content-between mb-sm">
-                                            <div> <a href="/orders" class="btn btn-link size-11 skyblue-color">Go back</a></div>
-                                            <div class="dropdown" id="dropdown"></div>
-                                        </div> 
 
-                                        <div class="card">     
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>SendIT | Order details</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
+	<link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
+	<script src="../js/authorization.js"></script>
+</head>
 
-                                            <div class="more-details">
-                                                <div class="nexted">
-                                                    <div class="card-header">
-                                                        <div class="card-title">
-                                                            <label class="size-12 bold">Tracking #: <span id="trackingno"></span></label>
-                                                        </div>
-                                                        <button class="btn btn-link btn-sm edit-btn">Edit</button>
-                                                    </div>
-                                                    <div class="card-wrapper">                                
+<body onload="getDetails()">
+	<header class="header align-bottom">
+		<div class="header-content">
+			<a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+			<div class="menu-div">
+				<ul class="navbar">
+					<li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
+					<li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
+				</ul>
+			</div>
+		</div>
+	</header>
+	<div class="row no-gutters">
+		<div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Weight</div>
-                                                            <div class="data weight" id="weight">2</div>
-                                                        </div>
+			<div class="wrapper mx-0 mb-0">
+				<div class="row">
+					<div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+						<div class="align-center panel">
+							<div class="image-div mb-lg avatar-wrapper">
+								<img src="../images/avatar.png" alt="" class="side-image avatar">
+							</div>
+							<div class="size-12 more-details">
+								<div id="name" class="bold my-lg" style="font-size: 20px;"></div>
+								<div id="role"></div>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-6 col-md-6 col-sm-12">
+						<div style="padding-bottom: 30px">
+							<div id="order-details">
+								<div class="content-header">
+									Order details
+								</div>
+								<div class="panel">
+									<div class="flex justify-content-between mb-sm">
+										<div> <a href="/orders" class="btn btn-link size-11 skyblue-color">Go back</a></div>
+										<div class="dropdown" id="dropdown"></div>
+									</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Parcel description</div>
-                                                            <div class="data" id="description"></div>
-                                                        </div>
-                                                                                                                    
-                                                        <div class="card-row">
-                                                            <div class="data-header">Date sent</div>
-                                                            <div class="data" id="senton"></div>
-                                                        </div>
-                                                        
-                                                        <div class="card-row">
-                                                            <div class="data-header">Delivery method</div>
-                                                            <div class="data" id="deliverymethod"></div>
-                                                        </div>
+									<div class="card">
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Status</div>
-                                                            <div class="data red-color" id="deliverystatus"></div>
-                                                        </div>
+										<div class="more-details">
+											<div class="nexted">
+												<div class="card-header">
+													<div class="card-title">
+														<label class="size-12 bold">Tracking #: <span id="trackingno"></span></label>
+													</div>
+													<button class="btn btn-link btn-sm edit-btn">Edit</button>
+												</div>
+												<div class="card-wrapper">
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Present location</div>
-                                                            <div class="data" id="presentlocation"></div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+													<div class="card-row">
+														<div class="data-header">Weight</div>
+														<div class="data weight" id="weight">2</div>
+													</div>
 
-                                            <div class="more-details">
-                                                <div class="nexted">
-                                                    <div class="card-header">
-                                                        <div class="card-title">
-                                                            <label class="size-12 bold" for="pickup-details">Pick up details</label>
-                                                        </div>
-                                                        <button class="btn btn-link btn-sm edit-btn">Edit</button>
-                                                    </div>
-                                                    <div class="card-wrapper">
-                                                        <div class="card-row">
-                                                            <div class="data-header">Address</div>
-                                                            <div class="data" id="pickupaddress"></div>
-                                                        </div>
+													<div class="card-row">
+														<div class="data-header">Parcel description</div>
+														<div class="data" id="description"></div>
+													</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">City/Town</div>
-                                                            <div class="data" id="pickupcity"></div>
-                                                        </div>
+													<div class="card-row">
+														<div class="data-header">Date sent</div>
+														<div class="data" id="senton"></div>
+													</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">State</div>
-                                                            <div class="data" id="pickupstate"></div>
-                                                        </div>
+													<div class="card-row">
+														<div class="data-header">Delivery method</div>
+														<div class="data" id="deliverymethod"></div>
+													</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Date</div>
-                                                            <div class="data" id="pickupdate"></div>
-                                                        </div>
+													<div class="card-row">
+														<div class="data-header">Status</div>
+														<div class="data red-color" id="deliverystatus"></div>
+													</div>
 
-                                                    </div>
-                                                </div> 
+													<div class="card-row">
+														<div class="data-header">Present location</div>
+														<div class="data" id="presentlocation"></div>
+													</div>
+												</div>
+											</div>
+										</div>
 
-                                                <div class="nexted">
-                                                    
-                                                    <div class="card-header">
-                                                        <div class="card-title">
-                                                            <label class="size-12 bold">Destination details</label>
-                                                        </div>
-                                                        <button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal')">Edit</button>
-                                                    </div>
+										<div class="more-details">
+											<div class="nexted">
+												<div class="card-header">
+													<div class="card-title">
+														<label class="size-12 bold" for="pickup-details">Pick up details</label>
+													</div>
+													<button class="btn btn-link btn-sm edit-btn">Edit</button>
+												</div>
+												<div class="card-wrapper">
+													<div class="card-row">
+														<div class="data-header">Address</div>
+														<div class="data" id="pickupaddress"></div>
+													</div>
 
-                                                    <div class="card-wrapper">
+													<div class="card-row">
+														<div class="data-header">City/Town</div>
+														<div class="data" id="pickupcity"></div>
+													</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">State</div>
-                                                            <div class="data" id="destinationstate"></div>
-                                                        </div>
+													<div class="card-row">
+														<div class="data-header">State</div>
+														<div class="data" id="pickupstate"></div>
+													</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">City/Town</div>
-                                                            <div class="data" id="destinationcity"></div>
-                                                        </div>
+													<div class="card-row">
+														<div class="data-header">Date</div>
+														<div class="data" id="pickupdate"></div>
+													</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Address</div>
-                                                            <div class="data" id="destinationaddress"></div>
-                                                        </div>
-                                                    
-                                                    </div> 
-                                                </div>
-                                            
-                                                <div class="nexted">
+												</div>
+											</div>
 
-                                                    <div class="card-header">
-                                                        <div class="card-title">
-                                                            <label class="size-12 bold" for="pickup-details">Receiver's details</label>
-                                                        </div>
-                                                        <button class="btn btn-link btn-sm edit-btn">Edit</button>
-                                                    </div>
+											<div class="nexted">
 
-                                                    <div class="card-wrapper">
-                                                        <div class="card-row">
-                                                            <div class="data-header">Full name</div>
-                                                            <div class="data" id="receivername"></div>
-                                                        </div>
+												<div class="card-header">
+													<div class="card-title">
+														<label class="size-12 bold">Destination details</label>
+													</div>
+													<button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal')">Edit</button>
+												</div>
 
-                                                        <div class="card-row">
-                                                            <div class="data-header">Phone No.</div>
-                                                            <div class="data" id="receiverphone"></div>
-                                                        </div>
-                                                    
-                                                    </div> 
-                                                </div>
-                                            </div>                                                                   
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="message"></div>
-                        </div>
-                            
-                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-                            <div class="panel">
-                                <div class="notification-header">Notifications</div>
-                                
-                                <div class="alert alert-info">No active orders at the moment</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <footer class="footer mt-lg">
-                    <div class="footer-content align-center">
-                        &copy; Andela bootcamp,
-                        <script>document.write(new Date().getFullYear())</script>. All right reserved
-                    </div>
-                </footer>
-            </div>
-        </div> 
+												<div class="card-wrapper">
+
+													<div class="card-row">
+														<div class="data-header">State</div>
+														<div class="data" id="destinationstate"></div>
+													</div>
+
+													<div class="card-row">
+														<div class="data-header">City/Town</div>
+														<div class="data" id="destinationcity"></div>
+													</div>
+
+													<div class="card-row">
+														<div class="data-header">Address</div>
+														<div class="data" id="destinationaddress"></div>
+													</div>
+
+												</div>
+											</div>
+
+											<div class="nexted">
+
+												<div class="card-header">
+													<div class="card-title">
+														<label class="size-12 bold" for="pickup-details">Receiver's details</label>
+													</div>
+													<button class="btn btn-link btn-sm edit-btn">Edit</button>
+												</div>
+
+												<div class="card-wrapper">
+													<div class="card-row">
+														<div class="data-header">Full name</div>
+														<div class="data" id="receivername"></div>
+													</div>
+
+													<div class="card-row">
+														<div class="data-header">Phone No.</div>
+														<div class="data" id="receiverphone"></div>
+													</div>
+
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="message"></div>
+					</div>
+
+					<div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+						<div class="panel">
+							<div class="notification-header">Notifications</div>
+
+							<div class="alert alert-info">No active orders at the moment</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<footer class="footer mt-lg">
+				<div class="footer-content align-center">
+					&copy; Andela bootcamp,
+					<script>document.write(new Date().getFullYear())</script>. All right reserved
+				</div>
+			</footer>
+		</div>
+	</div>
 
 
-  
-        <!-- Modals -->
 
-        <div id="confirm-modal" class="modal">
+	<!-- Modals -->
 
-            <!-- Modal content -->
-            <div class="modal-content modal-sm">
-                <div class="modal-header">
-                    <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-                </div>
-                <div class="modal-body">
-                    <div class="red-color size-12 bold align-center" id=confirm-title></div>
-                    <div class="warning"></div>
-                    <div class="my-lg align-center">
-                        <button class="btn btn-primary btn-sm" id="confirm-btn">Continue</button>
-                        <button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
-                    </div>
-                </div>
-            </div>
-    
-        </div>
-    
-    
-            <!-- Destination Modal -->
-            <div id="destination-modal" class="modal">
-    
-                <!-- Modal content -->
-                <div class="modal-content modal-md">
-                    <div class="modal-header">
-                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <h3>Edit destination</h3>
-                        <div class="panel">
-                            <form class="form" action="">
-                                <div class="control-group">
-                                    <label class="required" for="address">Address</label>
-                                    <input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
-                                </div>
-    
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <div class="control-group">
-                                            <label class="required" for="city">City/Town</label>
-                                            <input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <div class="control-group">
-                                            <label class="required" for="state">State</label>
-                                            <select name="" id="" class="control">
-                                                <option value="">Select state</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-        
-                                <div class="my-lg">
-                                    <button class="btn btn-primary" onclick="return false">Save</button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-    
-            
-            <!-- Location Modal -->
-            <div id="location-modal" class="modal">
-    
-                <!-- Modal content -->
-                <div class="modal-content modal-md">
-                    <div class="modal-header">
-                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <h3>Update location</h3>
-                        <div class="panel">
-                            <form class="form" action="">
-                                <div class="control-group">
-                                    <label class="required" for="destination">State</label>
-                                    <select name="destination" id="cdestination" class="control col-lg-8 col-md-10 col-sm-12">
-                                        <option value="">Select state</option>
-                                        <option value="Lagos">Lagos</option>
-                                    </select>
-                                </div>
-                                <div class="control-group">
-                                    <label class="required" for="city">City/Town</label>
-                                    <input type="text" class="control col-lg-10 col-md-10 col-sm-12" name="city" id="city" placeholder="City/Town" autocomplete="off">
-                                </div>
-        
-                                <div class="my-lg">
-                                    <button class="btn btn-primary" onclick="return false">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-    
-            <!-- Status Modal -->
-            <div id="status-modal" class="modal">
-    
-                <!-- Modal content -->
-                <div class="modal-content modal-sm">
-                    <div class="modal-header">
-                        <span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-                    </div>
-                    <div class="modal-body">
-                        <h3>Update status</h3>
-                        <div class="panel">
-                            <form class="form" action="">
-                                <div class="control-group">
-                                    <label class="required" for="new-delivery-status">Delivery status</label>
-                                    <select name="deliveryStatus" id="new-delivery-status" class="control">
-                                        <option value="">Select status</option>
-                                        <option value="Delivered">Delivered</option>
-                                        <option value="Transiting">Transiting</option>
-                                    </select>
-                                </div>
-        
-                                <div class="my-lg">
-                                    <button class="btn btn-primary btn-block" onclick="updateDeliveryStatus(event)">Save</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        
-        <script src="../js/jquery-3.2.1.min.js"></script>
-        <script src="../js/script.js"></script>
-        <script>
-            const getParcelId = () => location.pathname.split('/')[2];
+	<div id="confirm-modal" class="modal">
 
-            const getDetails = (id) => {
-                authUser.then((user) => {
-                    fetch(request({ 
-                        path: user.isadmin ? `/parcels/${getParcelId()}` : `/users/${user.userid}/parcels/${getParcelId()}`, 
-                        token: localStorage.getItem('token'),
-                        method: 'GET' 
-                    })).then(res => res.json())
-                    .then((res) => {
-                        if (res.status === 'Success') {
-                            const data = res.data.parcel;
-                            let elem;
-                            Object.keys(data).forEach((key) => {
-                                elem = document.getElementById(key);
-                                if (elem) {
-                                    elem.innerHTML = data[key] ? data[key] : 'Not available';
-                                }
-                            })
-                            appendMenu(data.userid, data.deliverystatus);
-                        } else {
-                            document.getElementById('order-details').classList.add('hide')
-                            message(res.message);
-                        }
-                    }).catch(error => message(error.message, error.status));
-                })
-            }
+		<!-- Modal content -->
+		<div class="modal-content modal-sm">
+			<div class="modal-header">
+				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+			</div>
+			<div class="modal-body">
+				<div class="red-color size-12 bold align-center" id=confirm-title></div>
+				<div class="warning"></div>
+				<div class="my-lg align-center">
+					<button class="btn btn-primary btn-sm" id="confirm-btn">Continue</button>
+					<button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
+				</div>
+			</div>
+		</div>
 
-            const appendMenu = async (userId, deliveryStatus) => {
-                const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn">
-                              <i class="fa fa-bars bold"></i></button>
-                              <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
-                const deleteBtn = `<button class="menu-btn" onclick="showConfirmModal('delete', deleteOrder)">Delete order</button></div>`;
-                const menu = await authUser.then((user) => {
-                    let str = "";
-                    if (deliveryStatus !== 'Cancelled' && deliveryStatus !== 'Delivered') {
-                        if (user.isadmin) {
-                            const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
-                            str = `${ user.userid === userId ? cancelBtn : "" }
-                                    <button class="menu-btn" onclick="showModal('location-modal')">Update location</button>
-                                    <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;                       
-                        } else {
-                            str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
-                        }
-                        
-                    } 
-                    if (deliveryStatus === 'Placed' && user.userid === userId) {
-                        document.querySelectorAll('.edit-btn')
-                        .forEach(elem => elem.style.visibility = 'visible')
-                    }
-                    return user.userid === userId ? str.concat(deleteBtn) : str;
-                });
-                document.getElementById('dropdown').innerHTML = menu ? open.concat(`${menu}</div>`) : '';
-            }
+	</div>
 
-            const showConfirmModal = (type, callback) => {
-                document.querySelector('.modal-body #confirm-title').innerHTML = type;
-                document.querySelector('.modal-body .warning')
-                .innerHTML = `Are you sure you want to ${type} this order?<br>
+
+	<!-- Destination Modal -->
+	<div id="destination-modal" class="modal">
+
+		<!-- Modal content -->
+		<div class="modal-content modal-md">
+			<div class="modal-header">
+				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+			</div>
+			<div class="modal-body">
+				<h3>Edit destination</h3>
+				<div class="panel">
+					<form class="form" action="">
+						<div class="control-group">
+							<label class="required" for="address">Address</label>
+							<input type="text" class="control" name="address" id="address" placeholder="Address" autocomplete="off">
+						</div>
+
+						<div class="row">
+							<div class="col-lg-6 col-md-6 col-sm-12">
+								<div class="control-group">
+									<label class="required" for="city">City/Town</label>
+									<input type="text" class="control" name="city" id="city" placeholder="City/Town" autocomplete="off">
+								</div>
+							</div>
+							<div class="col-lg-6 col-md-6 col-sm-12">
+								<div class="control-group">
+									<label class="required" for="state">State</label>
+									<select name="" id="" class="control">
+										<option value="">Select state</option>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="my-lg">
+							<button class="btn btn-primary" onclick="return false">Save</button>
+						</div>
+				</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Location Modal -->
+	<div id="location-modal" class="modal">
+
+		<!-- Modal content -->
+		<div class="modal-content modal-sm">
+			<div class="modal-header">
+				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+			</div>
+			<div class="modal-body">
+				<h3>Update location</h3>
+				<div class="panel">
+					<form class="form" action="">
+						<div class="control-group">
+							<label for="current-delivery-status">Delivery status</label>
+							<select name="deliveryStatus" id="current-delivery-status" class="control">
+								<option value="Delivered">Delivered</option>
+								<option value="Transiting">Transiting</option>
+							</select>
+						</div>
+
+						<div class="control-group">
+							<label class="required" for="present-state">State</label>
+							<select name="state" id="present-state" class="control">
+								<option value="">Select state</option>
+								<option value="Lagos">Lagos</option>
+							</select>
+						</div>
+						<div class="control-group">
+							<label class="required" for="present-city">City/Town</label>
+							<input type="text" class="control" name="city" id="present-city" placeholder="City/Town" autocomplete="off">
+						</div>
+
+						<div class="control-group">
+							<button class="btn btn-primary" onclick="updatePresentLocation(event)">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Status Modal -->
+	<div id="status-modal" class="modal">
+
+		<!-- Modal content -->
+		<div class="modal-content modal-sm">
+			<div class="modal-header">
+				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
+			</div>
+			<div class="modal-body">
+				<h3>Update status</h3>
+				<div class="panel">
+					<form class="form" action="">
+						<div class="control-group">
+							<label class="required" for="new-delivery-status">Delivery status</label>
+							<select name="deliveryStatus" id="new-delivery-status" class="control">
+								<option value="">Select status</option>
+								<option value="Delivered">Delivered</option>
+								<option value="Transiting">Transiting</option>
+							</select>
+						</div>
+
+						<div class="control-group">
+							<button class="btn btn-primary" onclick="updateDeliveryStatus(event)">Save</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="../js/jquery-3.2.1.min.js"></script>
+	<script src="../js/script.js"></script>
+	<script>
+		const getParcelId = () => location.pathname.split('/')[2];
+
+		const getDetails = (id) => {
+			authUser.then((user) => {
+				fetch(request({
+					path: user.isadmin ? `/parcels/${getParcelId()}` : `/users/${user.userid}/parcels/${getParcelId()}`,
+					token: localStorage.getItem('token'),
+					method: 'GET'
+				})).then(res => res.json())
+					.then((res) => {
+						if (res.status === 'Success') {
+							const data = res.data.parcel;
+							let elem;
+							Object.keys(data).forEach((key) => {
+								elem = document.getElementById(key);
+								if (elem) {
+									elem.innerHTML = data[key] ? data[key] : 'Not available';
+								}
+							})
+							appendMenu(data.userid, data.deliverystatus);
+						} else {
+							document.getElementById('order-details').classList.add('hide')
+							message(res.message);
+						}
+					}).catch(error => message(error.message, error.status));
+			})
+		}
+
+		const selectStatus = () => {
+			const elem = document.getElementById('current-delivery-status');
+			elem.value = 'Transiting';
+			elem.style.color = 'initial';
+		}
+
+		const appendMenu = async (userId, deliveryStatus) => {
+			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn">
+                      <i class="fa fa-bars bold"></i></button>
+                    <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
+			const deleteBtn = `<button class="menu-btn" onclick="showConfirmModal('delete', deleteOrder)">Delete order</button></div>`;
+			const menu = await authUser.then((user) => {
+				let str = "";
+				if (deliveryStatus !== 'Cancelled' && deliveryStatus !== 'Delivered') {
+					if (user.isadmin) {
+						const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+						str = `${user.userid === userId ? cancelBtn : ""}
+                                    <button class="menu-btn" onclick="showModal('location-modal'); selectStatus()">Update location</button>
+                                    <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
+					} else {
+						str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+					}
+
+				}
+				if (deliveryStatus === 'Placed' && user.userid === userId) {
+					document.querySelectorAll('.edit-btn')
+						.forEach(elem => elem.style.visibility = 'visible')
+				}
+				return user.userid === userId ? str.concat(deleteBtn) : str;
+			});
+			document.getElementById('dropdown').innerHTML = menu ? open.concat(`${menu}</div>`) : '';
+		}
+
+		const showConfirmModal = (type, callback) => {
+			document.querySelector('.modal-body #confirm-title').innerHTML = type;
+			document.querySelector('.modal-body .warning')
+				.innerHTML = `Are you sure you want to ${type} this order?<br>
                             Click continue to confirm this operation`;
-                document.getElementById('confirm-btn').addEventListener('click', callback);
-                showModal('confirm-modal');
-            }
+			document.getElementById('confirm-btn').addEventListener('click', callback);
+			showModal('confirm-modal');
+		}
 
-            const cancelOrder = async () => {
-                await hideModal('');
-                await showSpinner();
-                fetch(request({ 
-                    path: `/parcels/${getParcelId()}/cancel`, 
-                    token: localStorage.getItem('token'),
-                    method: 'PUT' 
-                })).then(res => res.json())
-                .then((res) => {
-                    if (res.status === 'Success') {
-                        pageReload = true;
-                        toggleSpinner(res.message, res.status);
-                    } else {
-                        message(res.message, res.status);
-                    }
-                }).catch(error => toggleSpinner(error.message, error.status));
-            }
+		const cancelOrder = async () => {
+			updateOrder({ path: `/${getParcelId()}/cancel` })
+		}
 
-            const updateDeliveryStatus = async (e) => {
-                e.preventDefault();
-                const fields = ['new-delivery-status'];
-                if (!hasEmpty(fields)) {
-                    await hideModal('');
-                    await showSpinner();
-                    fetch(request({ 
-                        path: `/parcels/${getParcelId()}/status`, 
-                        token: localStorage.getItem('token'),
-                        fields,
-                        method: 'PUT' 
-                    })).then(res => res.json())
-                    .then((res) => {
-                        if (res.status === 'Success') {
-                            pageReload = true;
-                            toggleSpinner(res.message, res.status);
-                        } else {
-                            message(res.message, res.status);
-                        }
-                    }).catch(error => toggleSpinner(error.message, error.status));
-                }       
-            }
-        </script>
-    </body>
+		const updateDeliveryStatus = (e) => {
+			e.preventDefault();
+			const fields = ['new-delivery-status'];
+			if (!hasEmpty(fields)) {
+				updateOrder({ path: `/${getParcelId()}/status`, data: getFormData(fields) })
+			}
+		}
+
+		const updatePresentLocation = async (e) => {
+			e.preventDefault();
+			const fields = ['present-state', 'present-city'];
+			if (!hasEmpty(fields)) {
+				updateOrder({
+					path: `/${getParcelId()}/presentLocation`,
+					data: await getFormData(fields, (data) => {
+						return { 
+							deliveryStatus: document.getElementById('current-delivery-status').value,
+							presentLocation: `${data.city}, ${data.state}` 
+						};
+					})
+				});
+			}
+		}
+
+		const updateOrder = async (obj) => {
+			const data = obj['data'];
+			await hideModal('');
+			await showSpinner();
+			fetch(request({
+				path: `/parcels`.concat(obj.path),
+				token: localStorage.getItem('token'),
+				data,
+				method: 'PUT'
+			})).then(res => res.json())
+				.then((res) => {
+					if (res.status === 'Success') {
+						pageReload = true;
+						toggleSpinner(res.message, res.status);
+					} else {
+						toggleSpinner(res.message, res.status);
+					}
+				}).catch(error => toggleSpinner(error.message, error.status));
+		}
+	</script>
+</body>
+
 </html>
