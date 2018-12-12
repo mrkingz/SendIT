@@ -57,10 +57,9 @@
 										<div class="more-details">
 											<div class="nexted">
 												<div class="card-header">
-													<div class="card-title">
-														<label class="size-12 bold">Tracking #: <span id="trackingno"></span></label>
+													<div class="card-title card-title-line">
+														<label class="bold">Tracking #: <span id="trackingno"></span></label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn">Edit</button>
 												</div>
 												<div class="card-wrapper">
 
@@ -101,7 +100,6 @@
 													<div class="card-title">
 														<label class="size-12 bold" for="pickup-details">Pick up details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn">Edit</button>
 												</div>
 												<div class="card-wrapper">
 													<div class="card-row">
@@ -133,7 +131,6 @@
 													<div class="card-title">
 														<label class="size-12 bold">Destination details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal'); currentDestination()">Edit</button>
 												</div>
 
 												<div class="card-wrapper">
@@ -162,7 +159,6 @@
 													<div class="card-title">
 														<label class="size-12 bold" for="pickup-details">Receiver's details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn">Edit</button>
 												</div>
 
 												<div class="card-wrapper">
@@ -204,70 +200,6 @@
 			</footer>
 		</div>
 	</div>
-
-
-
-	<!-- Modals -->
-
-	<div id="confirm-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<div class="red-color size-12 bold align-center" id=confirm-title></div>
-				<div class="warning"></div>
-				<div class="my-lg align-center">
-					<button class="btn btn-primary btn-sm" id="confirm-btn">Continue</button>
-					<button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-
-	<!-- Destination Modal -->
-	<div id="destination-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<h3>Edit destination</h3>
-				<div class="panel">
-					<form class="form" action="">
-						<div class="control-group">
-							<label class="required" for="address">Address</label>
-							<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
-						</div>
-
-						<div class="control-group">
-							<label class="required" for="state">State</label>
-							<select name="destinationState" id="state" class="control">
-									<option value="Kano">Kano</option>
-								<option value="Lagos">Lagos</option>
-							</select>
-						</div>
-
-						<div class="control-group">
-							<label class="required" for="city">City/Town</label>
-							<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
-						</div>
-
-						<div class="control-group">
-							<button class="btn btn-primary" onclick="updateDestination(event)">Save</button>
-						</div>
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
 
 	<!-- Location Modal -->
 	<div id="location-modal" class="modal">
@@ -388,10 +320,14 @@
 					if (user.isadmin) {
 						const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
 						str = `${user.userid === userId ? cancelBtn : ""}
-                                    <button class="menu-btn" onclick="showModal('location-modal'); selectStatus()">Update location</button>
-                                    <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
+                      <button class="menu-btn" onclick="showModal('location-modal'); selectStatus()">Update location</button>
+                      <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
 					} else {
-						str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+						str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>
+									 <button class="menu-btn" onclick="editDestinationModal()">Edit destination</button>
+									 <button class="menu-btn" onclick="editParcelModal()">Edit parcel details</button>
+									 <button class="menu-btn" onclick="editPickupModal()">Edit pickup details</button>
+									 <button class="menu-btn" onclick="editReceiverModal()">Edit receiver details</button>`;
 					}
 
 				}
@@ -405,12 +341,18 @@
 		}
 
 		const showConfirmModal = (type, callback) => {
-			document.querySelector('.modal-body #confirm-title').innerHTML = type;
-			document.querySelector('.modal-body .warning')
-				.innerHTML = `Are you sure you want to ${type} this order?<br>
-                            Click continue to confirm this operation`;
-			document.getElementById('confirm-btn').addEventListener('click', callback);
-			showModal('confirm-modal');
+			const content = `<div class="warning">
+													Are you sure you want to ${type} this order?<br>
+													Click continue to confirm this operation
+												</div>`;
+			showModal({
+				content,
+				title: 'cancel',
+				type: 'confirm',
+				callback: () => {
+					document.getElementById('confirm-btn').addEventListener('click', callback);
+				}
+			});
 		}
 
 		const cancelOrder = async () => {
@@ -479,6 +421,63 @@
 						toggleSpinner(res.message, res.status);
 					}
 				}).catch(error => toggleSpinner(error.message, error.status));
+		}
+
+		const editDestinationModal = () => {
+			const content = `<form class="form" action="">
+												<div class="control-group">
+													<label class="required" for="address">Address</label>
+													<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
+												</div>
+
+												<div class="control-group">
+													<label class="required" for="state">State</label>
+													<select name="destinationState" id="state" class="control">
+															<option value="Kano">Kano</option>
+														<option value="Lagos">Lagos</option>
+													</select>
+												</div>
+
+												<div class="control-group">
+													<label class="required" for="city">City/Town</label>
+													<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
+												</div>
+												<div class="control-group">
+													<button class="btn btn-primary" onclick="updateDestination(event)">Save</button>
+												</div>
+											</div>
+										</form>`;
+			showModal({ content, title: 'Edit destination', callback: currentDestination });
+		}
+
+		const editParcelModal = () => {
+			const content = `<form class="form" action="">
+												<div class="control-group">
+													<label class="required" for="weight">Parcel weight</label>
+													<input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight" autocomplete="off" autofocus>
+												</div>
+												<div class="control-group">
+													<label for="description">Description</label>
+													<input type="text" class="control" name="description" id="description" placeholder="Description" autocomplete="off">
+												</div>
+												<div class="control-group">
+													<label for="delivery-method">Choose your delivery method</label>
+													<div id="delivery-method" class="more-details">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="fast" name="deliveryMethod" value="Fast">
+															<label class="form-check-label" for="fast">Fast delivery</label>
+														</div>
+														<div class="form-check m-0">
+															<input class="form-check-input" type="radio" id="normal" name="deliveryMethod" value="Normal" checked> 
+															<label class="form-check-label" for="normal">Normal delivery</label>
+														</div>
+													</div>
+												</div>
+												<div class="control-group mb-0">
+													<button class="btn btn-primary" onclick="updateParcelDetails(event)">Save</button>
+												</div>
+											</form>`;
+			showModal({ content, title: 'Edit parcel details', callback: null });
 		}
 	</script>
 </body>
