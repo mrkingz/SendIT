@@ -232,7 +232,7 @@ const removeListeners = (element) => {
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = (event) => {
   if (event.target === modal && !modal.classList.contains('static')) {
-    modal.style.display = 'none';
+    hideModal();
   }
 
   if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn i')) {
@@ -265,7 +265,7 @@ const showModal = (obj) => {
                     <h3 id=confirm-title>${title}</h3>
                     ${content}
                     <div class="confirm-btns">
-                      <button class="btn btn-primary btn-sm" id="confirm-btn">Continue</button>
+                      <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
                       <button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
                     </div>
                   </div>`;
@@ -286,6 +286,7 @@ const showModal = (obj) => {
 
 const hideModal = () => {
   modal.style.display = 'none';
+  document.querySelector('body').removeChild(modal);
 };
 
 const showSpinner = () => {

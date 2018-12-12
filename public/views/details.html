@@ -201,77 +201,6 @@
 		</div>
 	</div>
 
-	<!-- Location Modal -->
-	<div id="location-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<h3>Update location</h3>
-				<div class="panel">
-					<form class="form" action="">
-						<div class="control-group">
-							<label for="current-delivery-status">Delivery status</label>
-							<select name="deliveryStatus" id="current-delivery-status" class="control">
-								<option value="Delivered">Delivered</option>
-								<option value="Transiting">Transiting</option>
-							</select>
-						</div>
-
-						<div class="control-group">
-							<label class="required" for="present-state">State</label>
-							<select name="state" id="present-state" class="control">
-								<option value="">Select state</option>
-								<option value="Lagos">Lagos</option>
-							</select>
-						</div>
-						<div class="control-group">
-							<label class="required" for="present-city">City/Town</label>
-							<input type="text" class="control" name="city" id="present-city" placeholder="City/Town" autocomplete="off">
-						</div>
-
-						<div class="control-group">
-							<button class="btn btn-primary" onclick="updatePresentLocation(event)">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Status Modal -->
-	<div id="status-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<h3>Update status</h3>
-				<div class="panel">
-					<form class="form" action="">
-						<div class="control-group">
-							<label class="required" for="new-delivery-status">Delivery status</label>
-							<select name="deliveryStatus" id="new-delivery-status" class="control">
-								<option value="">Select status</option>
-								<option value="Delivered">Delivered</option>
-								<option value="Transiting">Transiting</option>
-							</select>
-						</div>
-
-						<div class="control-group">
-							<button class="btn btn-primary" onclick="updateDeliveryStatus(event)">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<script src="../js/jquery-3.2.1.min.js"></script>
 	<script src="../js/script.js"></script>
 	<script>
@@ -310,7 +239,7 @@
 		}
 
 		const appendMenu = async (userId, deliveryStatus) => {
-			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn">
+			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-sm dropbtn">
                       <i class="fa fa-bars bold"></i></button>
                     <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
 			const deleteBtn = `<button class="menu-btn" onclick="showConfirmModal('delete', deleteOrder)">Delete order</button></div>`;
@@ -342,12 +271,12 @@
 
 		const showConfirmModal = (type, callback) => {
 			const content = `<div class="warning">
-													Are you sure you want to ${type} this order?<br>
-													Click continue to confirm this operation
+													<b>Are you sure you want to ${type} this order?</b><br>
+													Click proceed to confirm this operation
 												</div>`;
 			showModal({
 				content,
-				title: 'cancel',
+				title: type,
 				type: 'confirm',
 				callback: () => {
 					document.getElementById('confirm-btn').addEventListener('click', callback);
@@ -357,6 +286,10 @@
 
 		const cancelOrder = async () => {
 			updateOrder({ path: `/${getParcelId()}/cancel` })
+		}
+
+		const deleteOrder = () => {
+
 		}
 
 		const updateDeliveryStatus = (e) => {
@@ -415,11 +348,11 @@
 				}).catch(error => toggleSpinner(error.message, error.status));
 		}
 
-		const editDestinationModal = () => {
+		const editDestinationModal = (e) => {
 			const content = `<form class="form" action="">
 												<div class="control-group">
 													<label class="required" for="address">Address</label>
-													<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off" autofocus>
+													<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
 												</div>
 
 												<div class="control-group">
@@ -439,7 +372,7 @@
 												</div>
 											</div>
 										</form>`;
-			showModal({
+		showModal({
 				content, title: e.target.innerText, callback: () => {
 					const state = document.getElementById('state');
 					document.getElementById('address').value = parcel.destinationaddress;
@@ -448,13 +381,14 @@
 					state.style.color = 'initial';
 				}
 			});
+			document.getElementById('address').focus();
 		}
 
 		const editParcelModal = (e) => {
 			const content = `<form class="form" action="">
 												<div class="control-group">
 													<label class="required" for="weight">Parcel weight</label>
-													<input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight" autocomplete="off" autofocus>
+													<input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight" autocomplete="off">
 												</div>
 												<div class="control-group">
 													<label for="description">Description</label>
@@ -484,13 +418,14 @@
 					document.querySelector(`.control-group #${parcel.deliverymethod.toLowerCase()}`).checked = true;
 				}
 			});
+			document.getElementById('weight').focus();
 		}
 
 		const editPickupModal = (e) => {
 			const content = `<form class="form" action="">
 												<div class="control-group">
 														<label class="required" for="pick-up-address">Address</label>
-														<input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off" autofocus>
+														<input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
 												</div>
 												<div class="control-group">
 													<label class="required" for="pick-up-state">State</label>
@@ -520,6 +455,30 @@
 					$('select').css({color: 'initial'});
 				}
 			});
+			document.getElementById('pick-up-address').focus();
+		}
+
+		const editReceiverModal = (e) => {
+			const content = `<form class="form" action="">
+												<div class="control-group">
+													<label class="required" for="receiver-name">Receicver's full name</label>
+													<input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name" autocomplete="off">
+												</div>         
+												<div class="control-group">
+													<label class="required" for="receiver-phone">Receicver's phone</label>
+													<input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" autocomplete="off">
+												</div>
+												<div class="control-group mb-0">
+													<button class="btn btn-primary" onclick="">Save</button>
+												</div>
+											</form>`;
+			showModal({
+				content, title: e.target.innerText, callback: () => {
+					document.querySelector('.control-group #receiver-name').value = parcel.receivername;
+					document.querySelector('.control-group #receiver-phone').value = parcel.receiverphone;
+				}
+			});
+			document.getElementById('receiver-name').focus();
 		}
 	</script>
 </body>
