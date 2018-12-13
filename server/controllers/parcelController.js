@@ -309,6 +309,40 @@ export default class ParcelController extends UtilityService {
   }
 
   /**
+   * Edit delivery order details
+   *
+   * @static
+   * @param {string} type the details to edit
+   * @returns {function} Returns an express middleware function that handles the PUT request
+   * @method editParcel
+   * @memberof ParcelController
+   */
+  static editParcel(type) {
+    return (req, res) => {
+      const { 
+        weight, description, deliveryMethod, decoded
+      } = req.body;
+      const queries = {
+        parcel: {
+          text: `UPDATE parcels
+                 SET weight = $1, description = $2, deliverymethod = $3
+                 WHERE userid = $4 AND parcelid = $5 RETURNING *`,
+          values: [
+            weight, description, deliveryMethod, decoded.userid, req.params.parcelId
+          ]
+        }
+      };
+      db.sqlQuery(queries[type]).then((updated) => {
+        const message = `${this.ucFirstObj(type)} details successfully updated`;
+        this.successResponse({ 
+          res, message, data: { parcel: updated.rows[0] }
+        });
+      })
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
    * Update parcel delivery order status
    *
    * @static

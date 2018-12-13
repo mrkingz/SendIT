@@ -9,13 +9,32 @@ import Validator from './validator';
 export default class ParcelValidator extends Validator {
   /**
    * Validate parcel delivery order details
+   * 
+   * @static
+   * @method validateParcelDetails
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @memberof ParcelValidator
+   */
+  static validateParcelDetails() {
+	return (req, res, next) => {
+		const { decoded } = req.body;
+		delete req.body.decoded;
+		const schema = Joi.object().keys(this.getParcelDetailsSchemaKeys());
+		return this.validate(req, res, next, schema, () => {
+			return { decoded };
+		});
+	};
+}
+
+  /**
+   * Validate parcel delivery order details
 	 * 
    * @static
 	 * @method validateParcel
    * @returns {function} Returns an express middleware function that handles the validation
    * @memberof ParcelValidator
    */
-	static validateParcel() {
+	static validateCreateParcel() {
 		return (req, res, next) => {
 			const { decoded } = req.body;
 			delete req.body.decoded;
