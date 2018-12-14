@@ -532,7 +532,8 @@ div.nexted ~ div.nexted {
     background-color: rgb(14, 14, 78);
 }
 
-#deliverymethod::after {
+#deliverymethod::after,
+#data-deliverymethod::after {
     content: "\00a0 delivery";
 }
 

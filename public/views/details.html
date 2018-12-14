@@ -65,32 +65,32 @@
 
 													<div class="card-row">
 														<div class="data-header">Weight</div>
-														<div class="data weight" id="weight"></div>
+														<div class="data weight" id="data-weight"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Parcel description</div>
-														<div class="data" id="description"></div>
+														<div class="data" id="data-description"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Date sent</div>
-														<div class="data" id="senton"></div>
+														<div class="data" id="data-senton"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Delivery method</div>
-														<div class="data" id="deliverymethod"></div>
+														<div class="data" id="data-deliverymethod"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Status</div>
-														<div class="data red-color" id="deliverystatus"></div>
+														<div class="data red-color" id="data-deliverystatus"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Present location</div>
-														<div class="data" id="presentlocation"></div>
+														<div class="data" id="data-presentlocation"></div>
 													</div>
 												</div>
 											</div>
@@ -104,22 +104,22 @@
 												<div class="card-wrapper">
 													<div class="card-row">
 														<div class="data-header">Address</div>
-														<div class="data" id="pickupaddress"></div>
+														<div class="data" id="data-pickupaddress"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">City/Town</div>
-														<div class="data" id="pickupcity"></div>
+														<div class="data" id="data-pickupcity"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">State</div>
-														<div class="data" id="pickupstate"></div>
+														<div class="data" id="data-pickupstate"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Date</div>
-														<div class="data" id="pickupdate"></div>
+														<div class="data" id="data-pickupdate"></div>
 													</div>
 
 												</div>
@@ -137,17 +137,17 @@
 
 													<div class="card-row">
 														<div class="data-header">State</div>
-														<div class="data" id="destinationstate"></div>
+														<div class="data" id="data-destinationstate"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">City/Town</div>
-														<div class="data" id="destinationcity"></div>
+														<div class="data" id="data-destinationcity"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Address</div>
-														<div class="data" id="destinationaddress"></div>
+														<div class="data" id="data-destinationaddress"></div>
 													</div>
 
 												</div>
@@ -164,12 +164,12 @@
 												<div class="card-wrapper">
 													<div class="card-row">
 														<div class="data-header">Full name</div>
-														<div class="data" id="receivername"></div>
+														<div class="data" id="data-receivername"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Phone No.</div>
-														<div class="data" id="receiverphone"></div>
+														<div class="data" id="data-receiverphone"></div>
 													</div>
 
 												</div>
@@ -218,7 +218,7 @@
 							parcel = res.data.parcel;
 							let elem;
 							Object.keys(parcel).forEach((key) => {
-								elem = document.getElementById(key);
+								elem = document.getElementById(`data-${key}`);
 								if (elem) {
 									elem.innerHTML = parcel[key] ? parcel[key] : 'Not available';
 								}
@@ -316,12 +316,53 @@
 			}
 		}
 
-		const updateDestination = (e) => {
+		const editDestination = (e) => {
 			e.preventDefault();
 			const fields = ['address', 'state', 'city'];
 			if (!hasEmpty(fields)) {
 				updateOrder({
 					path: `/${getParcelId()}/destination`,
+					data: getFormData(fields),
+					method: 'PUT'
+				})
+			}
+		}
+
+		const editPickup = (e) => {
+			e.preventDefault();
+			const fields = ['pick-up-address', 'pick-up-state', 'pick-up-city', 'pick-up-date'];
+			if (!hasEmpty(fields)) {
+				updateOrder({
+					path: `/${getParcelId()}/editPickup`,
+					data: getFormData(fields),
+					method: 'PUT'
+				})
+			}
+		}
+
+		const editParcel = async (e) => {
+			e.preventDefault();
+			const fields = ['weight'];
+			if (!hasEmpty(fields) && isValidWeight(document.getElementById('weight'))) {
+				updateOrder({
+					path: `/${getParcelId()}/editParcel`,
+					data: await getFormData(fields, (data) => {
+						const description = document.getElementById('description').value;
+                        data['description'] = description !== '' ? description : 'N/A';
+						data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value;
+                        return data;
+					}),
+					method: 'PUT'
+				})
+			}
+		}
+
+		const editReceiver = (e) => {
+			e.preventDefault();
+			const fields = ['receiver-name',  'receiver-phone'];
+			if (!hasEmpty(fields) && isValidPhone(document.getElementById('receiver-phone'))) {
+				updateOrder({
+					path: `/${getParcelId()}/editReceiver`,
 					data: getFormData(fields),
 					method: 'PUT'
 				})
@@ -350,28 +391,28 @@
 
 		const editDestinationModal = (e) => {
 			const content = `<form class="form" action="">
-												<div class="control-group">
-													<label class="required" for="address">Address</label>
-													<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
-												</div>
+								<div class="control-group">
+									<label class="required" for="address">Address</label>
+									<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
+								</div>
 
-												<div class="control-group">
-													<label class="required" for="state">State</label>
-													<select name="destinationState" id="state" class="control">
-															<option value="Kano">Kano</option>
-														<option value="Lagos">Lagos</option>
-													</select>
-												</div>
+								<div class="control-group">
+									<label class="required" for="state">State</label>
+									<select name="destinationState" id="state" class="control">
+											<option value="Kano">Kano</option>
+										<option value="Lagos">Lagos</option>
+									</select>
+								</div>
 
-												<div class="control-group">
-													<label class="required" for="city">City/Town</label>
-													<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
-												</div>
-												<div class="control-group">
-													<button class="btn btn-primary" onclick="updateDestination(event)">Save</button>
-												</div>
-											</div>
-										</form>`;
+								<div class="control-group">
+									<label class="required" for="city">City/Town</label>
+									<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
+								</div>
+								<div class="control-group">
+									<button class="btn btn-primary" onclick="editDestination(event)">Save</button>
+								</div>
+							</div>
+						</form>`;
 		showModal({
 				content, title: e.target.innerText, callback: () => {
 					const state = document.getElementById('state');
@@ -408,7 +449,7 @@
 													</div>
 												</div>
 												<div class="control-group mb-0">
-													<button class="btn btn-primary" onclick="updateParcelDetails(event)">Save</button>
+													<button class="btn btn-primary" onclick="editParcel(event)">Save</button>
 												</div>
 											</form>`;
 			showModal({
@@ -418,34 +459,34 @@
 					document.querySelector(`.control-group #${parcel.deliverymethod.toLowerCase()}`).checked = true;
 				}
 			});
-			document.getElementById('weight').focus();
+			document.querySelector('.control-group #weight').focus();
 		}
 
 		const editPickupModal = (e) => {
 			const content = `<form class="form" action="">
-												<div class="control-group">
-														<label class="required" for="pick-up-address">Address</label>
-														<input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
-												</div>
-												<div class="control-group">
-													<label class="required" for="pick-up-state">State</label>
-													<select id="pick-up-state" name="pickupState" class="control">
-														<option value="Abuja">Abuja</option>
-														<option value="Lagos">Lagos</option>
-													</select>
-												</div>
-												<div class="control-group">
-													<label class="required" for="pick-up-city">City/Town</label>
-													<input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" autocomplete="off">
-												</div>
-												<div class="control-group">
-													<label class="required" for="pick-up-date">Pick up date</label>
-													<input type="date" class="control" name="pickupDate" id="pick-up-date" autocomplete="off">
-												</div>
-												<div class="control-group mb-0">
-													<button class="btn btn-primary" onclick="updateParcelDetails(event)">Save</button>
-												</div>
-											</form>`;
+								<div class="control-group">
+										<label class="required" for="pick-up-address">Address</label>
+										<input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
+								</div>
+								<div class="control-group">
+									<label class="required" for="pick-up-state">State</label>
+									<select id="pick-up-state" name="pickupState" class="control">
+										<option value="Abuja">Abuja</option>
+										<option value="Lagos">Lagos</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label class="required" for="pick-up-city">City/Town</label>
+									<input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" autocomplete="off">
+								</div>
+								<div class="control-group">
+									<label class="required" for="pick-up-date">Pick up date</label>
+									<input type="date" class="control" name="pickupDate" id="pick-up-date" autocomplete="off">
+								</div>
+								<div class="control-group mb-0">
+									<button class="btn btn-primary" onclick="editPickup(event)">Save</button>
+								</div>
+							</form>`;
 			showModal({
 				content, title: e.target.innerText, callback: () => {
 					document.querySelector('.control-group #pick-up-address').value = parcel.pickupaddress;
@@ -469,7 +510,7 @@
 													<input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" autocomplete="off">
 												</div>
 												<div class="control-group mb-0">
-													<button class="btn btn-primary" onclick="">Save</button>
+													<button class="btn btn-primary" onclick="editReceiver(event)">Save</button>
 												</div>
 											</form>`;
 			showModal({

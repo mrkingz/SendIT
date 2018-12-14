@@ -104,16 +104,19 @@ const isUnique = (field, msg) => {
 
 const hasEmpty = (fields) => {
   const length = fields.length;
-  let field;
+  let field, emptyField;
   for (let i = 0; i < length; i++) {
     document.getElementById(fields[i]).classList.remove('invalid');
     field = document.getElementById(fields[i]);
     removeElement(document.getElementById(`${fields[i]}-error`));
     removeListeners(field);
-    if (field.value.trim() === '') {
-      displayError(field);
-      return true;
+    if (!emptyField && field.value.trim() === '') {
+      emptyField = field;
     }
+  }
+  if (emptyField) {
+    displayError(emptyField);
+    return true;
   }
   return false;
 };
