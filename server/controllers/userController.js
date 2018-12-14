@@ -120,7 +120,7 @@ export default class UserController extends UtilityService {
             issuer: process.env.ISSUER
           });
           if (decoded) {
-            return this.findUser(decoded.userid).then((user) => {
+            return this.findUser(decoded).then((user) => {
               if (user) {
                 req.body.decoded = decoded;
                 return next();
@@ -142,15 +142,17 @@ export default class UserController extends UtilityService {
    * Find a user
    *
    * @static
-   * @param {int} id the user id
+   * @param {object} credentials the credentials from user token
    * @method findUser
    * @returns {object} the user details, if found; otherwise null
    * @memberof UserController
    */
-  static findUser(id) {
+  static findUser(credentials) {
+    const { userid, email, isadmin } = credentials;
     const query = {
-      text: `SELECT userid, firstname, lastname, isadmin FROM users WHERE userid = $1`,
-      values: [id]
+      text: `SELECT userid, firstname, lastname, isadmin 
+             FROM users WHERE userid = $1 AND email = $2 AND isadmin = $3`,
+      values: [userid, email, isadmin]
     };
     return db.sqlQuery(query)
       .then((result) => {
@@ -188,7 +190,7 @@ export default class UserController extends UtilityService {
       const { token } = req.body;
       if (this.validateToken(token)) {
         const decoded = decode(token);
-        return this.findUser(decoded.userid)
+        return this.findUser(decoded)
           .then(user => this.successResponse({ res, code: 302, data: { user } }))
           .catch(() => {});
       }

@@ -12,7 +12,7 @@ const parcelRouter = express.Router();
 
 parcelRouter.route('/api/v1/parcels')
 	.all(UserController.authenticateUser())
-	.post(ParcelValidator.validateParcel(),
+	.post(ParcelValidator.validateCreateParcel(),
 		ParcelController.createParcel())
 	.get(UserController.authorizeUser(),
 		ParcelController.getParcels(),
@@ -52,5 +52,21 @@ parcelRouter.put('/api/v1/parcels/:parcelId/destination',
 	UserController.authenticateUser(),
 	ParcelValidator.validateDestination(),
 	ParcelController.updateDestination());
+
+parcelRouter.put('/api/v1/parcels/:parcelId/editParcel',
+	UserController.authenticateUser(),
+	ParcelValidator.validateParcelDetails(),
+	ParcelController.editParcel('parcel'));
+
+
+parcelRouter.put('/api/v1/parcels/:parcelId/editPickup',
+	UserController.authenticateUser(),
+	ParcelValidator.validatePickupDetails(),
+	ParcelController.editParcel('pick-up'));
+
+parcelRouter.put('/api/v1/parcels/:parcelId/editReceiver',
+	UserController.authenticateUser(),
+	ParcelValidator.validateReceiverDetails(),
+	ParcelController.editParcel('receiver'));
 
 export default parcelRouter;

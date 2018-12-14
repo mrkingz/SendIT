@@ -57,41 +57,40 @@
 										<div class="more-details">
 											<div class="nexted">
 												<div class="card-header">
-													<div class="card-title">
-														<label class="size-12 bold">Tracking #: <span id="trackingno"></span></label>
+													<div class="card-title card-title-line">
+														<label class="bold">Tracking #: <span id="trackingno"></span></label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn">Edit</button>
 												</div>
 												<div class="card-wrapper">
 
 													<div class="card-row">
 														<div class="data-header">Weight</div>
-														<div class="data weight" id="weight">2</div>
+														<div class="data weight" id="data-weight"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Parcel description</div>
-														<div class="data" id="description"></div>
+														<div class="data" id="data-description"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Date sent</div>
-														<div class="data" id="senton"></div>
+														<div class="data" id="data-senton"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Delivery method</div>
-														<div class="data" id="deliverymethod"></div>
+														<div class="data" id="data-deliverymethod"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Status</div>
-														<div class="data red-color" id="deliverystatus"></div>
+														<div class="data red-color" id="data-deliverystatus"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Present location</div>
-														<div class="data" id="presentlocation"></div>
+														<div class="data" id="data-presentlocation"></div>
 													</div>
 												</div>
 											</div>
@@ -101,27 +100,26 @@
 													<div class="card-title">
 														<label class="size-12 bold" for="pickup-details">Pick up details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn">Edit</button>
 												</div>
 												<div class="card-wrapper">
 													<div class="card-row">
 														<div class="data-header">Address</div>
-														<div class="data" id="pickupaddress"></div>
+														<div class="data" id="data-pickupaddress"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">City/Town</div>
-														<div class="data" id="pickupcity"></div>
+														<div class="data" id="data-pickupcity"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">State</div>
-														<div class="data" id="pickupstate"></div>
+														<div class="data" id="data-pickupstate"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Date</div>
-														<div class="data" id="pickupdate"></div>
+														<div class="data" id="data-pickupdate"></div>
 													</div>
 
 												</div>
@@ -133,24 +131,23 @@
 													<div class="card-title">
 														<label class="size-12 bold">Destination details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn" onclick="showModal('destination-modal'); currentDestination()">Edit</button>
 												</div>
 
 												<div class="card-wrapper">
 
 													<div class="card-row">
 														<div class="data-header">State</div>
-														<div class="data" id="destinationstate"></div>
+														<div class="data" id="data-destinationstate"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">City/Town</div>
-														<div class="data" id="destinationcity"></div>
+														<div class="data" id="data-destinationcity"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Address</div>
-														<div class="data" id="destinationaddress"></div>
+														<div class="data" id="data-destinationaddress"></div>
 													</div>
 
 												</div>
@@ -162,18 +159,17 @@
 													<div class="card-title">
 														<label class="size-12 bold" for="pickup-details">Receiver's details</label>
 													</div>
-													<button class="btn btn-link btn-sm edit-btn">Edit</button>
 												</div>
 
 												<div class="card-wrapper">
 													<div class="card-row">
 														<div class="data-header">Full name</div>
-														<div class="data" id="receivername"></div>
+														<div class="data" id="data-receivername"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Phone No.</div>
-														<div class="data" id="receiverphone"></div>
+														<div class="data" id="data-receiverphone"></div>
 													</div>
 
 												</div>
@@ -205,146 +201,11 @@
 		</div>
 	</div>
 
-
-
-	<!-- Modals -->
-
-	<div id="confirm-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<div class="red-color size-12 bold align-center" id=confirm-title></div>
-				<div class="warning"></div>
-				<div class="my-lg align-center">
-					<button class="btn btn-primary btn-sm" id="confirm-btn">Continue</button>
-					<button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
-				</div>
-			</div>
-		</div>
-
-	</div>
-
-
-	<!-- Destination Modal -->
-	<div id="destination-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<h3>Edit destination</h3>
-				<div class="panel">
-					<form class="form" action="">
-						<div class="control-group">
-							<label class="required" for="address">Address</label>
-							<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
-						</div>
-
-						<div class="control-group">
-							<label class="required" for="state">State</label>
-							<select name="destinationState" id="state" class="control">
-									<option value="Kano">Kano</option>
-								<option value="Lagos">Lagos</option>
-							</select>
-						</div>
-
-						<div class="control-group">
-							<label class="required" for="city">City/Town</label>
-							<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
-						</div>
-
-						<div class="control-group">
-							<button class="btn btn-primary" onclick="updateDestination(event)">Save</button>
-						</div>
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
-
-
-	<!-- Location Modal -->
-	<div id="location-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<h3>Update location</h3>
-				<div class="panel">
-					<form class="form" action="">
-						<div class="control-group">
-							<label for="current-delivery-status">Delivery status</label>
-							<select name="deliveryStatus" id="current-delivery-status" class="control">
-								<option value="Delivered">Delivered</option>
-								<option value="Transiting">Transiting</option>
-							</select>
-						</div>
-
-						<div class="control-group">
-							<label class="required" for="present-state">State</label>
-							<select name="state" id="present-state" class="control">
-								<option value="">Select state</option>
-								<option value="Lagos">Lagos</option>
-							</select>
-						</div>
-						<div class="control-group">
-							<label class="required" for="present-city">City/Town</label>
-							<input type="text" class="control" name="city" id="present-city" placeholder="City/Town" autocomplete="off">
-						</div>
-
-						<div class="control-group">
-							<button class="btn btn-primary" onclick="updatePresentLocation(event)">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Status Modal -->
-	<div id="status-modal" class="modal">
-
-		<!-- Modal content -->
-		<div class="modal-content modal-sm">
-			<div class="modal-header">
-				<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>
-			</div>
-			<div class="modal-body">
-				<h3>Update status</h3>
-				<div class="panel">
-					<form class="form" action="">
-						<div class="control-group">
-							<label class="required" for="new-delivery-status">Delivery status</label>
-							<select name="deliveryStatus" id="new-delivery-status" class="control">
-								<option value="">Select status</option>
-								<option value="Delivered">Delivered</option>
-								<option value="Transiting">Transiting</option>
-							</select>
-						</div>
-
-						<div class="control-group">
-							<button class="btn btn-primary" onclick="updateDeliveryStatus(event)">Save</button>
-						</div>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<script src="../js/jquery-3.2.1.min.js"></script>
 	<script src="../js/script.js"></script>
 	<script>
 		const getParcelId = () => location.pathname.split('/')[2];
-
+		let parcel;
 		const getDetails = (id) => {
 			authUser.then((user) => {
 				fetch(request({
@@ -354,15 +215,15 @@
 				})).then(res => res.json())
 					.then((res) => {
 						if (res.status === 'Success') {
-							const data = res.data.parcel;
+							parcel = res.data.parcel;
 							let elem;
-							Object.keys(data).forEach((key) => {
-								elem = document.getElementById(key);
+							Object.keys(parcel).forEach((key) => {
+								elem = document.getElementById(`data-${key}`);
 								if (elem) {
-									elem.innerHTML = data[key] ? data[key] : 'Not available';
+									elem.innerHTML = parcel[key] ? parcel[key] : 'Not available';
 								}
 							})
-							appendMenu(data.userid, data.deliverystatus);
+							appendMenu(parcel.userid, parcel.deliverystatus);
 						} else {
 							document.getElementById('order-details').classList.add('hide')
 							message(res.message);
@@ -378,7 +239,7 @@
 		}
 
 		const appendMenu = async (userId, deliveryStatus) => {
-			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-s dropbtn">
+			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-sm dropbtn">
                       <i class="fa fa-bars bold"></i></button>
                     <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
 			const deleteBtn = `<button class="menu-btn" onclick="showConfirmModal('delete', deleteOrder)">Delete order</button></div>`;
@@ -388,10 +249,14 @@
 					if (user.isadmin) {
 						const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
 						str = `${user.userid === userId ? cancelBtn : ""}
-                                    <button class="menu-btn" onclick="showModal('location-modal'); selectStatus()">Update location</button>
-                                    <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
+                      <button class="menu-btn" onclick="showModal('location-modal'); selectStatus()">Update location</button>
+                      <button class="menu-btn" onclick="showModal('status-modal')">Update status</button>`;
 					} else {
-						str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+						str = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>
+									 <button class="menu-btn" onclick="editDestinationModal(event)">Edit destination</button>
+									 <button class="menu-btn" onclick="editParcelModal(event)">Edit parcel details</button>
+									 <button class="menu-btn" onclick="editPickupModal(event)">Edit pickup details</button>
+									 <button class="menu-btn" onclick="editReceiverModal(event)">Edit receiver details</button>`;
 					}
 
 				}
@@ -405,16 +270,26 @@
 		}
 
 		const showConfirmModal = (type, callback) => {
-			document.querySelector('.modal-body #confirm-title').innerHTML = type;
-			document.querySelector('.modal-body .warning')
-				.innerHTML = `Are you sure you want to ${type} this order?<br>
-                            Click continue to confirm this operation`;
-			document.getElementById('confirm-btn').addEventListener('click', callback);
-			showModal('confirm-modal');
+			const content = `<div class="warning">
+													<b>Are you sure you want to ${type} this order?</b><br>
+													Click proceed to confirm this operation
+												</div>`;
+			showModal({
+				content,
+				title: type,
+				type: 'confirm',
+				callback: () => {
+					document.getElementById('confirm-btn').addEventListener('click', callback);
+				}
+			});
 		}
 
 		const cancelOrder = async () => {
 			updateOrder({ path: `/${getParcelId()}/cancel` })
+		}
+
+		const deleteOrder = () => {
+
 		}
 
 		const updateDeliveryStatus = (e) => {
@@ -441,7 +316,7 @@
 			}
 		}
 
-		const updateDestination = (e) => {
+		const editDestination = (e) => {
 			e.preventDefault();
 			const fields = ['address', 'state', 'city'];
 			if (!hasEmpty(fields)) {
@@ -453,12 +328,45 @@
 			}
 		}
 
-		const currentDestination = () => {
-			const state = document.getElementById('state');
-			document.getElementById('address').value = document.getElementById('destinationaddress').innerHTML;
-			state.value = document.getElementById('destinationstate').innerHTML;
-			document.getElementById('city').value = document.getElementById('destinationcity').innerHTML;
-			state.style.color = 'initial';
+		const editPickup = (e) => {
+			e.preventDefault();
+			const fields = ['pick-up-address', 'pick-up-state', 'pick-up-city', 'pick-up-date'];
+			if (!hasEmpty(fields)) {
+				updateOrder({
+					path: `/${getParcelId()}/editPickup`,
+					data: getFormData(fields),
+					method: 'PUT'
+				})
+			}
+		}
+
+		const editParcel = async (e) => {
+			e.preventDefault();
+			const fields = ['weight'];
+			if (!hasEmpty(fields) && isValidWeight(document.getElementById('weight'))) {
+				updateOrder({
+					path: `/${getParcelId()}/editParcel`,
+					data: await getFormData(fields, (data) => {
+						const description = document.getElementById('description').value;
+                        data['description'] = description !== '' ? description : 'N/A';
+						data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value;
+                        return data;
+					}),
+					method: 'PUT'
+				})
+			}
+		}
+
+		const editReceiver = (e) => {
+			e.preventDefault();
+			const fields = ['receiver-name',  'receiver-phone'];
+			if (!hasEmpty(fields) && isValidPhone(document.getElementById('receiver-phone'))) {
+				updateOrder({
+					path: `/${getParcelId()}/editReceiver`,
+					data: getFormData(fields),
+					method: 'PUT'
+				})
+			}
 		}
 
 		const updateOrder = async (obj) => {
@@ -479,6 +387,139 @@
 						toggleSpinner(res.message, res.status);
 					}
 				}).catch(error => toggleSpinner(error.message, error.status));
+		}
+
+		const editDestinationModal = (e) => {
+			const content = `<form class="form" action="">
+								<div class="control-group">
+									<label class="required" for="address">Address</label>
+									<input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" autocomplete="off">
+								</div>
+
+								<div class="control-group">
+									<label class="required" for="state">State</label>
+									<select name="destinationState" id="state" class="control">
+											<option value="Kano">Kano</option>
+										<option value="Lagos">Lagos</option>
+									</select>
+								</div>
+
+								<div class="control-group">
+									<label class="required" for="city">City/Town</label>
+									<input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" autocomplete="off">
+								</div>
+								<div class="control-group">
+									<button class="btn btn-primary" onclick="editDestination(event)">Save</button>
+								</div>
+							</div>
+						</form>`;
+		showModal({
+				content, title: e.target.innerText, callback: () => {
+					const state = document.getElementById('state');
+					document.getElementById('address').value = parcel.destinationaddress;
+					state.value = parcel.destinationstate;
+					document.getElementById('city').value = parcel.destinationcity;
+					state.style.color = 'initial';
+				}
+			});
+			document.getElementById('address').focus();
+		}
+
+		const editParcelModal = (e) => {
+			const content = `<form class="form" action="">
+												<div class="control-group">
+													<label class="required" for="weight">Parcel weight</label>
+													<input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight" autocomplete="off">
+												</div>
+												<div class="control-group">
+													<label for="description">Description</label>
+													<input type="text" class="control" name="description" id="description" placeholder="Description" autocomplete="off">
+												</div>
+												<div class="control-group">
+													<label for="delivery-method">Choose your delivery method</label>
+													<div id="delivery-method" class="more-details">
+														<div class="form-check">
+															<input class="form-check-input" type="radio" id="fast" name="deliveryMethod" value="Fast">
+															<label class="form-check-label" for="fast">Fast delivery</label>
+														</div>
+														<div class="form-check m-0">
+															<input class="form-check-input" type="radio" id="normal" name="deliveryMethod" value="Normal"> 
+															<label class="form-check-label" for="normal">Normal delivery</label>
+														</div>
+													</div>
+												</div>
+												<div class="control-group mb-0">
+													<button class="btn btn-primary" onclick="editParcel(event)">Save</button>
+												</div>
+											</form>`;
+			showModal({
+				content, title: e.target.innerText, callback: () => {
+					document.querySelector('.control-group #weight').value = parcel.weight;
+					document.querySelector('.control-group #description').value = parcel.description;
+					document.querySelector(`.control-group #${parcel.deliverymethod.toLowerCase()}`).checked = true;
+				}
+			});
+			document.querySelector('.control-group #weight').focus();
+		}
+
+		const editPickupModal = (e) => {
+			const content = `<form class="form" action="">
+								<div class="control-group">
+										<label class="required" for="pick-up-address">Address</label>
+										<input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
+								</div>
+								<div class="control-group">
+									<label class="required" for="pick-up-state">State</label>
+									<select id="pick-up-state" name="pickupState" class="control">
+										<option value="Abuja">Abuja</option>
+										<option value="Lagos">Lagos</option>
+									</select>
+								</div>
+								<div class="control-group">
+									<label class="required" for="pick-up-city">City/Town</label>
+									<input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" autocomplete="off">
+								</div>
+								<div class="control-group">
+									<label class="required" for="pick-up-date">Pick up date</label>
+									<input type="date" class="control" name="pickupDate" id="pick-up-date" autocomplete="off">
+								</div>
+								<div class="control-group mb-0">
+									<button class="btn btn-primary" onclick="editPickup(event)">Save</button>
+								</div>
+							</form>`;
+			showModal({
+				content, title: e.target.innerText, callback: () => {
+					document.querySelector('.control-group #pick-up-address').value = parcel.pickupaddress;
+					document.querySelector('.control-group #pick-up-state').value = parcel.pickupstate;
+					document.querySelector('.control-group #pick-up-city').value = parcel.pickupcity;
+					document.querySelector('.control-group #pick-up-date').value = parcel.pickupdate;
+					$('select').css({color: 'initial'});
+				}
+			});
+			document.getElementById('pick-up-address').focus();
+		}
+
+		const editReceiverModal = (e) => {
+			const content = `<form class="form" action="">
+												<div class="control-group">
+													<label class="required" for="receiver-name">Receicver's full name</label>
+													<input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name" autocomplete="off">
+												</div>         
+												<div class="control-group">
+													<label class="required" for="receiver-phone">Receicver's phone</label>
+													<input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" autocomplete="off">
+												</div>
+												<div class="control-group mb-0">
+													<button class="btn btn-primary" onclick="editReceiver(event)">Save</button>
+												</div>
+											</form>`;
+			showModal({
+				content, title: e.target.innerText, callback: () => {
+					document.querySelector('.control-group #receiver-name').value = parcel.receivername;
+					document.querySelector('.control-group #receiver-phone').value = parcel.receiverphone;
+				}
+			});
+			document.getElementById('receiver-name').focus();
 		}
 	</script>
 </body>

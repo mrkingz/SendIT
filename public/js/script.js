@@ -104,16 +104,19 @@ const isUnique = (field, msg) => {
 
 const hasEmpty = (fields) => {
   const length = fields.length;
-  let field;
+  let field, emptyField;
   for (let i = 0; i < length; i++) {
     document.getElementById(fields[i]).classList.remove('invalid');
     field = document.getElementById(fields[i]);
     removeElement(document.getElementById(`${fields[i]}-error`));
     removeListeners(field);
-    if (field.value.trim() === '') {
-      displayError(field);
-      return true;
+    if (!emptyField && field.value.trim() === '') {
+      emptyField = field;
     }
+  }
+  if (emptyField) {
+    displayError(emptyField);
+    return true;
   }
   return false;
 };
@@ -232,7 +235,7 @@ const removeListeners = (element) => {
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = (event) => {
   if (event.target === modal && !modal.classList.contains('static')) {
-    modal.style.display = 'none';
+    hideModal();
   }
 
   if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn i')) {
@@ -248,33 +251,67 @@ window.onclick = (event) => {
 };
 
 // // When the user clicks the button, open the modal 
-const showModal = (modalId) => {
-  modal = document.getElementById(modalId);
+const showModal = (obj) => {
+  const { 
+    content, title, size, type, id, callback 
+  } = obj;
+  modal = document.createElement('div');
+  modal.classList.add('modal');
+  modal.id = id;
+  let html = `<div class="modal-content ${size || 'modal-sm'}">
+                <div class="modal-header">
+                  ${type ? '' : '<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>'}
+                </div>`;
+  switch (type) {
+    case 'confirm':
+        html += `<div class="modal-body">
+                    <h3 id=confirm-title>${title}</h3>
+                    ${content}
+                    <div class="confirm-btns">
+                      <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
+                      <button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
+                    </div>
+                  </div>`;
+        break;
+    default: 
+        html += `<div class="modal-body">
+                  <h3>${title}</h3>
+                  <div class="panel">${content}</div>
+                </div>`;
+  }
+  modal.innerHTML = html.concat('</div>');
+  document.querySelector('body').appendChild(modal);
+  if (typeof callback === 'function') {
+    callback();
+  }
   modal.style.display = 'block';
-  $('.control').removeClass('invalid');
-  $('.control + span').remove();
 };
 
 const hideModal = () => {
   modal.style.display = 'none';
+  document.querySelector('body').removeChild(modal);
 };
 
 const showSpinner = () => {
-  const modal = document.createElement('div');
+  modal = document.createElement('div');
   modal.id = "spinner";
   addClass(modal, ['modal', 'static']);
-  modal.innerHTML = ` <div class="modal-content modal-sm spinner">
-                          <div class="bold" id="spinner-img">
-                              <div><img style="height: 120px;" src="../images/processing.gif" alt=""></div>
-                              <div>Please wait...</div>
+  modal.innerHTML = `<div class="modal-content modal-sm spinner">
+                        <div class="bold" id="spinner-img">
+                          <div>
+                            <img style="height: 120px;" src="../images/processing.gif" alt="">
                           </div>
-                          <div class="hide" id="spinner-message">
-                              <div id='message'></div>
-                              <div class=''><button class='btn btn-primary' onclick="hideSpinner()">Close</button></div>
+                          <div>Please wait...</div>
+                        </div>
+                        <div class="hide" id="spinner-message">
+                          <div id='message'></div>
+                          <div class=''>
+                            <button class='btn btn-primary' onclick="hideSpinner()">Close</button>
                           </div>
+                        </div>
                       </div>`;
   document.querySelector('body').appendChild(modal);
-  showModal('spinner');
+  modal.style.display = 'block';
 };
 
 const toggleSpinner = (msg, status) => {
