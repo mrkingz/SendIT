@@ -26,6 +26,25 @@ export default class ParcelValidator extends Validator {
 	};
 }
 
+ /**
+   * Validate parcel delivery order pick up details
+   * 
+   * @static
+   * @method validatePickupDetails
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @memberof ParcelValidator
+   */
+  static validatePickupDetails() {
+	return (req, res, next) => {
+		const { decoded } = req.body;
+		delete req.body.decoded;
+		const schema = Joi.object().keys(this.getPickupDetailsSchemaKeys());
+		return this.validate(req, res, next, schema, () => {
+			return { decoded };
+		});
+	};
+}
+
   /**
    * Validate parcel delivery order details
 	 * 

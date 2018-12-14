@@ -4,7 +4,7 @@ import app from '../../server/app';
 
 const expect = chai.expect;
 const server = supertest.agent(app);
-let token, adminToken;
+let token, adminToken, user, parcel1, parcel2;
 
 const parcel = {
 	weight: 23,
@@ -31,6 +31,7 @@ describe('Test parcel routes', () => {
 			})
 			.end((err, res) => {
 				const response = res.body;
+				user = res.body.data.user;
 				token = response.data.token;
 				done();
 			});
@@ -75,6 +76,7 @@ describe('Test parcel routes', () => {
 			.send(parcel)
 			.end((err, res) => {
 				const response = res.body;
+				parcel1 = res.body.data.parcel;
 				expect(res.statusCode).to.equal(201);
 				expect(response.status).to.equal('Success');
 				expect(response.message).to.equal('Delivery order successfully created');
@@ -645,7 +647,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not get a specific parcel if user is not an admin', (done) => {
 		server
-			.get('/api/v1/parcels/1')
+			.get(`/api/v1/parcels/${parcel1.parcelid}`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -663,7 +665,7 @@ describe('Test parcel routes', () => {
 
 	it('It should get a specific parcel if user is admin', (done) => {
 		server
-			.get('/api/v1/parcels/1')
+			.get(`/api/v1/parcels/${parcel1.parcelid}`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -671,8 +673,8 @@ describe('Test parcel routes', () => {
 			.set('token', adminToken)
 			.end((err, res) => {
 				const response = res.body;
-				// expect(res.statusCode).to.equal(302);
-				// expect(response.status).to.equal('Success');
+				expect(res.statusCode).to.equal(302);
+				expect(response.status).to.equal('Success');
 				expect(response.message).to.equal('Parcel successfully retrieved');
 				expect(response.data).to.be.an('object');
 				expect(response.data.parcel).to.have.own.property('parcelid')
@@ -711,7 +713,7 @@ describe('Test parcel routes', () => {
 
 	it('It should get all users\'s parcels', (done) => {
 		server
-			.get('/api/v1/users/2/parcels')
+			.get(`/api/v1/users/${user.userid}/parcels`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -760,7 +762,7 @@ describe('Test parcel routes', () => {
 
 	it('It should get a user specific parcel', (done) => {
 		server
-			.get('/api/v1/users/2/parcels/1')
+			.get(`/api/v1/users/${user.userid}/parcels/${parcel1.parcelid}`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -809,7 +811,7 @@ describe('Test parcel routes', () => {
 	it(`It should not get a user specific parcel
 		  if userId from decoded token and params mismatch`, (done) => {
 			server
-				.get('/api/v1/users/1/parcels/1')
+				.get(`/api/v1/users/20/parcels/${parcel1.parcelid}`)
 				.set('Connection', 'keep alive')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
@@ -827,7 +829,7 @@ describe('Test parcel routes', () => {
 	it(`It should not update the destination of a parcel
 	    if all required fields are not provided`, (done) => {
 			server
-				.put('/api/v1/parcels/1/destination')
+				.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 				.set('Connection', 'keep alive')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
@@ -846,7 +848,7 @@ describe('Test parcel routes', () => {
 	it(`It should not update the destination of a parcel
 		  if all required fields are not provided`, (done) => {
 			server
-				.put('/api/v1/parcels/1/destination')
+				.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 				.set('Connection', 'keep alive')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
@@ -865,7 +867,7 @@ describe('Test parcel routes', () => {
 	it(`It should not update the destination of a parcel
 	    if all required fields are not provided`, (done) => {
 			server
-				.put('/api/v1/parcels/1/destination')
+				.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 				.set('Connection', 'keep alive')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
@@ -886,7 +888,7 @@ describe('Test parcel routes', () => {
 
 	it('It should update the destination of a parcel', (done) => {
 		server
-			.put('/api/v1/parcels/1/destination')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -908,7 +910,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the destination of a parcel address is empty', (done) => {
 		server
-			.put('/api/v1/parcels/1/destination')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -930,7 +932,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the destination of a parcel address is empty', (done) => {
 		server
-			.put('/api/v1/parcels/1/destination')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -952,7 +954,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the destination of a parcel address is empty', (done) => {
 		server
-			.put('/api/v1/parcels/1/destination')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/destination`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -975,13 +977,13 @@ describe('Test parcel routes', () => {
 	it(`It should not update the present location 
 	of a pacel if location is not provided`, (done) => {
 			server
-				.put('/api/v1/parcels/1/presentLocation')
+				.put(`/api/v1/parcels/${parcel1.parcelid}/presentLocation`)
 				.set('Connection', 'keep alive')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
 				.type('form')
 				.set('token', adminToken)
-				.send({ })
+				.send({ deliveryStatus: 'Transiting' })
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(422);
@@ -995,13 +997,13 @@ describe('Test parcel routes', () => {
 	it(`It should not update the present location 
 	    of a pacel if not transitin`, (done) => {
 			server
-				.put('/api/v1/parcels/1/presentLocation')
+				.put(`/api/v1/parcels/${parcel1.parcelid}/presentLocation`)
 				.set('Connection', 'keep alive')
 				.set('Accept', 'application/json')
 				.set('Content-Type', 'application/json')
 				.type('form')
 				.set('token', adminToken)
-				.send({ presentLocation: '' })
+				.send({ presentLocation: '', deliveryStatus: 'Transiting' })
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(422);
@@ -1013,29 +1015,29 @@ describe('Test parcel routes', () => {
 		});
 
 
-		it(`It should not update the present location 
+	it(`It should not update the present location 
 		of a pacel if user is not an admin`, (done) => {
-		server
-			.put('/api/v1/parcels/1/presentLocation')
-			.set('Connection', 'keep alive')
-			.set('Accept', 'application/json')
-			.set('Content-Type', 'application/json')
-			.type('form')
-			.set('token', token)
-			.send({ presentLocation: '' })
-			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(401);
-				expect(response.status).to.equal('Fail');
-				expect(response.message)
-					.to.equal('You do not have the privilege for this operation');
-				done();
-			});
-	});
+			server
+				.put(`/api/v1/parcels/${parcel1.parcelid}/presentLocation`)
+				.set('Connection', 'keep alive')
+				.set('Accept', 'application/json')
+				.set('Content-Type', 'application/json')
+				.type('form')
+				.set('token', token)
+				.send({ presentLocation: '' })
+				.end((err, res) => {
+					const response = res.body;
+					expect(res.statusCode).to.equal(401);
+					expect(response.status).to.equal('Fail');
+					expect(response.message)
+						.to.equal('You do not have the privilege for this operation');
+					done();
+				});
+		});
 
 	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
-			.put('/api/v1/parcels/1/status')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/status`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1056,13 +1058,13 @@ describe('Test parcel routes', () => {
 
 	it(`It should update the present location`, (done) => {
 		server
-			.put('/api/v1/parcels/1/presentLocation')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/presentLocation`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', adminToken)
-			.send({ presentLocation: 'Lagos' })
+			.send({ presentLocation: 'Lagos', deliveryStatus: 'Transiting' })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(200);
@@ -1073,9 +1075,24 @@ describe('Test parcel routes', () => {
 			});
 	});
 
+	before((done) => {
+		server
+			.post('/api/v1/parcels')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
+			.set('token', token)
+			.send(parcel)
+			.end((err, res) => {
+				parcel2 = res.body.data.parcel;
+				done();
+			});
+	});
+
 	it('It should cancel the destination of a parcel', (done) => {
 		server
-			.put('/api/v1/parcels/1/cancel')
+			.put(`/api/v1/parcels/${parcel2.parcelid}/cancel`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1123,7 +1140,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the status of an order if user is not an admin', (done) => {
 		server
-			.put('/api/v1/parcels/1/status')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/status`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1142,7 +1159,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
-			.put('/api/v1/parcels/1/status')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/status`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1161,7 +1178,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
-			.put('/api/v1/parcels/1/status')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/status`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1180,7 +1197,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
-			.put('/api/v1/parcels/1/status')
+			.put(`/api/v1/parcels/${parcel1.parcelid}/status`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1199,7 +1216,7 @@ describe('Test parcel routes', () => {
 
 	it('It should not update the destination of a parcel if cancelled', (done) => {
 		server
-			.put('/api/v1/parcels/1/destination')
+			.put(`/api/v1/parcels/${parcel2.parcelid}/destination`)
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
@@ -1215,7 +1232,7 @@ describe('Test parcel routes', () => {
 				expect(res.statusCode).to.equal(403);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
-					.to.equal('Parcel has been cancelled, destination cannot be updated');
+					.to.equal('Parcel already cancelled, destination cannot be updated');
 				done();
 			});
 	});
