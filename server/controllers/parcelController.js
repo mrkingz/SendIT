@@ -204,8 +204,8 @@ export default class ParcelController extends UtilityService {
   static getCancelOrderQuery(status, userId, parcelId) {
     return {
       text: `UPDATE parcels 
-            SET deliverystatus = $1 WHERE parcelid = $2 AND userid = $3 RETURNING *`,
-      values: [status, parcelId, userId]
+            SET deliverystatus = $1, updatedat = $2 WHERE parcelid = $3 AND userid = $4 RETURNING *`,
+      values: [status, new Date(), parcelId, userId]
     };
   }
 
@@ -274,11 +274,12 @@ export default class ParcelController extends UtilityService {
         } else {
           const updateQuery = {
             text: `UPDATE parcels 
-                    SET presentlocation = $1, deliverystatus = $2 
-                    WHERE parcelid = $3 RETURNING *`,
+                    SET presentlocation = $1, deliverystatus = $2, updatedat = $3
+                    WHERE parcelid = $4 RETURNING *`,
             values: [
               this.ucFirstStr(req.body.presentLocation, { bool: true }),
               req.body.deliveryStatus,
+              new Date(),
               req.params.parcelId
             ]
           };
@@ -314,36 +315,45 @@ export default class ParcelController extends UtilityService {
           this.errorResponse({ res, code: 403, message: msg });
         } else {
           const {
-            weight, description, deliveryMethod, decoded,
-            pickupAddress, pickupCity, pickupState, pickupDate
+            weight, description, deliveryMethod, decoded, pickupAddress, 
+            pickupCity, pickupState, pickupDate, receiverName, receiverPhone
           } = req.body;
           const queries = {
             parcel: {
               text: `UPDATE parcels
-                 SET weight = $1, description = $2, deliverymethod = $3
-                 WHERE userid = $4 AND parcelid = $5 RETURNING *`,
+                 SET weight = $1, description = $2, deliverymethod = $3, updatedat = $4
+                 WHERE userid = $5 AND parcelid = $6 RETURNING *`,
               values: [
-                weight, description, deliveryMethod, decoded.userid, req.params.parcelId
+                weight, description, deliveryMethod, new Date(), decoded.userid, req.params.parcelId
               ]
             },
             pickup: {
               text: `UPDATE parcels
-                    SET pickupaddress = $1, pickupcity = $2, pickupstate = $3, pickupdate = $4
-                    WHERE userid = $5 AND parcelid = $6 RETURNING *`,
+                    SET pickupaddress = $1, pickupcity = $2, pickupstate = $3, 
+                      pickupdate = $4, updatedat = $5
+                    WHERE userid = $6 AND parcelid = $7 RETURNING *`,
               values: [
                 pickupAddress, pickupCity, pickupState, pickupDate,
-                decoded.userid, req.params.parcelId
+                new Date(), decoded.userid, req.params.parcelId
               ]            
+            },
+            receiver: {
+              text: `UPDATE parcels
+                    SET receivername = $1, receiverphone = $2, updatedat = $3
+                    WHERE userid = $4 AND parcelid = $5 RETURNING *`,
+              values: [
+                receiverName, receiverPhone, new Date(), decoded.userid, req.params.parcelId 
+              ]              
             }
           };
-          db.sqlQuery(queries[type.replace(/[-]+/g, '')]).then((updated) => {
+          db.sqlQuery(queries[type.replace(/[-]+/g, '')]).then((updated) => { console.log(updated)
             const msg = `details successfully edited`;
             const message = `${this.ucFirstStr(type.replace(/[-]+/g, ' '))} ${msg}`;
             this.successResponse({
               res, message, data: { parcel: updated.rows[0] }
             });
           })
-            .catch(() => this.errorResponse({ res, message: db.dbError() }));
+          .catch(() => this.errorResponse({ res, message: db.dbError() }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -368,8 +378,10 @@ export default class ParcelController extends UtilityService {
           this.errorResponse({ res, code: 403, message: `Parcel already ${status}, ${msg}` });
         } else {
           const updateQuery = {
-            text: `UPDATE parcels SET deliverystatus = $1 WHERE parcelid = $2 RETURNING *`,
-            values: [req.body.deliveryStatus, req.params.parcelId]
+            text: `UPDATE parcels 
+                  SET deliverystatus = $1, updatedat = $2 
+                  WHERE parcelid = $3 RETURNING *`,
+            values: [req.body.deliveryStatus, new Date(), req.params.parcelId]
           };
           db.sqlQuery(updateQuery).then((updated) => {
             const message = 'Delivery order status successfully updated';
@@ -408,10 +420,12 @@ export default class ParcelController extends UtilityService {
         } else {
           const updateQuery = {
             text: `UPDATE parcels 
-                  SET destinationaddress = $1, destinationcity = $2, destinationstate = $3
-                  WHERE parcelid = $4 AND userid = $5 RETURNING *`,
+                  SET destinationaddress = $1, destinationcity = $2,
+                    destinationstate = $3, updatedat = $4
+                  WHERE parcelid = $5 AND userid = $6 RETURNING *`,
             values: [
-              destinationAddress, destinationCity, destinationState, parcelId, decoded.userid
+              destinationAddress, destinationCity, destinationState, 
+              new Date(), parcelId, decoded.userid
             ]
           };
           db.sqlQuery(updateQuery).then((updated) => {

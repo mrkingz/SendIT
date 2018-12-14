@@ -7,52 +7,71 @@ import Validator from './validator';
  * @extends {UtilityService}
  */
 export default class ParcelValidator extends Validator {
-  /**
-   * Validate parcel delivery order details
-   * 
-   * @static
-   * @method validateParcelDetails
-   * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof ParcelValidator
-   */
-  static validateParcelDetails() {
-	return (req, res, next) => {
-		const { decoded } = req.body;
-		delete req.body.decoded;
-		const schema = Joi.object().keys(this.getParcelDetailsSchemaKeys());
-		return this.validate(req, res, next, schema, () => {
-			return { decoded };
-		});
-	};
-}
-
- /**
-   * Validate parcel delivery order pick up details
-   * 
-   * @static
-   * @method validatePickupDetails
-   * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof ParcelValidator
-   */
-  static validatePickupDetails() {
-	return (req, res, next) => {
-		const { decoded } = req.body;
-		delete req.body.decoded;
-		const schema = Joi.object().keys(this.getPickupDetailsSchemaKeys());
-		return this.validate(req, res, next, schema, () => {
-			return { decoded };
-		});
-	};
-}
-
-  /**
-   * Validate parcel delivery order details
+	/**
+	 * Validate parcel delivery order details
 	 * 
+	 * @static
+	 * @method validateParcelDetails
+	 * @returns {function} Returns an express middleware function that handles the validation
+	 * @memberof ParcelValidator
+	 */
+	static validateParcelDetails() {
+		return (req, res, next) => {
+			const { decoded } = req.body;
+			delete req.body.decoded;
+			const schema = Joi.object().keys(this.getParcelDetailsSchemaKeys());
+			return this.validate(req, res, next, schema, () => {
+				return { decoded };
+			});
+		};
+	}
+
+	/**
+	  * Validate parcel delivery order pick up details
+	  * 
+	  * @static
+	  * @method validatePickupDetails
+	  * @returns {function} Returns an express middleware function that handles the validation
+	  * @memberof ParcelValidator
+	  */
+	static validatePickupDetails() {
+		return (req, res, next) => {
+			const { decoded } = req.body;
+			delete req.body.decoded;
+			const schema = Joi.object().keys(this.getPickupDetailsSchemaKeys());
+			return this.validate(req, res, next, schema, () => {
+				return { decoded };
+			});
+		};
+	}
+
+	/**
+   * Validate parcel receiver details
+   * 
    * @static
-	 * @method validateParcel
+   * @method validateReceiverDetails
    * @returns {function} Returns an express middleware function that handles the validation
    * @memberof ParcelValidator
    */
+  static validateReceiverDetails() {
+		return (req, res, next) => {
+			const { decoded } = req.body;
+			delete req.body.decoded;
+			const schema = Joi.object().keys(this.getReceiverDetailsSchemaKeys());
+			return this.validate(req, res, next, schema, () => {
+				return { decoded };
+			});
+		};
+	}
+
+	/**
+	 * Validate parcel delivery order details
+	 * 
+	 * @static
+	 * @method validateParcel
+	 * @returns {function} Returns an express middleware function that handles the validation
+	 * @memberof ParcelValidator
+	 */
 	static validateCreateParcel() {
 		return (req, res, next) => {
 			const { decoded } = req.body;
@@ -77,10 +96,10 @@ export default class ParcelValidator extends Validator {
 	 */
 	static getParcelSchema() {
 		return Joi.object()
-						.keys(this.getParcelDetailsSchemaKeys())
-						.keys(this.getPickupDetailsSchemaKeys())
-						.keys(this.getDestinationDetailsSchemaKeys())
-						.keys(this.getReceiverDetailsSchemaKeys());
+			.keys(this.getParcelDetailsSchemaKeys())
+			.keys(this.getPickupDetailsSchemaKeys())
+			.keys(this.getDestinationDetailsSchemaKeys())
+			.keys(this.getReceiverDetailsSchemaKeys());
 	}
 
 	/**
@@ -147,27 +166,27 @@ export default class ParcelValidator extends Validator {
 	static getReceiverDetailsSchemaKeys() {
 		const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
 		return {
-				receiverName: Joi.string().required().max(200).label(`Receiver name`),
-				receiverPhone: Joi.string().required().max(50).regex(phoneExp)
-					.label(`Receiver phone number`).error((errors) => {
-						const err = errors[0];
-						switch (err.type) {
-							case 'string.regex.base': return 'Receiver phone number is inavlid';
-							default: return err;
-						}
-					})
+			receiverName: Joi.string().required().max(200).label(`Receiver name`),
+			receiverPhone: Joi.string().required().max(50).regex(phoneExp)
+				.label(`Receiver phone number`).error((errors) => {
+					const err = errors[0];
+					switch (err.type) {
+						case 'string.regex.base': return 'Receiver phone number is inavlid';
+						default: return err;
+					}
+				})
 		};
 	}
-	
-  /**
-   * Validate present location
-	 * 
-   * @static
-	 * @param {update} updateType the type of update operation
-	 * @method validateLocation
-   * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof ParcelValidator
-   */
+
+	/**
+	 * Validate present location
+	   * 
+	 * @static
+	   * @param {update} updateType the type of update operation
+	   * @method validateLocation
+	 * @returns {function} Returns an express middleware function that handles the validation
+	 * @memberof ParcelValidator
+	 */
 	static validateAdminUpdate(updateType) {
 		return (req, res, next) => {
 			const { decoded, deliveryStatus, presentLocation } = req.body;
@@ -194,15 +213,15 @@ export default class ParcelValidator extends Validator {
 		};
 	}
 
-  /**
-   * Validate present location
-	 * 
-   * @static
-	 * @param {update} updateType the type of update operation
-	 * @method validateLocation
-   * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof ParcelValidator
-   */
+	/**
+	 * Validate present location
+	   * 
+	 * @static
+	   * @param {update} updateType the type of update operation
+	   * @method validateLocation
+	 * @returns {function} Returns an express middleware function that handles the validation
+	 * @memberof ParcelValidator
+	 */
 	static validateDestination() {
 		return (req, res, next) => {
 			const { decoded } = req.body;
