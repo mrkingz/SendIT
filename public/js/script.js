@@ -1,11 +1,11 @@
 let oDropdown, modal, pageReload = false;
 const baseUrl = '/api/v1';
-
+$(`input[type='text']`).prop({ autocomplete: 'off' });
 $('.control').on('keypress blur', () => {
   $('#message div').addClass('zoomOut animated faster').fadeOut(500);
 });
 
-$('select').on('change', (e) => {
+$('body').on('change', 'select', (e) => {
   const elem = $(e.target);
   elem.css({ color: elem.val().trim() === '' ? '#636c72' : 'initial' });
 });
@@ -239,14 +239,12 @@ window.onclick = (event) => {
   }
 
   if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn i')) {
-    let dropdowns = document.getElementsByClassName('dropdown-content');
-
-    for (let i = 0; i < dropdowns.length; i++) {
-      let openDropdown = dropdowns[i];
-      if (openDropdown.classList.contains('show')) {
-        openDropdown.classList.remove('show');
+    let dropdowns = document.querySelectorAll('.dropdown-content');
+    dropdowns.forEach((d) => {
+      if (d.classList.contains('show')) {
+        d.classList.remove('show');
       }
-    }
+    });
   }
 };
 
