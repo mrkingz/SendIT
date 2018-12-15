@@ -18,7 +18,7 @@ export default class UserController extends UtilityService {
    * Register new user
 	 * 
 	 * @static
-	 * @returns {function} aA middleware function that handles the POST request
+	 * @returns {function} An express middleware function that handles the POST request
    * @method register
 	 * @memberof UserController
 	 */
@@ -80,6 +80,34 @@ export default class UserController extends UtilityService {
           return this.errorResponse({ res, code: 401, message: 'Invalid sign in credentials' });
         })
         .catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
+   * Get profile details
+   *
+   * @static
+   * @returns {function} An express middleware function that handles the GET request
+   * @method getProfileDetails
+   * @memberof UserController
+   */
+  static getProfileDetails() {
+    return (req, res) => {
+      const query = {
+        text: `SELECT firstname, lastname, email, isadmin, createdat, updatedat
+              FROM users WHERE userid = $1 LIMIT 1`,
+        values: [req.body.decoded.userid]
+      };
+      db.sqlQuery(query).then((result) => {
+        const user = result.rows[0];
+        const message = 'Profile details successfully retrieved';
+        return _.isEmpty(user)
+                ? this.errorResponse({ res, code: 404, message: 'User does not exist' })
+                : this.successResponse({ 
+                  res, code: 302, message, data: { user } 
+                });
+      })
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
