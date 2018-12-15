@@ -47,7 +47,7 @@
                                     <div class="panel">
                                         <div class="filter-div hide" id="filter-div">
                                             <div class="dropdown">
-                                                <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm fine-btn">Filter orders <i class="fa fa-caret-down"></i></button>
+                                                <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-filter"></i> Filter orders</button>
                                                 <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
                                                     <button class="menu-btn" onclick="getOrders()">All orders</button>
                                                     <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
@@ -156,7 +156,7 @@
                         </div>
                     </div>                                                          
                     <div class="details-link-div">
-                        <a href="/orders/${order.parcelid}" class="btn btn-link btn-sm skyblue-color">More details</a>
+                        <a href="/orders/${order.parcelid}" class="btn btn-link btn-sm skyblue-color">Details</a>
                     </div>`;
                 return card;
             }

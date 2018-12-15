@@ -236,7 +236,6 @@ button.menu-btn {
     padding: 0 .5rem;
     background-color:#fefef8;
     border:1px solid rgb(202, 202, 226);
-    border: 1px solid rgb(158, 158, 228);
     -webkit-border-radius: .2rem;
     -moz-border-radius: .2rem;
     border-radius: .2rem;
@@ -247,12 +246,15 @@ button.menu-btn {
 }
 
 .card-header {
+    display: flex;
+    justify-content: space-between;
     padding-top: .4rem;
     padding-bottom: .3rem;
 }
 
 .card-title {
     font-size: .9rem;
+    padding-top: .4rem;
 }
 
 .card-title-line {
