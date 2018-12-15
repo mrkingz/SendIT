@@ -18,6 +18,10 @@ authRouter.post('/api/v1/auth/login',
 authRouter.post('/api/v1/auth/email', 
   UserController.checkExist('email'));
 
+authRouter.get('/api/v1/auth/profileDetails', 
+  UserController.authenticateUser(),
+  UserController.getProfileDetails());
+
 authRouter.post('/api/v1/auth/verifyAuth', 
   UserController.checkAuth());
 
