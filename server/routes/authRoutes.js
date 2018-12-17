@@ -22,6 +22,11 @@ authRouter.get('/api/v1/auth/profileDetails',
   UserController.authenticateUser(),
   UserController.getProfileDetails());
 
+authRouter.put('/api/v1/auth/editName', 
+  UserController.authenticateUser(),
+  UserValidator.validateName(),
+  UserController.editProfileDetails('name'));
+
 authRouter.post('/api/v1/auth/verifyAuth', 
   UserController.checkAuth());
 

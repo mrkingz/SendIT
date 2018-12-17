@@ -33,7 +33,9 @@ export default class UserController extends UtilityService {
                   users (email, firstname, lastname, password, createdat, updatedat) 
                   VALUES($1, $2, $3, $4, $5, $6) 
                   RETURNING *`,
-        values: [email, firstname, lastname, pass, moment, moment]
+        values: [
+          email, this.ucFirstStr(firstname), this.ucFirstStr(lastname), pass, moment, moment
+        ]
       };
       db.sqlQuery(query)
         .then((result) => {
@@ -80,6 +82,38 @@ export default class UserController extends UtilityService {
           return this.errorResponse({ res, code: 401, message: 'Invalid sign in credentials' });
         })
         .catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
+   * Edit profile details
+   *
+   * @static
+   * @param {string} option the edit operation to perform
+   * @returns {function} An express middleware function that handles the PUT request
+   * @method editProfileDetails
+   * @memberof UserController
+   */
+  static editProfileDetails(option) {
+    return (req, res) => {
+      const { firstname, lastname, decoded } = req.body;
+      const queries = {
+        name: {
+          text: `UPDATE users SET firstname = $1, lastname = $2, updatedat = $3
+                 WHERE userid = $4 RETURNING *`,
+          values: [
+            this.ucFirstStr(firstname), this.ucFirstStr(lastname), new Date(), decoded.userid
+          ]
+        },
+      };
+      db.sqlQuery(queries[option]).then((result) => {
+        const { password, ...user } = result.rows[0];
+        const message = `${this.ucFirstStr(option)} successfully updated`;
+        this.successResponse({
+          res, code: 200, message, data: { user } 
+        });
+      })
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
@@ -178,7 +212,7 @@ export default class UserController extends UtilityService {
   static findUser(credentials) {
     const { userid, email, isadmin } = credentials;
     const query = {
-      text: `SELECT userid, firstname, lastname, isadmin 
+      text: `SELECT userid, firstname, lastname, email, isadmin, createdat, updatedat
              FROM users WHERE userid = $1 AND email = $2 AND isadmin = $3`,
       values: [userid, email, isadmin]
     };

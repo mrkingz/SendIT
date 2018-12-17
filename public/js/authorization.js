@@ -24,7 +24,7 @@ const checkAuth = async () => {
 		window.location.href = '/signin';
 	}
 
-	return { userid: user.userid, isadmin: user.isadmin };
+	return user;
 };
 
 const authUser = checkAuth();

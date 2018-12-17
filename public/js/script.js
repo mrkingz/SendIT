@@ -46,6 +46,25 @@ const getFormData = (fields, callback) => {
     : JSON.stringify(data);
 };
 
+const updateRequest = async (obj) => {
+  await hideModal('');
+  await showSpinner();
+  fetch(request({
+    path: obj.path,
+    token: localStorage.getItem('token'),
+    data: obj['data'],
+    method: 'PUT'
+  })).then(res => res.json())
+    .then((res) => {
+      if (res.status === 'Success') {
+        pageReload = true;
+        toggleSpinner(res.message, res.status);
+      } else {
+        toggleSpinner(res.message, res.status);
+      }
+    }).catch(error => toggleSpinner(error.message, error.status));
+}
+
 const addClass = (element, classes) => {
   classes.forEach((value) => {
     if (!element.classList.contains(value)) {

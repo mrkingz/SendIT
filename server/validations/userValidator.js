@@ -15,11 +15,32 @@ export default class UserValidator extends Validator {
    * @static
    * @method validateUser
    * @returns {function} Returns an express middleware function that handles the validation
+   * @method validateUser
    * @memberof UserValidator
    */
   static validateUser() {
     return (req, res, next) => {
       return this.validate(req, res, next, this.getUserSchema());
+    };
+  }
+
+    /**
+   * Validates names
+   * 
+   * @static
+   * @method validateName
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @memberof UserValidator
+   * @method validateName
+   */
+  static validateName() {
+    return (req, res, next) => {
+			const { decoded } = req.body;
+			delete req.body.decoded;
+      const schema = Joi.object().keys(this.getNamevalidationKeys());
+      return this.validate(req, res, next, schema, () => {
+        return { decoded };
+      });
     };
   }
 
@@ -32,22 +53,36 @@ export default class UserValidator extends Validator {
 	 * @memberof UserValidator
 	 */
 	static getUserSchema() {
-    const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
-    const name = Joi.string().required().max(100).regex(exp).error((errors) => {
-      const err = errors[0];
-      switch (err.type) {
-        case 'any.invalid': return `${err.path} is inavlid`;
-        default: return err;
-      }
-    });
-
-    return Joi.object().keys({
-      firstname: name,
-      lastname: name,
+    return Joi.object()
+    .keys(this.getNamevalidationKeys())
+    .keys({
       email: Joi.string().required().email().max(100).label('E-mail address').lowercase(),
       password: Joi.string().required().min(8).max(60)
     });
-	}
+  }
+  
+  /**
+   * Get name validation schema
+   *
+   * @static
+   * @returns {object} the names validation schema keys
+   * @method getNamevalidationKeys
+   * @memberof UserValidator
+   */
+  static getNamevalidationKeys() {
+    const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
+    const name = Joi.string().required().max(100).regex(exp).lowercase().error((errors) => {
+      const err = errors[0];
+      switch (err.type) {
+        case 'string.regex.base': return `${err.path} is inavlid`;
+        default: return err;
+      }
+    });
+    return {
+      firstname: name,
+      lastname: name
+    };
+  }
 
   /**
    * Validate user authentication credentials

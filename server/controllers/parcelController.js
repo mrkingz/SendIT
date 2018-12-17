@@ -56,7 +56,13 @@ export default class ParcelController extends UtilityService {
         return next();
       }
 
-      const query = { text: `SELECT * FROM parcels` };
+      const query = { 
+        text: `SELECT DISTINCT 
+                parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername 
+              FROM parcels 
+              INNER JOIN users 
+              ON parcels.userid = users.userid` 
+      };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
         return (_.isEmpty(parcels))
@@ -220,7 +226,11 @@ export default class ParcelController extends UtilityService {
    */
   static getParcelQuery(parcelId) {
     return {
-      text: `SELECT * FROM parcels WHERE parcelid = $1`,
+      text: `SELECT DISTINCT
+              parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername 
+            FROM parcels 
+            INNER JOIN users 
+            ON parcels.userid = users.userid AND parcelid = $1`,
       values: [parcelId]
     };
   }

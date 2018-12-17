@@ -184,3 +184,49 @@ const updateStatusModal = (e) => {
   showModal({ content, title: e.target.innerText });
   document.getElementById('receiver-name').focus();
 };
+
+const updatePhoneModal = (e, user) => {
+  const content = `<form class="form">
+                    <div class="control-group">
+                      <label class="required" for="phone">Phone number</label>
+                      <input type="text" class="control" name="phone" id="phone" placeholder="Phone number" value="">
+                    </div>
+                    <div class="control-group mb-0">
+                      <button class="btn btn-primary" onclick="return false">Continue</button>
+                    </div>
+                  </form>`;
+  showModal({ content, title: e.target.innerText });
+  document.getElementById('phone').focus();
+};
+
+const changePasswordModal = (e, user) => {
+  const content = `<form class="form">
+                    <div class="control-group">
+                      <label class="required" for="phone">Current password</label>
+                      <input type="password" class="control" name="password" id="password" placeholder="Current password">
+                    </div>
+                    <div class="control-group mb-0">
+                      <button class="btn btn-primary" onclick="return false">Continue</button>
+                    </div>
+                  </form>`;
+  showModal({ content, title: e.target.innerText });
+  document.getElementById('password').focus();
+};
+
+const editNameModal = (e, user) => {
+  const content = `<form class="form">
+                    <div class="control-group">
+                      <label class="required" for="firstname">Firstname</label>
+                      <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" value="${user.firstname}">
+                    </div>
+                    <div class="control-group">
+                      <label class="required" for="lastname">Lastname</label>
+                      <input type="text" class="control" name="lastname" id="lastname" placeholder="Lastname" value="${user.lastname}">
+                    </div>
+                    <div class="control-group mb-0">
+                      <button class="btn btn-primary" onclick="updateName(event)">Save</button>
+                    </div>
+                  </form>`;
+  showModal({ content, title: e.target.innerText });
+  document.getElementById('firstname').focus();
+};
