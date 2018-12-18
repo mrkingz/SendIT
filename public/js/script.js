@@ -121,7 +121,7 @@ const isUnique = (field, msg) => {
   displayError(field, msg);  
 };
 
-const hasEmpty = (fields) => {
+const hasEmpty = (fields, msg) => {
   const length = fields.length;
   let field, emptyField;
   for (let i = 0; i < length; i++) {
@@ -134,7 +134,7 @@ const hasEmpty = (fields) => {
     }
   }
   if (emptyField) {
-    displayError(emptyField);
+    displayError(emptyField, msg);
     return true;
   }
   return false;

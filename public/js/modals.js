@@ -194,21 +194,17 @@ const updatePhoneModal = (e, user) => {
                       </div>
                     </div>
                     <div class="hide" id="code-div">
-                      <div class="alert alert-info mb-lg">
-                        <div><span>Enter the code</span> sent to <b>${user.phonenumber}</b></div>
-                        <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
-                      </div>
+                      <div class="mb-lg" id="code-info"></div>
                       <div class="control-group">
                         <label class="required" for="phone">Verification code</label>
-                        <input type="text" class="control" id="verification-code" placeholder="Verification code">
+                        <input type="text" class="control" id="verification-code" placeholder="Verification code" autofocus>
                       </div>
                     </div>
-
-                    <div class="control-group">
+                    <div class="control-group mb-0">
                       <button class="btn btn-primary" id="submit" onclick="verifyPhone(event, user)">Continue</button>
                     </div>
-                    <div id="resend-div" class="size-11 align-right mx-sm hide">
-                      <span>Code not received? <button class="btn btn-link btn-sm fine-btn" onclick="resendCode(event, user)">Resend</button></span>
+                    <div id="resend-div" class="size-11 align-right mx-sm mt-lg hide">
+                      <span>Code not received?<button class="btn btn-link btn-sm fine-btn ml-md" onclick="resendCode(); return false">Resend</button></span>
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
