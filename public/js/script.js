@@ -63,7 +63,7 @@ const updateRequest = async (obj) => {
         toggleSpinner(res.message, res.status);
       }
     }).catch(error => toggleSpinner(error.message, error.status));
-}
+};
 
 const addClass = (element, classes) => {
   classes.forEach((value) => {
@@ -282,7 +282,7 @@ const showModal = (obj) => {
   switch (type) {
     case 'confirm':
         html += `<div class="modal-body">
-                    <h3 id=confirm-title>${title}</h3>
+                    <div id="confirm-title">${title}</div>
                     ${content}
                     <div class="confirm-btns">
                       <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
@@ -292,7 +292,7 @@ const showModal = (obj) => {
         break;
     default: 
         html += `<div class="modal-body">
-                  <h3>${title}</h3>
+                  <div class="modal-title">${title}</div>
                   <div class="panel">${content}</div>
                 </div>`;
   }

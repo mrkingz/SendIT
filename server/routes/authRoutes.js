@@ -24,8 +24,13 @@ authRouter.get('/api/v1/auth/profileDetails',
 
 authRouter.put('/api/v1/auth/editName', 
   UserController.authenticateUser(),
-  UserValidator.validateName(),
+  UserValidator.validateUserUpdate('name'),
   UserController.editProfileDetails('name'));
+
+authRouter.put('/api/v1/auth/phoneNumber', 
+  UserController.authenticateUser(),
+  UserValidator.validateUserUpdate('phone'),
+  UserController.editProfileDetails('phone-number'));
 
 authRouter.post('/api/v1/auth/verifyAuth', 
   UserController.checkAuth());

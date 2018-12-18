@@ -34,11 +34,11 @@ export default class UtilityService {
             if (bool) {
               const array = attributes[key].split(' ');
               attr[key] = array.map((str) => {
-                str = str.toString().trim();
+                str = str ? str.toString().trim() : '';
                 return (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
               }).join(' ');
             } else {
-              const str = attributes[key].toString().trim();
+              const str = attributes[key] ? attributes[key].toString().trim() : '';
               attr[key] = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
             }
           } else attr[key] = attributes[key];
@@ -78,7 +78,7 @@ export default class UtilityService {
                 );
       }).join(' ');
     } else {
-      str = string.toString().trim();
+      str = string ? string.toString().trim() : '';
       str = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
     }
     return str;

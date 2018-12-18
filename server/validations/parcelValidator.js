@@ -1,5 +1,6 @@
 import Joi from 'joi';
 import Validator from './validator';
+import UserValidator from './userValidator';
 
 /**
  * @export
@@ -11,54 +12,22 @@ export default class ParcelValidator extends Validator {
 	 * Validate parcel delivery order details
 	 * 
 	 * @static
+	 * @param {string} option
 	 * @method validateParcelDetails
 	 * @returns {function} Returns an express middleware function that handles the validation
 	 * @memberof ParcelValidator
 	 */
-	static validateParcelDetails() {
+	static validateParcelUpdate(option) {
 		return (req, res, next) => {
 			const { decoded } = req.body;
 			delete req.body.decoded;
-			const schema = Joi.object().keys(this.getParcelDetailsSchemaKeys());
-			return this.validate(req, res, next, schema, () => {
-				return { decoded };
-			});
-		};
-	}
-
-	/**
-	  * Validate parcel delivery order pick up details
-	  * 
-	  * @static
-	  * @method validatePickupDetails
-	  * @returns {function} Returns an express middleware function that handles the validation
-	  * @memberof ParcelValidator
-	  */
-	static validatePickupDetails() {
-		return (req, res, next) => {
-			const { decoded } = req.body;
-			delete req.body.decoded;
-			const schema = Joi.object().keys(this.getPickupDetailsSchemaKeys());
-			return this.validate(req, res, next, schema, () => {
-				return { decoded };
-			});
-		};
-	}
-
-	/**
-   * Validate parcel receiver details
-   * 
-   * @static
-   * @method validateReceiverDetails
-   * @returns {function} Returns an express middleware function that handles the validation
-   * @memberof ParcelValidator
-   */
-  static validateReceiverDetails() {
-		return (req, res, next) => {
-			const { decoded } = req.body;
-			delete req.body.decoded;
-			const schema = Joi.object().keys(this.getReceiverDetailsSchemaKeys());
-			return this.validate(req, res, next, schema, () => {
+			const schemas = {
+				parcel: this.getParcelDetailsSchema(),
+				pickup: this.getPickupDetailsSchema(),
+				destination: this.getDestinationDetailsSchema(),
+				receiver: this.getReceiverDetailsSchema()
+			};
+			return this.validate(req, res, next, Joi.object().keys(schemas[option]), () => {
 				return { decoded };
 			});
 		};
@@ -96,10 +65,11 @@ export default class ParcelValidator extends Validator {
 	 */
 	static getParcelSchema() {
 		return Joi.object()
-			.keys(this.getParcelDetailsSchemaKeys())
-			.keys(this.getPickupDetailsSchemaKeys())
-			.keys(this.getDestinationDetailsSchemaKeys())
-			.keys(this.getReceiverDetailsSchemaKeys());
+			.keys(this.getParcelDetailsSchema())
+			.keys(this.getPickupDetailsSchema())
+			.keys(this.getDestinationDetailsSchema())
+			.keys(this.getReceiverDetailsSchema())
+			.keys(this.getPhoneSchema('Receiver'));
 	}
 
 	/**
@@ -107,10 +77,10 @@ export default class ParcelValidator extends Validator {
 	 *
 	 * @static
 	 * @returns {object} the parcel details validation schema keys
-	 * @method getParcelDetailsSchemaKeys
+	 * @method getParcelDetailsSchema
 	 * @memberof ParcelValidator
 	 */
-	static getParcelDetailsSchemaKeys() {
+	static getParcelDetailsSchema() {
 		return {
 			weight: Joi.alternatives().try([
 				Joi.number().integer().greater(0).positive(),
@@ -127,10 +97,10 @@ export default class ParcelValidator extends Validator {
 	 *
 	 * @static
 	 * @returns {object} the parcel destination details validation schema keys
-	 * @method getPickupDetailsSchemaKeys
+	 * @method getPickupDetailsSchema
 	 * @memberof ParcelValidator
 	 */
-	static getPickupDetailsSchemaKeys() {
+	static getPickupDetailsSchema() {
 		return {
 			pickupAddress: Joi.string().required().max(150).label('Pickup address'),
 			pickupCity: Joi.string().required().max(100).label('Pickup city'),
@@ -144,10 +114,10 @@ export default class ParcelValidator extends Validator {
 	 *
 	 * @static
 	 * @returns {object} the parcel destination details validation schema keys
-	 * @method getDestinationDetailsSchemaKeys
+	 * @method getDestinationDetailsSchema
 	 * @memberof ParcelValidator
 	 */
-	static getDestinationDetailsSchemaKeys() {
+	static getDestinationDetailsSchema() {
 		return {
 			destinationAddress: Joi.string().required().max(150).label('Destination address'),
 			destinationCity: Joi.string().required().max(100).label('Destination city'),
@@ -160,21 +130,13 @@ export default class ParcelValidator extends Validator {
 	 *
 	 * @static
 	 * @returns {object} the parcel receiver details validation schema keys
-	 * @method getReceiverDetailsSchemaKeys
+	 * @method getReceiverDetailsSchema
 	 * @memberof ParcelValidator
 	 */
-	static getReceiverDetailsSchemaKeys() {
-		const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
+	static getReceiverDetailsSchema() {
 		return {
 			receiverName: Joi.string().required().max(200).label(`Receiver name`),
-			receiverPhone: Joi.string().required().max(50).regex(phoneExp)
-				.label(`Receiver phone number`).error((errors) => {
-					const err = errors[0];
-					switch (err.type) {
-						case 'string.regex.base': return 'Receiver phone number is inavlid';
-						default: return err;
-					}
-				})
+			receiverPhone: UserValidator.getPhoneSchema().phone
 		};
 	}
 
@@ -208,30 +170,6 @@ export default class ParcelValidator extends Validator {
 				})
 			};
 			return this.validate(req, res, next, schema[updateType], () => {
-				return { decoded };
-			});
-		};
-	}
-
-	/**
-	 * Validate present location
-	   * 
-	 * @static
-	   * @param {update} updateType the type of update operation
-	   * @method validateLocation
-	 * @returns {function} Returns an express middleware function that handles the validation
-	 * @memberof ParcelValidator
-	 */
-	static validateDestination() {
-		return (req, res, next) => {
-			const { decoded } = req.body;
-			delete req.body.decoded;
-			const schema = Joi.object().keys({
-				destinationAddress: Joi.string().required().max(150).label('Destination address'),
-				destinationCity: Joi.string().required().max(100).label('Destination city'),
-				destinationState: Joi.string().required().max(100).label('Destination state'),
-			});
-			return this.validate(req, res, next, schema, () => {
 				return { decoded };
 			});
 		};

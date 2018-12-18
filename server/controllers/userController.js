@@ -25,16 +25,19 @@ export default class UserController extends UtilityService {
   static register() {
     return (req, res) => {
       const moment = new Date();
-      let { email, firstname, lastname } = req.body;
+      let { 
+        email, firstname, lastname, phoneNumber 
+      } = req.body;
       const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
 
       const query = {
         text: `INSERT INTO 
-                  users (email, firstname, lastname, password, createdat, updatedat) 
-                  VALUES($1, $2, $3, $4, $5, $6) 
+                  users (email, firstname, lastname, password, phonenumber, createdat, updatedat) 
+                  VALUES($1, $2, $3, $4, $5, $6, $7) 
                   RETURNING *`,
         values: [
-          email, this.ucFirstStr(firstname), this.ucFirstStr(lastname), pass, moment, moment
+          email, this.ucFirstStr(firstname), this.ucFirstStr(lastname), 
+          pass, phoneNumber, moment, moment
         ]
       };
       db.sqlQuery(query)
@@ -96,7 +99,9 @@ export default class UserController extends UtilityService {
    */
   static editProfileDetails(option) {
     return (req, res) => {
-      const { firstname, lastname, decoded } = req.body;
+      const { 
+        firstname, lastname, phoneNumber, decoded 
+      } = req.body;
       const queries = {
         name: {
           text: `UPDATE users SET firstname = $1, lastname = $2, updatedat = $3
@@ -105,10 +110,15 @@ export default class UserController extends UtilityService {
             this.ucFirstStr(firstname), this.ucFirstStr(lastname), new Date(), decoded.userid
           ]
         },
+        phonenumber: {
+          text: `UPDATE users SET phonenumber = $1, updatedat = $2
+                 WHERE userid = $3 RETURNING *`,
+          values: [phoneNumber, new Date(), decoded.userid]
+        }
       };
-      db.sqlQuery(queries[option]).then((result) => {
+      db.sqlQuery(queries[option.replace(/[-]+/g, '')]).then((result) => {
         const { password, ...user } = result.rows[0];
-        const message = `${this.ucFirstStr(option)} successfully updated`;
+        const message = `${this.ucFirstStr(option.replace(/[-]+/g, ' '))} successfully updated`;
         this.successResponse({
           res, code: 200, message, data: { user } 
         });
@@ -128,12 +138,11 @@ export default class UserController extends UtilityService {
   static getProfileDetails() {
     return (req, res) => {
       const query = {
-        text: `SELECT firstname, lastname, email, isadmin, createdat, updatedat
-              FROM users WHERE userid = $1 LIMIT 1`,
+        text: `SELECT * FROM users WHERE userid = $1 LIMIT 1`,
         values: [req.body.decoded.userid]
       };
       db.sqlQuery(query).then((result) => {
-        const user = result.rows[0];
+        const { password, ...user } = result.rows[0];
         const message = 'Profile details successfully retrieved';
         return _.isEmpty(user)
                 ? this.errorResponse({ res, code: 404, message: 'User does not exist' })
@@ -212,13 +221,13 @@ export default class UserController extends UtilityService {
   static findUser(credentials) {
     const { userid, email, isadmin } = credentials;
     const query = {
-      text: `SELECT userid, firstname, lastname, email, isadmin, createdat, updatedat
-             FROM users WHERE userid = $1 AND email = $2 AND isadmin = $3`,
+      text: `SELECT * FROM users WHERE userid = $1 AND email = $2 AND isadmin = $3`,
       values: [userid, email, isadmin]
     };
     return db.sqlQuery(query)
       .then((result) => {
-        return _.isEmpty(result.rows) ? null : result.rows[0];
+        const { password, ...user } = result.rows[0];
+        return _.isEmpty(result.rows) ? null : user;
       })
       .catch(() => db.dbError());
   }

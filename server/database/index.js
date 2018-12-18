@@ -108,7 +108,7 @@ class Database {
       }
       return Promise.resolve(true);
     }).catch((error) => {
-      console.log(error.toString())
+      console.log(error.toString());
       return Promise.reject(error.toString());
     });
   }
@@ -138,10 +138,10 @@ class Database {
   createTables() {
     return this.createTable(this.getUserTableMeta()).then(() => {
       //We need to provide a default admin
-      return this.seedAdmin().then((r) => {
+      return this.seedAdmin().then(() => {
         return this.createTable(this.getParcelTableMeta()).then(() => {
         }).catch(() => {});
-      }).catch(() => {})
+      }).catch(() => {});
     }).catch(() => {});
 	}
 
@@ -204,6 +204,7 @@ class Database {
               firstname VARCHAR (100) NOT NULL,
               lastname VARCHAR (100) NOT NULL,
               email VARCHAR (100) NOT NULL,
+              phonenumber VARCHAR (50) DEFAULT NULL,
               password VARCHAR (100) NOT NULL,
               isadmin BOOLEAN NOT NULL DEFAULT false,
               createdat TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -214,6 +215,12 @@ class Database {
 				}; 
   }
 
+  /**
+   * Seed admin table with default values
+   *
+   * @returns {Promise} a promise that resolves or reject
+   * @memberof Database
+   */
   seedAdmin() {
     const moment = new Date();
     const password = bcrypt.hashSync('Password1', bcrypt.genSaltSync(10));
@@ -221,9 +228,9 @@ class Database {
       text: `INSERT INTO users (firstname, lastname, isadmin, email, password, createdat, updatedat)
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
       values: ['Admin', 'Admin', true, 'admin@gmail.com', password, moment, moment]
-    }
-    return this.sqlQuery(query).then((r) => Promise.resolve(true))
-    .catch((e) => Promise.reject(e.toString()))
+    };
+    return this.sqlQuery(query).then(() => Promise.resolve(true))
+    .catch(error => Promise.reject(error.toString()));
   }
 }
 

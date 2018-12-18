@@ -187,16 +187,32 @@ const updateStatusModal = (e) => {
 
 const updatePhoneModal = (e, user) => {
   const content = `<form class="form">
-                    <div class="control-group">
-                      <label class="required" for="phone">Phone number</label>
-                      <input type="text" class="control" name="phone" id="phone" placeholder="Phone number" value="">
+                    <div id="phone-div">
+                      <div class="control-group">
+                        <label class="required" for="phone">Phone number</label>
+                        <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" value="${user.phonenumber}">
+                      </div>
                     </div>
-                    <div class="control-group mb-0">
-                      <button class="btn btn-primary" onclick="return false">Continue</button>
+                    <div class="hide" id="code-div">
+                      <div class="alert alert-info mb-lg">
+                        <div><span>Enter the code</span> sent to <b>${user.phonenumber}</b></div>
+                        <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
+                      </div>
+                      <div class="control-group">
+                        <label class="required" for="phone">Verification code</label>
+                        <input type="text" class="control" id="verification-code" placeholder="Verification code">
+                      </div>
+                    </div>
+
+                    <div class="control-group">
+                      <button class="btn btn-primary" id="submit" onclick="verifyPhone(event, user)">Continue</button>
+                    </div>
+                    <div id="resend-div" class="size-11 align-right mx-sm hide">
+                      <span>Code not received? <button class="btn btn-link btn-sm fine-btn" onclick="resendCode(event, user)">Resend</button></span>
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
-  document.getElementById('phone').focus();
+  document.getElementById('phone-number').focus();
 };
 
 const changePasswordModal = (e, user) => {
