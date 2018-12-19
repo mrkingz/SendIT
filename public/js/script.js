@@ -46,6 +46,25 @@ const getFormData = (fields, callback) => {
     : JSON.stringify(data);
 };
 
+const updateRequest = async (obj) => {
+  await hideModal('');
+  await showSpinner();
+  fetch(request({
+    path: obj.path,
+    token: localStorage.getItem('token'),
+    data: obj['data'],
+    method: 'PUT'
+  })).then(res => res.json())
+    .then((res) => {
+      if (res.status === 'Success') {
+        pageReload = true;
+        toggleSpinner(res.message, res.status);
+      } else {
+        toggleSpinner(res.message, res.status);
+      }
+    }).catch(error => toggleSpinner(error.message, error.status));
+};
+
 const addClass = (element, classes) => {
   classes.forEach((value) => {
     if (!element.classList.contains(value)) {
@@ -102,7 +121,7 @@ const isUnique = (field, msg) => {
   displayError(field, msg);  
 };
 
-const hasEmpty = (fields) => {
+const hasEmpty = (fields, msg) => {
   const length = fields.length;
   let field, emptyField;
   for (let i = 0; i < length; i++) {
@@ -115,7 +134,7 @@ const hasEmpty = (fields) => {
     }
   }
   if (emptyField) {
-    displayError(emptyField);
+    displayError(emptyField, msg);
     return true;
   }
   return false;
@@ -263,7 +282,7 @@ const showModal = (obj) => {
   switch (type) {
     case 'confirm':
         html += `<div class="modal-body">
-                    <h3 id=confirm-title>${title}</h3>
+                    <div id="confirm-title">${title}</div>
                     ${content}
                     <div class="confirm-btns">
                       <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
@@ -273,7 +292,7 @@ const showModal = (obj) => {
         break;
     default: 
         html += `<div class="modal-body">
-                  <h3>${title}</h3>
+                  <div class="modal-title">${title}</div>
                   <div class="panel">${content}</div>
                 </div>`;
   }

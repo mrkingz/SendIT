@@ -46,6 +46,11 @@
                                                     <label class="required" for="email">E-mail address</label>
                                                     <input type="email" class="control" name="email" id="email" placeholder="E-mail address" autocomplete="off">
                                                 </div>
+
+                                                <div class="control-group">
+                                                    <label class="required" for="phone-number">Phone number</label>
+                                                    <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" autocomplete="off">
+                                                </div>
                                             
                                                 <div class="control-group mb-lg">
                                                     <label class="required" for="password">Password</label>
@@ -90,10 +95,11 @@
             const signup = async (e) => {
                 e.preventDefault();
                 processing({ start: true })
-                const fields = ['firstname', 'lastname', 'email', 'password'];
+                const fields = ['firstname', 'lastname', 'email', 'phone-number', 'password'];
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
-                if (!hasEmpty(fields) && isEmail(email) && await isUniqueEmail(email)
+                const phone = document.getElementById('phone-number');
+                if (!hasEmpty(fields) && isEmail(email) && isValidPhone(phone) && await isUniqueEmail(email)
                     && isValidPassword(password)) {
                     await fetch(request({path: '/auth/signup', fields })).then(res => {
                         if (res.status === 201){

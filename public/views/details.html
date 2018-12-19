@@ -52,7 +52,7 @@
 										<div class="dropdown" id="dropdown"></div>
 									</div>
 
-									<div class="card">
+									<div class="card details">
 
 										<div class="more-details">
 											<div class="nexted">
@@ -106,7 +106,6 @@
 														<div class="data-header">Address</div>
 														<div class="data" id="data-pickupaddress"></div>
 													</div>
-
 													<div class="card-row">
 														<div class="data-header">City/Town</div>
 														<div class="data" id="data-pickupcity"></div>
@@ -121,7 +120,14 @@
 														<div class="data-header">Date</div>
 														<div class="data" id="data-pickupdate"></div>
 													</div>
-
+													<div class="card-row">
+														<div class="data-header">Sender name</div>
+														<div class="data" id="data-sendername"></div>
+													</div>
+													<div class="card-row">
+														<div class="data-header">Sender's phone No.</div>
+														<div class="data" id="data-senderphone">--</div>
+													</div>
 												</div>
 											</div>
 
@@ -149,29 +155,15 @@
 														<div class="data-header">Address</div>
 														<div class="data" id="data-destinationaddress"></div>
 													</div>
-
-												</div>
-											</div>
-
-											<div class="nexted">
-
-												<div class="card-header">
-													<div class="card-title">
-														<label class="size-12 bold" for="pickup-details">Receiver's details</label>
-													</div>
-												</div>
-
-												<div class="card-wrapper">
 													<div class="card-row">
-														<div class="data-header">Full name</div>
+														<div class="data-header">Receiver name</div>
 														<div class="data" id="data-receivername"></div>
 													</div>
 
 													<div class="card-row">
-														<div class="data-header">Phone No.</div>
+														<div class="data-header">Receiver's phone No.</div>
 														<div class="data" id="data-receiverphone"></div>
 													</div>
-
 												</div>
 											</div>
 										</div>
@@ -222,6 +214,7 @@
 								elem = document.getElementById(`data-${key}`);
 								if (elem) {
 									elem.innerHTML = parcel[key] ? parcel[key] : 'Not available';
+									elem.parentNode.style.display = 'inline-flex';
 								}
 							})
 							appendMenu(parcel.userid, parcel.deliverystatus);
@@ -287,7 +280,7 @@
 		}
 
 		const cancelOrder = async () => {
-			updateOrder({ path: `/${getParcelId()}/cancel` })
+			updateRequest({ path: `/${getParcelId()}/cancel` })
 		}
 
 		const deleteOrder = () => {
@@ -298,7 +291,7 @@
 			e.preventDefault();
 			const fields = ['new-delivery-status'];
 			if (!hasEmpty(fields)) {
-				updateOrder({ path: `/${getParcelId()}/status`, data: getFormData(fields) })
+				updateRequest({ path: `/parcels/${getParcelId()}/status`, data: getFormData(fields) });
 			}
 		}
 
@@ -306,8 +299,8 @@
 			e.preventDefault();
 			const fields = ['state', 'city'];
 			if (!hasEmpty(fields)) {
-				updateOrder({
-					path: `/${getParcelId()}/presentLocation`,
+				updateRequest({
+					path: `/parcels/${getParcelId()}/presentLocation`,
 					data: await getFormData(fields, (data) => {
 						return {
 							deliveryStatus: document.getElementById('current-delivery-status').value,
@@ -322,10 +315,9 @@
 			e.preventDefault();
 			const fields = ['address', 'state', 'city'];
 			if (!hasEmpty(fields)) {
-				updateOrder({
-					path: `/${getParcelId()}/destination`,
-					data: getFormData(fields),
-					method: 'PUT'
+				updateRequest({
+					path: `/parcels/${getParcelId()}/destination`,
+					data: getFormData(fields)
 				})
 			}
 		}
@@ -334,10 +326,9 @@
 			e.preventDefault();
 			const fields = ['pick-up-address', 'pick-up-state', 'pick-up-city', 'pick-up-date'];
 			if (!hasEmpty(fields)) {
-				updateOrder({
-					path: `/${getParcelId()}/editPickup`,
-					data: getFormData(fields),
-					method: 'PUT'
+				updateRequest({
+					path: `/parcels/${getParcelId()}/editPickup`,
+					data: getFormData(fields)
 				})
 			}
 		}
@@ -346,15 +337,14 @@
 			e.preventDefault();
 			const fields = ['weight'];
 			if (!hasEmpty(fields) && isValidWeight(document.getElementById('weight'))) {
-				updateOrder({
-					path: `/${getParcelId()}/editParcel`,
+				updateRequest({
+					path: `/parcels/${getParcelId()}/editParcel`,
 					data: await getFormData(fields, (data) => {
 						const description = document.getElementById('description').value;
                         data['description'] = description !== '' ? description : 'N/A';
 						data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value;
                         return data;
 					}),
-					method: 'PUT'
 				})
 			}
 		}
@@ -363,32 +353,11 @@
 			e.preventDefault();
 			const fields = ['receiver-name',  'receiver-phone'];
 			if (!hasEmpty(fields) && isValidPhone(document.getElementById('receiver-phone'))) {
-				updateOrder({
-					path: `/${getParcelId()}/editReceiver`,
+				updateRequest({
+					path: `/parcels/${getParcelId()}/editReceiver`,
 					data: getFormData(fields),
-					method: 'PUT'
 				})
 			}
-		}
-
-		const updateOrder = async (obj) => {
-			const data = obj['data'];
-			await hideModal('');
-			await showSpinner();
-			fetch(request({
-				path: `/parcels`.concat(obj.path),
-				token: localStorage.getItem('token'),
-				data,
-				method: 'PUT'
-			})).then(res => res.json())
-				.then((res) => {
-					if (res.status === 'Success') {
-						pageReload = true;
-						toggleSpinner(res.message, res.status);
-					} else {
-						toggleSpinner(res.message, res.status);
-					}
-				}).catch(error => toggleSpinner(error.message, error.status));
 		}
 	</script>
 </body>

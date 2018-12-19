@@ -13,13 +13,37 @@ export default class UserValidator extends Validator {
    * Validates user's sign up details
    * 
    * @static
-   * @method validateUser
    * @returns {function} Returns an express middleware function that handles the validation
+   * @method validateUser
    * @memberof UserValidator
    */
   static validateUser() {
     return (req, res, next) => {
       return this.validate(req, res, next, this.getUserSchema());
+    };
+  }
+
+  /**
+   * Validates user details update
+   * 
+   * @static
+   * @param {string} option a string representing the validation type
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @memberof UserValidator
+   * @method validateUserUpdate
+   */
+  static validateUserUpdate(option) {
+    return (req, res, next) => {
+			const { decoded } = req.body;
+      delete req.body.decoded;
+      let schemas = {
+        name: this.getNameSchema(),
+        phone: this.getPhoneSchema(),
+        password: this.getPasswordSchema()
+      };
+      return this.validate(req, res, next, Joi.object().keys(schemas[option]), () => {
+        return { decoded };
+      });
     };
   }
 
@@ -32,22 +56,75 @@ export default class UserValidator extends Validator {
 	 * @memberof UserValidator
 	 */
 	static getUserSchema() {
+    return Joi.object()
+    .keys(this.getNameSchema())
+    .keys(this.getPhoneSchema())
+    .keys(this.getPasswordSchema())
+    .keys({
+      email: Joi.string().required().email().max(100).label('E-mail address').lowercase(),
+    });
+  }
+
+  /**
+   * Create phone number validation schema
+   *
+   * @static
+   * @param {string} str
+   * @returns {object} the phone number validation schema
+   * @method getPhoneSchema
+   * @memberof UserValidator
+   */
+  static getPhoneSchema(str) {
+    const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
+    const label = `${str ? str.concat(' ') : ''}phone number`;
+    return {
+      phoneNumber: Joi.string().required().max(50).regex(phoneExp)
+        .label(label).error((errors) => {
+          const err = errors[0];
+          switch (err.type) {
+            case 'string.regex.base': return `${label} is inavlid`;
+            default: return err;
+          }
+        })
+    };
+  }
+
+  /**
+   * Create password validation schema
+   *
+   * @static
+   * @returns {object} the password validation schema
+   * @method getPasswordSchema
+   * @memberof UserValidator
+   */
+  static getPasswordSchema() {
+    return {
+      password: Joi.string().required().min(8).max(60)
+    };
+  }
+  
+  /**
+   * Get name validation schema
+   *
+   * @static
+   * @returns {object} the names validation schema keys
+   * @method getNameSchema
+   * @memberof UserValidator
+   */
+  static getNameSchema() {
     const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
-    const name = Joi.string().required().max(100).regex(exp).error((errors) => {
+    const name = Joi.string().required().max(100).regex(exp).lowercase().error((errors) => {
       const err = errors[0];
       switch (err.type) {
-        case 'any.invalid': return `${err.path} is inavlid`;
+        case 'string.regex.base': return `${err.path} is inavlid`;
         default: return err;
       }
     });
-
-    return Joi.object().keys({
+    return {
       firstname: name,
-      lastname: name,
-      email: Joi.string().required().email().max(100).label('E-mail address').lowercase(),
-      password: Joi.string().required().min(8).max(60)
-    });
-	}
+      lastname: name
+    };
+  }
 
   /**
    * Validate user authentication credentials

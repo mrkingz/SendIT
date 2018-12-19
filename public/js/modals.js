@@ -184,3 +184,61 @@ const updateStatusModal = (e) => {
   showModal({ content, title: e.target.innerText });
   document.getElementById('receiver-name').focus();
 };
+
+const updatePhoneModal = (e, user) => {
+  const content = `<form class="form">
+                    <div id="phone-div">
+                      <div class="control-group">
+                        <label class="required" for="phone">Phone number</label>
+                        <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" value="${user.phonenumber}">
+                      </div>
+                    </div>
+                    <div class="hide" id="code-div">
+                      <div class="mb-lg" id="code-info"></div>
+                      <div class="control-group">
+                        <label class="required" for="phone">Verification code</label>
+                        <input type="text" class="control" id="verification-code" placeholder="Verification code" autofocus>
+                      </div>
+                    </div>
+                    <div class="control-group mb-0">
+                      <button class="btn btn-primary" id="submit" onclick="verifyPhone(event, user)">Continue</button>
+                    </div>
+                    <div id="resend-div" class="size-11 align-right mx-sm mt-lg hide">
+                      <span>Code not received?<button class="btn btn-link btn-sm fine-btn ml-md" onclick="resendCode(); return false">Resend</button></span>
+                    </div>
+                  </form>`;
+  showModal({ content, title: e.target.innerText });
+  document.getElementById('phone-number').focus();
+};
+
+const changePasswordModal = (e, user) => {
+  const content = `<form class="form">
+                    <div class="control-group">
+                      <label class="required" for="phone">Current password</label>
+                      <input type="password" class="control" name="password" id="password" placeholder="Current password">
+                    </div>
+                    <div class="control-group mb-0">
+                      <button class="btn btn-primary" onclick="return false">Continue</button>
+                    </div>
+                  </form>`;
+  showModal({ content, title: e.target.innerText });
+  document.getElementById('password').focus();
+};
+
+const editNameModal = (e, user) => {
+  const content = `<form class="form">
+                    <div class="control-group">
+                      <label class="required" for="firstname">Firstname</label>
+                      <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" value="${user.firstname}">
+                    </div>
+                    <div class="control-group">
+                      <label class="required" for="lastname">Lastname</label>
+                      <input type="text" class="control" name="lastname" id="lastname" placeholder="Lastname" value="${user.lastname}">
+                    </div>
+                    <div class="control-group mb-0">
+                      <button class="btn btn-primary" onclick="updateName(event)">Save</button>
+                    </div>
+                  </form>`;
+  showModal({ content, title: e.target.innerText });
+  document.getElementById('firstname').focus();
+};

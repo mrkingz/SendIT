@@ -50,23 +50,23 @@ parcelRouter.put('/api/v1/parcels/:parcelId/status',
 
 parcelRouter.put('/api/v1/parcels/:parcelId/destination',
 	UserController.authenticateUser(),
-	ParcelValidator.validateDestination(),
+	ParcelValidator.validateParcelUpdate('destination'),
 	ParcelController.updateDestination());
 
 parcelRouter.put('/api/v1/parcels/:parcelId/editParcel',
 	UserController.authenticateUser(),
-	ParcelValidator.validateParcelDetails(),
+	ParcelValidator.validateParcelUpdate('parcel'),
 	ParcelController.editParcel('parcel'));
 
 
 parcelRouter.put('/api/v1/parcels/:parcelId/editPickup',
 	UserController.authenticateUser(),
-	ParcelValidator.validatePickupDetails(),
+	ParcelValidator.validateParcelUpdate('pickup'),
 	ParcelController.editParcel('pick-up'));
 
 parcelRouter.put('/api/v1/parcels/:parcelId/editReceiver',
 	UserController.authenticateUser(),
-	ParcelValidator.validateReceiverDetails(),
+	ParcelValidator.validateParcelUpdate('receiver'),
 	ParcelController.editParcel('receiver'));
 
 export default parcelRouter;

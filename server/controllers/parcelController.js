@@ -56,7 +56,13 @@ export default class ParcelController extends UtilityService {
         return next();
       }
 
-      const query = { text: `SELECT * FROM parcels` };
+      const query = { 
+        text: `SELECT DISTINCT 
+                parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername, users.phoneNumber 
+              FROM parcels 
+              INNER JOIN users 
+              ON parcels.userid = users.userid` 
+      };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
         return (_.isEmpty(parcels))
@@ -220,7 +226,11 @@ export default class ParcelController extends UtilityService {
    */
   static getParcelQuery(parcelId) {
     return {
-      text: `SELECT * FROM parcels WHERE parcelid = $1`,
+      text: `SELECT DISTINCT
+              parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername 
+            FROM parcels 
+            INNER JOIN users 
+            ON parcels.userid = users.userid AND parcelid = $1`,
       values: [parcelId]
     };
   }
@@ -306,7 +316,8 @@ export default class ParcelController extends UtilityService {
    */
   static editParcel(type) {
     return (req, res) => {
-      db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
+      const query = this.getUserParcelQuery(req.body.decoded.userid, req.params.parcelId);
+      db.sqlQuery(query).then((result) => {
         const parcel = result.rows[0];
         if (_.isEmpty(parcel)) {
           this.errorResponse({ res, code: 404, message: 'No delivery order found' });
@@ -329,9 +340,9 @@ export default class ParcelController extends UtilityService {
             },
             pickup: {
               text: `UPDATE parcels
-                    SET pickupaddress = $1, pickupcity = $2, pickupstate = $3, 
+                     SET pickupaddress = $1, pickupcity = $2, pickupstate = $3, 
                       pickupdate = $4, updatedat = $5
-                    WHERE userid = $6 AND parcelid = $7 RETURNING *`,
+                     WHERE userid = $6 AND parcelid = $7 RETURNING *`,
               values: [
                 pickupAddress, pickupCity, pickupState, pickupDate,
                 new Date(), decoded.userid, req.params.parcelId
@@ -339,19 +350,17 @@ export default class ParcelController extends UtilityService {
             },
             receiver: {
               text: `UPDATE parcels
-                    SET receivername = $1, receiverphone = $2, updatedat = $3
-                    WHERE userid = $4 AND parcelid = $5 RETURNING *`,
+                     SET receivername = $1, receiverphone = $2, updatedat = $3
+                     WHERE userid = $4 AND parcelid = $5 RETURNING *`,
               values: [
                 receiverName, receiverPhone, new Date(), decoded.userid, req.params.parcelId 
               ]              
             }
           };
-          db.sqlQuery(queries[type.replace(/[-]+/g, '')]).then((updated) => { console.log(updated)
+          db.sqlQuery(queries[type.replace(/[-]+/g, '')]).then((updated) => {
             const msg = `details successfully edited`;
             const message = `${this.ucFirstStr(type.replace(/[-]+/g, ' '))} ${msg}`;
-            this.successResponse({
-              res, message, data: { parcel: updated.rows[0] }
-            });
+            this.successResponse({ res, message, data: { parcel: updated.rows[0] } });
           })
           .catch(() => this.errorResponse({ res, message: db.dbError() }));
         }
