@@ -13,8 +13,8 @@ export default class ParcelValidator extends Validator {
 	 * 
 	 * @static
 	 * @param {string} option
-	 * @method validateParcelDetails
 	 * @returns {function} Returns an express middleware function that handles the validation
+	 * @method validateParcelDetails
 	 * @memberof ParcelValidator
 	 */
 	static validateParcelUpdate(option) {
@@ -68,8 +68,7 @@ export default class ParcelValidator extends Validator {
 			.keys(this.getParcelDetailsSchema())
 			.keys(this.getPickupDetailsSchema())
 			.keys(this.getDestinationDetailsSchema())
-			.keys(this.getReceiverDetailsSchema())
-			.keys(this.getPhoneSchema('Receiver'));
+			.keys(this.getReceiverDetailsSchema());
 	}
 
 	/**
@@ -136,16 +135,18 @@ export default class ParcelValidator extends Validator {
 	static getReceiverDetailsSchema() {
 		return {
 			receiverName: Joi.string().required().max(200).label(`Receiver name`),
-			receiverPhone: UserValidator.getPhoneSchema().phone
+			receiverPhone: UserValidator.getPhoneSchema({ 
+				key: 'receiverPhone', str: 'Receiver' 
+			}).receiverPhone
 		};
 	}
 
 	/**
 	 * Validate present location
-	   * 
+	 * 
 	 * @static
-	   * @param {update} updateType the type of update operation
-	   * @method validateLocation
+	 * @param {update} updateType the type of update operation
+	 * @method validateLocation
 	 * @returns {function} Returns an express middleware function that handles the validation
 	 * @memberof ParcelValidator
 	 */

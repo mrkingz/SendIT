@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 let oDropdown, modal, pageReload = false;
 const baseUrl = '/api/v1';
 $(`input[type='text']`).prop({ autocomplete: 'off' });
@@ -184,10 +185,10 @@ const isValidPassword = (field) => {
   return isValid;
 };
 
-isValidWeight = (field) => {
+const isValidWeight = (field) => {
   const intExp = /^[0-9]+$/;
   const floatExp = /(^[0-9]*[.]{1}[0-9]*$)/;
-  const isValid = field.value.match(intExp) || field.value.match(floatExp) ? true : false;
+  const isValid = field.value.match(intExp) || field.value.match(floatExp);
   if (!isValid) {
     displayError(field, 'Enter a valid number for weight');
   }

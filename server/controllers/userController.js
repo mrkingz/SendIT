@@ -29,12 +29,10 @@ export default class UserController extends UtilityService {
         email, firstname, lastname, phoneNumber 
       } = req.body;
       const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-
       const query = {
         text: `INSERT INTO 
-                  users (email, firstname, lastname, password, phonenumber, createdat, updatedat) 
-                  VALUES($1, $2, $3, $4, $5, $6, $7) 
-                  RETURNING *`,
+                users (email, firstname, lastname, password, phonenumber, createdat, updatedat) 
+               VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
         values: [
           email, this.ucFirstStr(firstname), this.ucFirstStr(lastname), 
           pass, phoneNumber, moment, moment
@@ -42,9 +40,9 @@ export default class UserController extends UtilityService {
       };
       db.sqlQuery(query)
         .then((result) => {
-          const { password, ...details } = result.rows[0];
+          const { password, ...user } = result.rows[0];
           return this.successResponse({ 
-            res, code: 201, message: 'Sign up was successfull', data: details 
+            res, code: 201, message: 'Sign up was successfull', data: { user } 
           });
         })
         .catch(() => this.errorResponse({ res, message: db.dbError() }));
@@ -312,6 +310,57 @@ export default class UserController extends UtilityService {
           res, code: 302, message, data: { ...result.rows[0] } 
         });
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
+   * Verify password
+   *
+   * @static
+   * @returns {function} An expresss middleware function that handles the POST request
+   * @method verifyPassword
+   * @memberof UserController
+   */
+  static verifyPassword() {
+    return (req, res) => {
+      const query = {
+        text: `SELECT * FROM users WHERE userid = $1`,
+        values: [req.body.decoded.userid]
+      };
+      db.sqlQuery(query).then((result) => {
+        const { password, ...user } = result.rows[0];
+        if (bcrypt.compareSync(req.body.password, password)) {
+          return this.successResponse({
+            res, code: 200, message: 'Password is valid', data: { user } 
+          });
+        } 
+        this.errorResponse({ res, code: 2, message: 'Sorry, incorrect password' });
+      })
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
+   * Update password
+   *
+   * @static
+   * @returns {function} An express middleware function that hanmdles the PUT request
+   * @method changePassword
+   * @memberof UserController
+   */
+  static changePassword() {
+    return (req, res) => {
+      const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
+      const query = {
+        text: `UPDATE users SET password = $1, updatedat =$2 
+              WHERE userid = $3 RETURNING *`,
+        values: [pass, new Date(), req.body.decoded.userid]
+      };
+      db.sqlQuery(query).then((result) => {
+        const { password, ...user } = result.rows[0];
+        this.successResponse({ res, message: 'New password saved successfuly', data: { user } });
+      })
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 }

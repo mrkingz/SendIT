@@ -10,6 +10,7 @@ const user = {
 	firstname: 'James',
 	lastname: 'Ogugayo',
 	email: 'example@gmail.com',
+	phoneNumber: '08085120241',
 	password: 'Password1'
 };
 describe('Test authentication routes', () => {
@@ -31,17 +32,20 @@ describe('Test authentication routes', () => {
 				expect(response.status).to.equal('Success');
 				expect(response.message).to.equal('Sign up was successfull');
 				expect(response.data).to.be.an('object');
-				expect(response.data).to.have.own.property('userid')
+				expect(response.data.user).to.be.an('object');
+				expect(response.data.user).to.have.own.property('userid')
 					.to.be.a('number');
-				expect(response.data).to.have.own.property('firstname')
+				expect(response.data.user).to.have.own.property('firstname')
 					.to.be.a('string').that.is.equal(user.firstname);
-				expect(response.data).to.have.own.property('lastname')
+				expect(response.data.user).to.have.own.property('lastname')
 					.to.be.a('string').that.is.equal(user.lastname);
-				expect(response.data).to.have.own.property('email')
+				expect(response.data.user).to.have.own.property('email')
 					.to.be.a('string').that.is.equal(user.email);
-				expect(response.data).to.have.own.property('isadmin')
+				expect(response.data.user).to.have.own.property('phonenumber')
+					.to.be.a('string').that.is.equal(user.phoneNumber);
+				expect(response.data.user).to.have.own.property('isadmin')
 					.to.be.a('boolean').that.is.equal(false);
-				expect(response.data).to.have.property('createdat');
+				expect(response.data.user).to.have.property('createdat');
 				done();
 			});
 	});
@@ -85,6 +89,20 @@ describe('Test authentication routes', () => {
 				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('E-mail address is required');
+				done();
+			});
+	});
+
+	it('It should not create a user if phone number is undefined', (done) => {
+		const { phoneNumber, ...noPhone } = user;
+		server
+			.post('/api/v1/auth/signup')
+			.send(noPhone)
+			.end((err, res) => {
+				const response = res.body;
+				expect(res.statusCode).to.equal(422);
+				expect(response.status).to.equal('Fail');
+				expect(response.message).to.equal('Phone number is required');
 				done();
 			});
 	});
@@ -147,12 +165,38 @@ describe('Test authentication routes', () => {
 	it('It should not create a user if email address is empty', (done) => {
 		server
 			.post('/api/v1/auth/signup')
-			.send({ ...user, email: '', })
+			.send({ ...user, email: '' })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(422);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('E-mail address is not allowed to be empty');
+				done();
+			});
+	});
+
+	it('It should not create a user if phone number is empty', (done) => {
+		server
+			.post('/api/v1/auth/signup')
+			.send({ ...user, phoneNumber: '' })
+			.end((err, res) => {
+				const response = res.body;
+				expect(res.statusCode).to.equal(422);
+				expect(response.status).to.equal('Fail');
+				expect(response.message).to.equal('Phone number is not allowed to be empty');
+				done();
+			});
+	});
+
+	it('It should not create a user if phone number is invalid', (done) => {
+		server
+			.post('/api/v1/auth/signup')
+			.send({ ...user, phoneNumber: '676788' })
+			.end((err, res) => {
+				const response = res.body;
+				expect(res.statusCode).to.equal(422);
+				expect(response.status).to.equal('Fail');
+				expect(response.message).to.equal('Phone number is inavlid');
 				done();
 			});
 	});

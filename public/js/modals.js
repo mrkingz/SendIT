@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 const editDestinationModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
