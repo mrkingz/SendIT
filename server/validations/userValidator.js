@@ -1,3 +1,4 @@
+
 import _ from 'lodash';
 import Joi from 'joi';
 import db from '../database';
@@ -69,16 +70,17 @@ export default class UserValidator extends Validator {
    * Create phone number validation schema
    *
    * @static
-   * @param {string} str
+   * @param {obj} obj 
    * @returns {object} the phone number validation schema
    * @method getPhoneSchema
    * @memberof UserValidator
    */
-  static getPhoneSchema(str) {
+  static getPhoneSchema(obj = {}) {
+    const { str, key } = obj;
     const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
     const label = `${str ? str.concat(' ') : ''}phone number`;
     return {
-      phoneNumber: Joi.string().required().max(50).regex(phoneExp)
+      [key || 'phoneNumber']: Joi.string().required().max(50).regex(phoneExp)
         .label(label).error((errors) => {
           const err = errors[0];
           switch (err.type) {
