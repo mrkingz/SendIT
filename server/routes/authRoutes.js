@@ -32,6 +32,11 @@ authRouter.put('/api/v1/auth/phoneNumber',
   UserValidator.validateUserUpdate('phone'),
   UserController.editProfileDetails('phone-number'));
 
+authRouter.post('/api/v1/auth/verifyPassword', 
+  UserController.authenticateUser(),
+  UserValidator.validateUserUpdate('password'),
+  UserController.verifyPassword());
+
 authRouter.post('/api/v1/auth/verifyAuth', 
   UserController.checkAuth());
 

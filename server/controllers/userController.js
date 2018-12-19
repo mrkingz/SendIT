@@ -314,4 +314,31 @@ export default class UserController extends UtilityService {
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
+
+  /**
+   * Verify password
+   *
+   * @static
+   * @returns {function} An expresss middleware function that handles the POST request
+   * @method verifyPassword
+   * @memberof UserController
+   */
+  static verifyPassword() {
+    return (req, res) => {
+      const query = {
+        text: `SELECT * FROM users WHERE userid = $1`,
+        values: [req.body.decoded.userid]
+      };
+      db.sqlQuery(query).then((result) => {
+        const { password, ...user } = result.rows[0];
+        if (bcrypt.compareSync(req.body.password, password)) {
+          return this.successResponse({
+            res, code: 302, message: 'Password is valid', data: { user } 
+          });
+        } 
+        this.errorResponse({ res, code: 404, message: 'Sorry, incorrect password' });
+      })
+      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
 }
