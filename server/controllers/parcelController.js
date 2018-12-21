@@ -366,7 +366,7 @@ export default class ParcelController extends UtilityService {
           })
           .catch(() => this.errorResponse({ res, message: db.dbError() }));
         }
-      }).catch((e) => this.errorResponse({ res, message: e.toString() }));
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 
