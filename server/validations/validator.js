@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Joi from 'joi';
-import UtilityService from "../helpers/UtilityService";
+import UtilityService from "../services/UtilityService";
 
 /**
  *

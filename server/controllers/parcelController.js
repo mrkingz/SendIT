@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import db from '../database';
-import UtilityService from '../helpers/UtilityService';
+import UtilityService from '../services/UtilityService';
 
 
 /**
@@ -30,9 +30,9 @@ export default class ParcelController extends UtilityService {
                   $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
                 ) RETURNING *`,
         values: [
-          weight, description, deliveryMethod, this.ucFirstStr(pickupAddress, { bool: true }), 
-          pickupCity, pickupState, pickupDate, this.ucFirstStr(destinationAddress, { bool: true }), 
-          destinationCity, destinationState, trackingNo, price, decoded.userid, 
+          weight, description, deliveryMethod, this.ucFirstStr(pickupAddress, { bool: true }),
+          pickupCity, pickupState, pickupDate, this.ucFirstStr(destinationAddress, { bool: true }),
+          destinationCity, destinationState, trackingNo, price, decoded.userid,
           this.ucFirstStr(receiverName, { bool: true }), receiverPhone, moment, moment
         ]
       };
@@ -57,12 +57,12 @@ export default class ParcelController extends UtilityService {
         return next();
       }
 
-      const query = { 
+      const query = {
         text: `SELECT DISTINCT 
                 parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername, users.phoneNumber 
               FROM parcels 
               INNER JOIN users 
-              ON parcels.userid = users.userid` 
+              ON parcels.userid = users.userid`
       };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
@@ -300,7 +300,7 @@ export default class ParcelController extends UtilityService {
               res, message, data: { parcel: updated.rows[0] }
             });
           })
-          .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
+            .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -327,7 +327,7 @@ export default class ParcelController extends UtilityService {
           this.errorResponse({ res, code: 403, message: msg });
         } else {
           const {
-            weight, description, deliveryMethod, decoded, pickupAddress, 
+            weight, description, deliveryMethod, decoded, pickupAddress,
             pickupCity, pickupState, pickupDate, receiverName, receiverPhone
           } = req.body;
           const queries = {
@@ -347,16 +347,16 @@ export default class ParcelController extends UtilityService {
               values: [
                 this.ucFirstStr(pickupAddress, { bool: true }), pickupCity, pickupState, pickupDate,
                 new Date(), decoded.userid, req.params.parcelId
-              ]            
+              ]
             },
             receiver: {
               text: `UPDATE parcels
                      SET receivername = $1, receiverphone = $2, updatedat = $3
                      WHERE userid = $4 AND parcelid = $5 RETURNING *`,
               values: [
-                this.ucFirstStr(receiverName, { bool: true }), receiverPhone, new Date(), 
-                decoded.userid, req.params.parcelId 
-              ]              
+                this.ucFirstStr(receiverName, { bool: true }), receiverPhone, new Date(),
+                decoded.userid, req.params.parcelId
+              ]
             }
           };
           db.sqlQuery(queries[type.replace(/[-]+/g, '')]).then((updated) => {
@@ -364,7 +364,7 @@ export default class ParcelController extends UtilityService {
             const message = `${this.ucFirstStr(type.replace(/[-]+/g, ' '))} ${msg}`;
             this.successResponse({ res, message, data: { parcel: updated.rows[0] } });
           })
-          .catch(() => this.errorResponse({ res, message: db.dbError() }));
+            .catch(() => this.errorResponse({ res, message: db.dbError() }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -435,7 +435,7 @@ export default class ParcelController extends UtilityService {
                     destinationstate = $3, updatedat = $4
                   WHERE parcelid = $5 AND userid = $6 RETURNING *`,
             values: [
-              this.ucFirstStr(destinationAddress, { bool: true }), destinationCity, 
+              this.ucFirstStr(destinationAddress, { bool: true }), destinationCity,
               destinationState, new Date(), parcelId, decoded.userid
             ]
           };
@@ -449,6 +449,62 @@ export default class ParcelController extends UtilityService {
           }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
+   * Count delivery orders
+   *
+   * @static
+   * @param {string} option
+   * @returns {function} An express middleware function that handles the GET request
+   * @method countOrders
+   * @memberof ParcelController
+   */
+  static countOrders(option) {
+    const select = (value, userId) => {
+      return {
+        admin: {
+          text: `SELECT COUNT('parcelid') as ${value} FROM parcels WHERE deliverystatus = $1`,
+          values: [value]
+        },
+        user: {
+          text: `SELECT COUNT('parcelid') as ${value}
+                 FROM parcels 
+                 WHERE deliverystatus = $1 AND userid = $2`,
+          values: [value, userId]
+        }
+      };
+    };
+    return (req, res) => {
+      const { decoded } = req.body;
+      if (req.params.userId && (Number(decoded.userid) !== Number(req.params.userId))) {
+        this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
+      } else {
+        let value;
+        const counts = { total: 0 };
+        const values = ['Cancelled', 'Delivered', 'Placed', 'Transiting'];
+        const helper = (result, i) => {
+          value = values[i].toLowerCase();
+          counts[value] = Number(result.rows[0][value]);
+          counts.total += Number(counts[value]);
+        };
+        db.sqlQuery(select(values[0], decoded.userid)[option]).then((c) => {
+          helper(c, 0);
+          db.sqlQuery(select(values[1], decoded.userid)[option]).then((d) => {
+            helper(d, 1);
+            db.sqlQuery(select(values[2], decoded.userid)[option]).then((p) => {
+              helper(p, 2);
+              db.sqlQuery(select(values[3], decoded.userid)[option]).then((t) => {
+                helper(t, 3);
+                this.successResponse({
+                  res, message: 'Delivery order breakdown', data: { counts }
+                });
+              });
+            });
+          });
+        }).catch(e => console.log(e.toString()));
+      }
     };
   }
 }

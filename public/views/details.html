@@ -201,8 +201,9 @@
 		let parcel;
 		const getDetails = (id) => {
 			authUser.then((user) => {
+				const id = getParcelId();
 				fetch(request({
-					path: user.isadmin ? `/parcels/${getParcelId()}` : `/users/${user.userid}/parcels/${getParcelId()}`,
+					path: user.isadmin ? `/parcels/${id}` : `/users/${user.userid}/parcels/${id}`,
 					token: localStorage.getItem('token'),
 					method: 'GET'
 				})).then(res => res.json())
@@ -280,7 +281,7 @@
 		}
 
 		const cancelOrder = async () => {
-			updateRequest({ path: `/${getParcelId()}/cancel` })
+			updateRequest({ path: `/parcels/${getParcelId()}/cancel` })
 		}
 
 		const deleteOrder = () => {

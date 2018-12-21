@@ -18,55 +18,63 @@ parcelRouter.route('/api/v1/parcels')
 		ParcelController.getParcels(),
 		ParcelController.filterParcels());
 
-parcelRouter.get('/api/v1/parcels/:parcelId',
+parcelRouter.get('/api/v1/parcels/:parcelId(\\d+)',
 	UserController.authenticateUser(),
 	UserController.authorizeUser(),
 	ParcelController.getParcel());
 
-parcelRouter.get('/api/v1/users/:userId/parcels',
+parcelRouter.get('/api/v1/users/:userId(\\d+)/parcels',
 	UserController.authenticateUser(),
 	ParcelController.getUserParcels(),
 	ParcelController.filterParcels());
 
-parcelRouter.get('/api/v1/users/:userId/parcels/:parcelId',
+parcelRouter.get('/api/v1/users/:userId(\\d+)/parcels/:parcelId(\\d+)',
 	UserController.authenticateUser(),
 	ParcelController.getUserParcel());
 
-parcelRouter.put('/api/v1/parcels/:parcelId/cancel',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/cancel',
 	UserController.authenticateUser(),
 	ParcelController.cancelParcelOrder());
 
-parcelRouter.put('/api/v1/parcels/:parcelId/presentLocation',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/presentLocation',
 	UserController.authenticateUser(),
 	UserController.authorizeUser(),
 	ParcelValidator.validateAdminUpdate('location'),
 	ParcelController.updateLocation());
 
-parcelRouter.put('/api/v1/parcels/:parcelId/status',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/status',
 	UserController.authenticateUser(),
 	UserController.authorizeUser(),
 	ParcelValidator.validateAdminUpdate('status'),
 	ParcelController.updateStatus());
 
-parcelRouter.put('/api/v1/parcels/:parcelId/destination',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/destination',
 	UserController.authenticateUser(),
 	ParcelValidator.validateParcelUpdate('destination'),
 	ParcelController.updateDestination());
 
-parcelRouter.put('/api/v1/parcels/:parcelId/editParcel',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/editParcel',
 	UserController.authenticateUser(),
 	ParcelValidator.validateParcelUpdate('parcel'),
 	ParcelController.editParcel('parcel'));
 
 
-parcelRouter.put('/api/v1/parcels/:parcelId/editPickup',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/editPickup',
 	UserController.authenticateUser(),
 	ParcelValidator.validateParcelUpdate('pickup'),
 	ParcelController.editParcel('pick-up'));
 
-parcelRouter.put('/api/v1/parcels/:parcelId/editReceiver',
+parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/editReceiver',
 	UserController.authenticateUser(),
 	ParcelValidator.validateParcelUpdate('receiver'),
 	ParcelController.editParcel('receiver'));
+
+parcelRouter.get('/api/v1/parcels/count',
+	UserController.authenticateUser(),
+	ParcelController.countOrders('admin'));
+
+parcelRouter.get('/api/v1/users/:userId(\\d+)/parcels/count',
+	UserController.authenticateUser(),
+	ParcelController.countOrders('user'));
 
 export default parcelRouter;

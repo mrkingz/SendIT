@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import decode from 'jwt-decode';
 import db from '../database';
-import UtilityService from '../helpers/UtilityService';
+import UtilityService from '../services/UtilityService';
 
 dotenv.load();
 
