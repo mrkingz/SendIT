@@ -30,9 +30,10 @@ export default class ParcelController extends UtilityService {
                   $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
                 ) RETURNING *`,
         values: [
-          weight, description, deliveryMethod, pickupAddress, pickupCity, pickupState,
-          pickupDate, destinationAddress, destinationCity, destinationState, trackingNo,
-          price, decoded.userid, receiverName, receiverPhone, moment, moment
+          weight, description, deliveryMethod, this.ucFirstStr(pickupAddress, { bool: true }), 
+          pickupCity, pickupState, pickupDate, this.ucFirstStr(destinationAddress, { bool: true }), 
+          destinationCity, destinationState, trackingNo, price, decoded.userid, 
+          this.ucFirstStr(receiverName, { bool: true }), receiverPhone, moment, moment
         ]
       };
       db.sqlQuery(query).then((result) => {
@@ -344,7 +345,7 @@ export default class ParcelController extends UtilityService {
                       pickupdate = $4, updatedat = $5
                      WHERE userid = $6 AND parcelid = $7 RETURNING *`,
               values: [
-                pickupAddress, pickupCity, pickupState, pickupDate,
+                this.ucFirstStr(pickupAddress, { bool: true }), pickupCity, pickupState, pickupDate,
                 new Date(), decoded.userid, req.params.parcelId
               ]            
             },
@@ -353,7 +354,8 @@ export default class ParcelController extends UtilityService {
                      SET receivername = $1, receiverphone = $2, updatedat = $3
                      WHERE userid = $4 AND parcelid = $5 RETURNING *`,
               values: [
-                receiverName, receiverPhone, new Date(), decoded.userid, req.params.parcelId 
+                this.ucFirstStr(receiverName, { bool: true }), receiverPhone, new Date(), 
+                decoded.userid, req.params.parcelId 
               ]              
             }
           };
@@ -364,7 +366,7 @@ export default class ParcelController extends UtilityService {
           })
           .catch(() => this.errorResponse({ res, message: db.dbError() }));
         }
-      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+      }).catch((e) => this.errorResponse({ res, message: e.toString() }));
     };
   }
 
@@ -433,8 +435,8 @@ export default class ParcelController extends UtilityService {
                     destinationstate = $3, updatedat = $4
                   WHERE parcelid = $5 AND userid = $6 RETURNING *`,
             values: [
-              destinationAddress, destinationCity, destinationState, 
-              new Date(), parcelId, decoded.userid
+              this.ucFirstStr(destinationAddress, { bool: true }), destinationCity, 
+              destinationState, new Date(), parcelId, decoded.userid
             ]
           };
           db.sqlQuery(updateQuery).then((updated) => {

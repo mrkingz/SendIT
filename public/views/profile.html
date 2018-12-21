@@ -134,7 +134,7 @@
   <script src="../js/script.js"></script>
   <script src="../js/modals.js"></script>
   <script>
-    let user, vCode;
+    let user;
     const getProfileDetails = async () => {
       await authUser.then((data) => {
         user = data;
@@ -159,75 +159,51 @@
       }
     }
 
-    const updatePhone = (e) => {
-      e.preventDefault();
-      const fields = ['phone-number'];
+    const updatePhone = () => {
       updateRequest({
         path: `/auth/phoneNumber`,
-        data: getFormData(fields)
+        data: getFormData(['phone-number'])
       });
     };
 
-    const verifyPhone = async (e) => {
+    const changePassword = (e) => {
       e.preventDefault();
-      const btn = e.target.parentNode;
-      const fields = ['phone-number'];
-      const phone = document.getElementById('phone-number');
-      processing({ start: true });
-      if (!hasEmpty(fields) && isValidPhone(phone)) {
-        const phoneDiv = document.getElementById('phone-div');
-        await addClass(phoneDiv, ['zoomOut', 'animated', 'hide']);
-        addClass(document.querySelector('.modal'), ['static']);
-        document.getElementById('code-div').classList.add('show');
-        document.getElementById('resend-div').classList.add('show');
-        document.querySelector('.modal-body div').innerText = 'Verify phone number';
-        btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user)">Confirm</button>`;
-        generateCode();
-        codeInfo('Enter the code sent to', user);
-      } else {
-        processing({ start: false, message: 'Continue' });
+      if (e.target.innerText !== 'Save') {
+        const fields = ['current-password'];
+        if (!hasEmpty(fields, 'Enter current password')) {
+          processing({ start: true, message: 'Verifying...' });
+          fetch(request({
+            path: '/auth/verifyPassword', fields, token: localStorage.getItem('token'),
+          })).then(res => res.json())
+            .then((res) => {
+              if (res.status === 'Success') {
+                addClass(document.getElementById('current-div'), ['zoomOut', 'animated', 'hide']);
+                document.getElementById('new-div').classList.add('show');
+                document.querySelector('.modal').classList.add('static');
+                processing({ start: false, message: 'Save' });
+              } else {
+                displayError(document.getElementById(fields[0]), res.message);
+                processing({ start: false, message: 'Continue' })
+              }
+            })
+        }
+      } else if (!hasEmpty(['new-password']) 
+        && isValidPassword(document.getElementById('new-password')) 
+        && !hasEmpty(['confirm-password']) && comparePassword()) {
+				updateRequest({
+					path: `/auth/changePassword`,
+					data: getFormData(['new-password'])
+				})
       }
     }
 
-    const codeInfo = (message, user) => {
-      const info = document.getElementById('code-info');
-      const num = user.phonenumber.split('');
-      num[5] = '*'; num[6] = '*';
-      info.innerHTML = `<div class="alert alert-info bounceIn animated">
-                          <div>${message} <b>${num.join('')}</b></div>
-                          <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
-                        </div>`;
-    }
-
-    const generateCode = (phone) => {
-      vCode = {
-        digit: Math.floor(Math.random() * 900000) + 99999,
-        time: new Date().getMinutes() + 3
-      } 
-    }
-
-    const verifyCode = (e, user) => {
-      e.preventDefault();
-      if (!hasEmpty(['verification-code'], 'Enter verification code') && isValideCode()) {
-        updatePhone(e, user);
-      }
-    }
-
-    const resendCode = async () => {
-      generateCode();
-      codeInfo('A new code was sent to', user);
-      document.getElementById('verification-code').focus();
-    }
-
-    const isValideCode = () => {
-      const min = new Date().getMinutes();
-      const elem = document.getElementById('verification-code');
-      if (vCode['digit'].toString() !== elem.value) {
-        displayError(elem, 'Invalid verification code');
-        return false
-      } else if (min > vCode['time']){
-        displayError(elem, 'Code has expired. Resend below');
-        return false
+    const comparePassword = () => {
+      const newPass = document.getElementById('new-password');
+      const confirmPass = document.getElementById('confirm-password');
+      if (newPass.value !== confirmPass.value) {
+        displayError(newPass, 'Sorry, password does not match');
+        confirmPass.value = '';
+        return false;
       }
       return true;
     }
