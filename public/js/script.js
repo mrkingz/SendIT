@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-let oDropdown, modal, pageReload = false;
+let oDropdown, modal, vCode, pageReload = false;
 const baseUrl = '/api/v1';
 $(`input[type='text']`).prop({ autocomplete: 'off' });
 $('.control').on('keypress blur', () => {
@@ -93,7 +93,7 @@ const processing = (obj) => {
   }
 };
 
-const message = (msg, status, elem) => {
+const message = (msg, status, elem, animate = true) => {
   const type = {
     success: 'alert-success',
     fail: 'alert-danger',
@@ -105,7 +105,11 @@ const message = (msg, status, elem) => {
   const parent = document.createElement('div');
   parent.classList.add('control-group');
   const div = document.createElement('div');
-  addClass(div, ['alert', type[status], 'bounceIn', 'animated']);
+  if (animate) { 
+    addClass(div, ['alert', type[status], 'zoomIn', 'animated']);
+  } else {
+    addClass(div, ['alert', type[status]]);
+  }
   div.innerHTML = msg;
   parent.appendChild(div);
   messageElem.appendChild(parent);
@@ -322,8 +326,9 @@ const showSpinner = () => {
                           <div>Please wait...</div>
                         </div>
                         <div class="hide" id="spinner-message">
+                          <div class="mb-md" id="success-img"></div>
                           <div id='message'></div>
-                          <div class=''>
+                          <div class='mb-sm'>
                             <button class='btn btn-primary' onclick="hideSpinner()">Close</button>
                           </div>
                         </div>
@@ -336,8 +341,20 @@ const toggleSpinner = (msg, status) => {
   const spinnerImg = document.getElementById('spinner-img');
   const spinnerMsg = document.getElementById('spinner-message');
   addClass(spinnerImg, ['hide']);
+  if (status === 'Success') {
+    const success = document.createElement('div');
+    success.classList.add('size-18');
+    success.innerText = 'Succcessful!';
+    const img = document.createElement('img');
+    addClass(img, ['success-img-spinner', 'bounceInDown', 'animated']);
+    img.src = '../images/success.png';
+    const successImg = document.getElementById('success-img');
+    successImg.appendChild(img);
+    successImg.appendChild(success);
+  }
   removeClass(spinnerMsg, ['hide']);
-  message(msg, status, document.querySelector('#spinner-message #message'));
+  document.querySelector('.modal').classList.remove('static');
+  message(msg, status, document.querySelector('#spinner-message #message'), false);
 };
 
 const hideSpinner = async () => {
@@ -387,6 +404,70 @@ const toggleOrderSteps = async (elem, isShow, animation) => {
     addClass(elem, [`${animation}`, 'animated']);
   }
   return Promise.resolve(elem);
+};
+
+const verifyPhone = async (e, user) => {
+  e.preventDefault();
+  const btn = e.target.parentNode;
+  const phone = document.getElementById('phone-number');
+  processing({ start: true });
+  if (!hasEmpty(['phone-number']) && isValidPhone(phone)) {
+    const phoneDiv = document.getElementById('phone-div');
+    await addClass(phoneDiv, ['zoomOut', 'animated', 'hide']);
+    addClass(document.querySelector('.modal'), ['static']);
+    document.getElementById('code-div').classList.add('show');
+    document.getElementById('resend-div').classList.add('show');
+    document.querySelector('.modal-body div').innerText = 'Verify phone number';
+    btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user, updatePhone)">Confirm</button>`;
+    generateCode();
+    codeInfo('Enter the code sent to', user.phonenumber);
+  } else {
+    processing({ start: false, message: 'Continue' });
+  }
+};
+
+const codeInfo = (msg, phone) => {
+  const info = document.getElementById('code-info');
+  const num = phone.split('');
+  num[5] = '*'; num[6] = '*';
+  info.innerHTML = `<div class="alert alert-info bounceIn animated">
+                      <div>${msg} <b>${num.join('')}</b></div>
+                      <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
+                    </div>`;
+};
+
+const generateCode = (phone) => {
+  vCode = {
+    digit: Math.floor(Math.random() * 900000) + 99999,
+    time: new Date().getMinutes() + 3
+  };
+  console.log(vCode.digit);
+};
+
+const verifyCode = (e, user, callback) => {
+  e.preventDefault();
+  if (!hasEmpty(['verification-code'], 'Enter verification code') && isValideCode()) {
+    callback();
+  }
+};
+
+const resendCode = async (user) => {
+  generateCode();
+  codeInfo('A new code was sent to', user.phonenumber);
+  document.getElementById('verification-code').focus();
+};
+
+const isValideCode = () => {
+  const min = new Date().getMinutes();
+  const elem = document.getElementById('verification-code');
+  if (vCode['digit'].toString() !== elem.value) {
+    displayError(elem, 'Invalid verification code');
+    return false;
+  } else if (min > vCode['time']) {
+    displayError(elem, 'Code has expired. Resend below');
+    return false;
+  }
+  return true;
 };
 
 const signout = () => { 

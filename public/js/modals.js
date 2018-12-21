@@ -206,7 +206,7 @@ const updatePhoneModal = (e, user) => {
                       <button class="btn btn-primary" id="submit" onclick="verifyPhone(event, user)">Continue</button>
                     </div>
                     <div id="resend-div" class="size-11 align-right mx-sm mt-lg hide">
-                      <span>Code not received?<button class="btn btn-link btn-sm fine-btn ml-md" onclick="resendCode(); return false">Resend</button></span>
+                      <span>Code not received?<button class="btn btn-link btn-sm fine-btn ml-md" onclick="resendCode(user); return false">Resend</button></span>
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
@@ -215,16 +215,26 @@ const updatePhoneModal = (e, user) => {
 
 const changePasswordModal = (e, user) => {
   const content = `<form class="form">
-                    <div class="control-group">
-                      <label class="required" for="phone">Current password</label>
-                      <input type="password" class="control" name="password" id="password" placeholder="Current password">
+                    <div class="control-group" id="current-div">
+                      <label class="required" for="current-password">Current password</label>
+                      <input type="password" class="control" name="password" id="current-password" placeholder="Current password">
+                    </div>
+                    <div class="hide" id="new-div">
+                      <div class="control-group">
+                        <label class="required" for="new-password">New password</label>
+                        <input type="password" class="control" name="password" id="new-password" placeholder="New password">
+                      </div>
+                      <div class="control-group">
+                        <label class="required" for="confirm-password">Confirm password</label>
+                        <input type="password" class="control" id="confirm-password" placeholder="Confirm password">
+                      </div>
                     </div>
                     <div class="control-group mb-0">
-                      <button class="btn btn-primary" onclick="return false">Continue</button>
+                      <button class="btn btn-primary" id="submit" onclick="changePassword(event)">Continue</button>
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
-  document.getElementById('password').focus();
+  document.getElementById('current-password').focus();
 };
 
 const editNameModal = (e, user) => {

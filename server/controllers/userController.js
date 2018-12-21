@@ -323,6 +323,11 @@ export default class UserController extends UtilityService {
    */
   static verifyPassword() {
     return (req, res) => {
+      if (!req.body.password) {
+        return this.errorResponse({
+          res, code: 422, message: 'Password is required'
+        });
+      }
       const query = {
         text: `SELECT * FROM users WHERE userid = $1`,
         values: [req.body.decoded.userid]
@@ -334,7 +339,7 @@ export default class UserController extends UtilityService {
             res, code: 200, message: 'Password is valid', data: { user } 
           });
         } 
-        this.errorResponse({ res, code: 2, message: 'Sorry, incorrect password' });
+        this.errorResponse({ res, code: 406, message: 'Sorry, incorrect password' });
       })
       .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };

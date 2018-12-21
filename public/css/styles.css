@@ -949,6 +949,11 @@ html {
     margin-bottom: .4rem; 
 }
 
+.my-lg {
+    margin-top: .6rem;
+    margin-bottom: .6rem; 
+}
+
 .mb-sm {
     margin-bottom: .2rem; 
 }
@@ -1110,6 +1115,10 @@ select option {
     font-size: 12px;
 }
 
+.size-18 {
+    font-size: 18px;
+}
+
 .section-header {
     color: #fff;
     background: rgb(14, 14, 54);
@@ -1157,6 +1166,11 @@ select option {
     width: 80px
 }
 
+
+.success-img-spinner {
+    height: 50px; 
+    width: 50px
+}
 #trackingNo::before {
     content: 'Tracking #: '
 }

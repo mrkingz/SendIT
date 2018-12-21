@@ -19,20 +19,18 @@ export default class UtilityService {
 	 * 		 	 capitalize; if false (default), only the first character of the sentence 
 	 * 		   will be capitalize
 	 *       options.skip: array of strings to skip
-	 * @returns {(Object|String)} An object with converted string attributes or a 
-	 * converted string
+	 * @returns {Object} An object with converted string attributes
 	 */
   static ucFirstObj(attributes, options) {
     let attr = null;
-    const bool = (options && !_.isUndefined(options.bool)) ? options.bool : false;
-    const skip = (options && !_.isUndefined(options.skip)) ? options.skip : [];
+    const { bool, skip, seperator } = this.getDefaults(options);
     if (_.isObject(attributes)) {
       attr = {};
       for (let key in attributes) {
         if (!_.isUndefined(key)) {
           if (_.isString(attributes[key])) {
             if (bool) {
-              const array = attributes[key].split(' ');
+              const array = attributes[key].split(seperator);
               attr[key] = array.map((str) => {
                 str = str ? str.toString().trim() : '';
                 return (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
@@ -54,34 +52,47 @@ export default class UtilityService {
 	 * @static
 	 * @method ucFirstStr
 	 * @memberof UtilityService
-	 * @param {(Object|String)} string The object whose string properties
+	 * @param {String} string The object whose string properties
 	 * is or the string to be converted
 	 * @param {Boolean} options
 	 * Note: options.bool: if true, first character of every string will be
 	 * 		 	 capitalize; if false (default), only the first character of the sentence 
 	 * 		   will be capitalize
 	 *       options.skip: array of strings to skip
-	 * @returns {(Object|String)} An object with converted string attributes or a 
-	 * converted string
+	 * @returns {string} The converted string
 	 */
   static ucFirstStr(string, options) {
-    const bool = (options && !_.isUndefined(options.bool)) ? options.bool : false;
-    const skip = (options && !_.isUndefined(options.skip)) ? options.skip : [];
-  
+    const { bool, skip, seperator } = this.getDefaults(options);
     let str;
-    if (bool) {
-      const array = string.split(' ');
+    if (bool && string) {
+      const array = string.split(seperator);
       str = array.map((s) => {
         s = s.toString().trim();
         return (skip.includes(s)) ? s : this.cleanString(
                   s.charAt(0).toUpperCase() + s.substr(1)
                 );
       }).join(' ');
-    } else {
+    } else if (string) {
       str = string ? string.toString().trim() : '';
       str = (skip.includes(str)) ? str : str.charAt(0).toUpperCase() + str.substr(1);
     }
     return str;
+  }
+
+  /**
+   * Helper method to get defauls values for method ucFirstStr and ucFirstObj
+   *
+   * @static
+   * @param {object} options
+   * @returns {object} An object contaning the defaults
+   * @method getDefaults
+   * @memberof UtilityService
+   */
+  static getDefaults(options) {
+    const bool = (options && !_.isUndefined(options.bool)) ? options.bool : false;
+    const skip = (options && !_.isUndefined(options.skip)) ? options.skip : [];
+    const seperator = (options && !_.isUndefined(options.seperator)) ? options.seperator : ' ';
+    return { bool, skip, seperator };
   }
 
 
