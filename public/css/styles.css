@@ -1115,6 +1115,18 @@ select option {
     font-size: 12px;
 }
 
+.size-13 {
+    font-size: 13px;
+}
+
+.size-14 {
+    font-size: 14px;
+}
+
+.size-16 {
+    font-size: 16px;
+}
+
 .size-18 {
     font-size: 18px;
 }
@@ -1206,6 +1218,12 @@ select option {
 .track-btn:focus,
 .track-input:focus ~ .track-btn {
     background-color: rgb(222, 222, 247)
+}
+
+.height-transition {
+    max-height: 0px;
+    transition: max-height .5s;
+    overflow: hidden;
 }
 
 .unstyled-list {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import db from '../database';
-import UtilityService from '../helpers/UtilityService';
+import UtilityService from '../services/UtilityService';
 
 
 /**
@@ -30,9 +30,9 @@ export default class ParcelController extends UtilityService {
                   $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
                 ) RETURNING *`,
         values: [
-          weight, description, deliveryMethod, this.ucFirstStr(pickupAddress, { bool: true }), 
-          pickupCity, pickupState, pickupDate, this.ucFirstStr(destinationAddress, { bool: true }), 
-          destinationCity, destinationState, trackingNo, price, decoded.userid, 
+          weight, description, deliveryMethod, this.ucFirstStr(pickupAddress, { bool: true }),
+          pickupCity, pickupState, pickupDate, this.ucFirstStr(destinationAddress, { bool: true }),
+          destinationCity, destinationState, trackingNo, price, decoded.userid,
           this.ucFirstStr(receiverName, { bool: true }), receiverPhone, moment, moment
         ]
       };
@@ -57,12 +57,12 @@ export default class ParcelController extends UtilityService {
         return next();
       }
 
-      const query = { 
+      const query = {
         text: `SELECT DISTINCT 
                 parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername, users.phoneNumber 
               FROM parcels 
               INNER JOIN users 
-              ON parcels.userid = users.userid` 
+              ON parcels.userid = users.userid`
       };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
@@ -139,8 +139,8 @@ export default class ParcelController extends UtilityService {
         this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
       } else {
         const filter = this.ucFirstStr(req.query.filter);
-        const where = isadmin ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
-        const values = isadmin ? [filter] : [req.params.userId, filter];
+        const where = !req.params.userId ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
+        const values = req.params.userId ? [req.params.userId, filter] : [filter];
         const query = { text: `SELECT * FROM parcels WHERE ${where}`, values };
         db.sqlQuery(query).then((result) => {
           const parcels = result.rows;
@@ -300,7 +300,7 @@ export default class ParcelController extends UtilityService {
               res, message, data: { parcel: updated.rows[0] }
             });
           })
-          .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
+            .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -327,7 +327,7 @@ export default class ParcelController extends UtilityService {
           this.errorResponse({ res, code: 403, message: msg });
         } else {
           const {
-            weight, description, deliveryMethod, decoded, pickupAddress, 
+            weight, description, deliveryMethod, decoded, pickupAddress,
             pickupCity, pickupState, pickupDate, receiverName, receiverPhone
           } = req.body;
           const queries = {
@@ -347,16 +347,16 @@ export default class ParcelController extends UtilityService {
               values: [
                 this.ucFirstStr(pickupAddress, { bool: true }), pickupCity, pickupState, pickupDate,
                 new Date(), decoded.userid, req.params.parcelId
-              ]            
+              ]
             },
             receiver: {
               text: `UPDATE parcels
                      SET receivername = $1, receiverphone = $2, updatedat = $3
                      WHERE userid = $4 AND parcelid = $5 RETURNING *`,
               values: [
-                this.ucFirstStr(receiverName, { bool: true }), receiverPhone, new Date(), 
-                decoded.userid, req.params.parcelId 
-              ]              
+                this.ucFirstStr(receiverName, { bool: true }), receiverPhone, new Date(),
+                decoded.userid, req.params.parcelId
+              ]
             }
           };
           db.sqlQuery(queries[type.replace(/[-]+/g, '')]).then((updated) => {
@@ -364,7 +364,7 @@ export default class ParcelController extends UtilityService {
             const message = `${this.ucFirstStr(type.replace(/[-]+/g, ' '))} ${msg}`;
             this.successResponse({ res, message, data: { parcel: updated.rows[0] } });
           })
-          .catch(() => this.errorResponse({ res, message: db.dbError() }));
+            .catch(() => this.errorResponse({ res, message: db.dbError() }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -435,7 +435,7 @@ export default class ParcelController extends UtilityService {
                     destinationstate = $3, updatedat = $4
                   WHERE parcelid = $5 AND userid = $6 RETURNING *`,
             values: [
-              this.ucFirstStr(destinationAddress, { bool: true }), destinationCity, 
+              this.ucFirstStr(destinationAddress, { bool: true }), destinationCity,
               destinationState, new Date(), parcelId, decoded.userid
             ]
           };
@@ -448,6 +448,44 @@ export default class ParcelController extends UtilityService {
             res, message: 'Sorry, could not update destination'
           }));
         }
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+    };
+  }
+
+  /**
+   * Count delivery orders
+   *
+   * @static
+   * @returns {function} An express middleware function that handles the GET request
+   * @method countOrders
+   * @memberof ParcelController
+   */
+  static countOrders() {
+    return (req, res) => {
+      const query = {
+        text: `WITH cancelled AS (SELECT COUNT(parcelid) AS cancelled FROM parcels WHERE deliverystatus = $1),
+              delivered AS (SELECT COUNT(parcelid) AS delivered FROM parcels WHERE deliverystatus = $2),
+              placed AS (SELECT COUNT(parcelid) AS placed FROM parcels WHERE deliverystatus = $3),
+              transiting AS (SELECT COUNT(parcelid) AS transiting FROM parcels WHERE deliverystatus = $4),
+              total AS (SELECT SUM(cancelled + delivered + placed + transiting) AS total
+                FROM cancelled 
+                JOIN delivered ON delivered IS NOT NULL
+                JOIN placed ON placed IS NOT NULL
+                JOIN transiting ON transiting IS NOT NULL
+              )
+              SELECT * FROM placed
+              JOIN cancelled ON cancelled IS NOT NULL 
+              JOIN delivered ON delivered IS NOT NULL
+              JOIN transiting ON transiting IS NOT NULL
+              JOIN total ON total IS NOT NULL`,
+        values: ['Cancelled', 'Delivered', 'Placed', 'Transiting']
+      };
+      db.sqlQuery(query).then((result) => {
+        const orders = result.rows[0];
+        const message = 'Breakdown of delivery orders';
+        this.successResponse({
+          res, code: 200, message, data: { orders }
+        });
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }

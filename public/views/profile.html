@@ -78,42 +78,7 @@
                     </div>
                   </div>
                 </div>
-                <div class="mt-lg">
-                  <div class="more-details mb-md">
-                    <div class="nexted">
-                      <div class="card-header flex justify-content-between">
-                        <div class="card-title">
-                          <label class="size-12 bold">Delivery orders</label>
-                        </div>
-                      </div>
-                      <div class="card-wrapper">
-                        <div class="card-row">
-                          <div class="data-header">Cancelled orders</div>
-                          <div class="data">1</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header">Delivered orders</div>
-                          <div class="data">2</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header">Transiting orders</div>
-                          <div class="data">1</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header">Pending orders</div>
-                          <div class="data">None</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header red-colo" style="font-size: 1.5rem">Total</div>
-                          <div class="data red-color bold" style="font-size: 1.5rem">4</div>
-                        </div>
-                      </div>
-                      <div class="more-detail mt-lg align-right">
-                        <button class="btn btn-primary btn-block btn-lg">View orders</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <div class="mt-lg height-transition" id="orders"></div>
               </div>
             </div>
           </div>
@@ -136,16 +101,21 @@
   <script>
     let user;
     const getProfileDetails = async () => {
-      await authUser.then((data) => {
-        user = data;
-        Object.keys(data).forEach((key) => {
-          elem = document.getElementById(`data-${key}`);
-          if (elem && data[key] !== '') {
-            elem.innerHTML = data[key];
-          }
+      await fetch(request({
+        path: `/auth/profileDetails`,
+        token: localStorage.getItem('token'),
+        method: 'GET'
+      })).then(res => res.json())
+        .then((res) => {
+          user = res.data.user;
+          orderBreakdown(res.data.user.orders, user.userid);
+          Object.keys(user).forEach((key) => {
+            elem = document.getElementById(`data-${key}`);
+            if (elem && user[key] !== '') {
+              elem.innerText = user[key];
+            }
+          });
         })
-      });
-      document.getElementById('phone-btn');
     }
 
     const updateName = (e) => {
@@ -187,13 +157,13 @@
               }
             })
         }
-      } else if (!hasEmpty(['new-password']) 
-        && isValidPassword(document.getElementById('new-password')) 
+      } else if (!hasEmpty(['new-password'])
+        && isValidPassword(document.getElementById('new-password'))
         && !hasEmpty(['confirm-password']) && comparePassword()) {
-				updateRequest({
-					path: `/auth/changePassword`,
-					data: getFormData(['new-password'])
-				})
+        updateRequest({
+          path: `/auth/changePassword`,
+          data: getFormData(['new-password'])
+        })
       }
     }
 
@@ -206,6 +176,51 @@
         return false;
       }
       return true;
+    }
+
+    const orderBreakdown = (data, userId) => {
+      let content = `<div class="alert alert-info size-13 my-lg">You currently have no delivery orders. <br> Click below to create<br/>
+                      <a href="/create" class="btn btn-link bold fine-btn mt-lg">Create Order</a>
+                      </div>`;
+      if (data.total > 0) {
+        content = `<div class="more-details mb-md">
+                    <div class="nexted">
+                      <div class="card-header flex justify-content-between">
+                        <div class="card-title">
+                          <label class="size-12 bold">Delivery orders</label>
+                        </div>
+                      </div>
+                      <div class="card-wrapper">
+                        <div class="card-row">
+                          <div class="data-header">Cancelled orders</div>
+                          <div class="data" id="data-cancelled">${data.cancelled}</div>
+                        </div>
+                        <div class="card-row">
+                          <div class="data-header">Delivered orders</div>
+                          <div class="data" id="data-delivered">${data.delivered}</div>
+                        </div>
+                        <div class="card-row">
+                          <div class="data-header">Transiting orders</div>
+                          <div class="data" id="data-transiting">${data.transiting}</div>
+                        </div>
+                        <div class="card-row">
+                          <div class="data-header">Placed orders</div>
+                          <div class="data" id="data-placed">${data.placed}</div>
+                        </div>
+                        <div class="card-row">
+                          <div class="data-header red-colo" style="font-size: 1.5rem">Total</div>
+                          <div class="data red-color bold" id="data-total" style="font-size: 1.5rem">${data.total}</div>
+                        </div>
+                      </div>
+                      <div class="more-detail mt-lg align-right">
+                        <a href="/users/orders" class="btn btn-primary btn-block btn-lg">View orders</a>
+                      </div>
+                    </div>
+                </div>`;
+      }
+      const orders = document.getElementById('orders');
+      orders.innerHTML = content;
+      orders.style.maxHeight = '500px';
     }
   </script>
 </body>

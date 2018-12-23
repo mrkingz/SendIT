@@ -6,8 +6,8 @@
   "scripts": {
     "start": "babel-node ./server/app.js",
     "start:dev": "SET NODE_ENV=development && nodemon --watch server --exec babel-node ./server/app",
-    "tests": "SET NODE_ENV=test && mocha --compilers js:babel-core/register server/tests/**/*.js --timeout 10000 --exit",
-    "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 10000 --exit",
+    "tests": "SET NODE_ENV=test && mocha --compilers js:babel-core/register server/tests/**/*.js --timeout 100000 --exit",
+    "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 100000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate:test": "SET NODE_ENV=test && babel-node ./server/database/migrate.js --exit",
     "migrate:dev": "SET NODE_ENV=development && babel-node ./server/database/migrate.js --exit",

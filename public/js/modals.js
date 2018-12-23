@@ -4,11 +4,11 @@ const editDestinationModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="address">Address</label>
-                      <input type="text" class="control" name="destinationAddress" id="address" placeholder="Address">
+                      <input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" value="${parcel.destinationaddress}">
                     </div>
                     <div class="control-group">
                       <label class="required" for="state">State</label>
-                      <select name="destinationState" id="state" class="control">
+                      <select name="destinationState" id="state" class="control" value="${parcel.destinationstate}">
                       <option value="Imo">Imo</option>
                         <option value="Kano">Kano</option>
                         <option value="Lagos">Lagos</option>
@@ -16,7 +16,7 @@ const editDestinationModal = (e, parcel) => {
                     </div>
                     <div class="control-group">
                       <label class="required" for="city">City/Town</label>
-                      <input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town">
+                      <input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" value="${parcel.destinationcity}">
                     </div>
                     <div class="control-group">
                       <button class="btn btn-primary" onclick="editDestination(event)">Save</button>
@@ -27,11 +27,7 @@ const editDestinationModal = (e, parcel) => {
     content, 
     title: e.target.innerText, 
     callback: () => {
-      const state = document.getElementById('state');
-      document.getElementById('address').value = parcel.destinationaddress;
-      state.value = parcel.destinationstate;
-      document.getElementById('city').value = parcel.destinationcity;
-      state.style.color = 'initial';
+      document.getElementById('state').style.color = 'initial';
     }
   });
   document.getElementById('address').focus();
@@ -41,11 +37,11 @@ const editParcelModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="weight">Parcel weight</label>
-                        <input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight">
+                        <input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight" value="${parcel.weight}">
                       </div>
                       <div class="control-group">
                         <label for="description">Description</label>
-                        <input type="text" class="control" name="description" id="description" placeholder="Description">
+                        <input type="text" class="control" name="description" id="description" placeholder="Description" value="${parcel.description}">
                       </div>
                       <div class="control-group">
                         <label for="delivery-method">Choose your delivery method</label>
@@ -68,8 +64,6 @@ const editParcelModal = (e, parcel) => {
     content, 
     title: e.target.innerText, 
     callback: () => {
-      document.querySelector('.control-group #weight').value = parcel.weight;
-      document.querySelector('.control-group #description').value = parcel.description;
       document.querySelector(`.control-group #${parcel.deliverymethod.toLowerCase()}`).checked = true;
     }
   });
@@ -80,22 +74,22 @@ const editPickupModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="pick-up-address">Address</label>
-                      <input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address">
+                      <input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" value="${parcel.pickupaddress}">
                     </div>
                     <div class="control-group">
                       <label class="required" for="pick-up-state">State</label>
-                      <select id="pick-up-state" name="pickupState" class="control">
+                      <select id="pick-up-state" name="pickupState" class="control" value="${parcel.pickupstate}">
                         <option value="Abuja">Abuja</option>
                         <option value="Lagos">Lagos</option>
                       </select>
                     </div>
                     <div class="control-group">
                       <label class="required" for="pick-up-city">City/Town</label>
-                      <input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town">
+                      <input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" value="${parcel.pickupcity}">
                     </div>
                     <div class="control-group">
                       <label class="required" for="pick-up-date">Pick up date</label>
-                      <input type="date" class="control" name="pickupDate" id="pick-up-date" autocomplete="off">
+                      <input type="date" class="control" name="pickupDate" id="pick-up-date" autocomplete="off" value="${parcel.pickupdate}">
                     </div>
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="editPickup(event)">Save</button>
@@ -105,10 +99,6 @@ const editPickupModal = (e, parcel) => {
     content, 
     title: e.target.innerText, 
     callback: () => {
-      document.querySelector('.control-group #pick-up-address').value = parcel.pickupaddress;
-      document.querySelector('.control-group #pick-up-state').value = parcel.pickupstate;
-      document.querySelector('.control-group #pick-up-city').value = parcel.pickupcity;
-      document.querySelector('.control-group #pick-up-date').value = parcel.pickupdate;
       $('select').css({ color: 'initial' });
     }
   });
@@ -119,11 +109,11 @@ const editReceiverModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="receiver-name">Receicver's full name</label>
-                      <input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name">
+                      <input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name" value="${parcel.receivername}">
                     </div>         
                     <div class="control-group">
                       <label class="required" for="receiver-phone">Receicver's phone</label>
-                      <input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone">
+                      <input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" value="${parcel.receiverphone}">
                     </div>
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="editReceiver(event)">Save</button>
@@ -131,11 +121,7 @@ const editReceiverModal = (e, parcel) => {
                   </form>`;
   showModal({
     content, 
-    title: e.target.innerText, 
-    callback: () => {
-      document.querySelector('.control-group #receiver-name').value = parcel.receivername;
-      document.querySelector('.control-group #receiver-phone').value = parcel.receiverphone;
-    }
+    title: e.target.innerText
   });
   document.getElementById('receiver-name').focus();
 };
@@ -192,7 +178,7 @@ const updatePhoneModal = (e, user) => {
                     <div id="phone-div">
                       <div class="control-group">
                         <label class="required" for="phone">Phone number</label>
-                        <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" value="${user.phonenumber}">
+                        <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" value="${user.phonenumber ? user.phonenumber : ''}">
                       </div>
                     </div>
                     <div class="hide" id="code-div">
@@ -222,7 +208,7 @@ const changePasswordModal = (e, user) => {
                     <div class="hide" id="new-div">
                       <div class="control-group">
                         <label class="required" for="new-password">New password</label>
-                        <input type="password" class="control" name="password" id="new-password" placeholder="New password">
+                        <input type="password" class="control" name="password" id="new-password" placeholder="New password" autofocus>
                       </div>
                       <div class="control-group">
                         <label class="required" for="confirm-password">Confirm password</label>

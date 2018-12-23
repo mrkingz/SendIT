@@ -66,9 +66,8 @@
                                 </div>
                                 <div class="panel">
                                     
-                                    <div class="dashboard">
+                                    <div class="dashboard" id="dashboard">
                                         <a href="/create" class="btn btn-primary">Create Order</a>
-                                        <a href="/orders" class="btn btn-primary">Delivery Orders</a>
                                         <a href="/profile" class="btn btn-primary">My Profile</a>
                                     </div>
                                     
@@ -127,5 +126,17 @@
 
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
+        <script>
+            authUser.then((user) => {
+                if (user.isadmin) {
+                    const orderBtn = document.createElement('a');
+                    orderBtn.href = '/orders';
+                    orderBtn.innerText = 'Delivery orders';
+                    addClass(orderBtn, ['btn', 'btn-primary']);
+                    const dashboard = document.getElementById('dashboard');
+                    dashboard.insertBefore(orderBtn, dashboard.lastElementChild)
+                }
+            })
+        </script>
     </body>
 </html>
