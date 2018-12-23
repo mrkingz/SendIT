@@ -139,8 +139,8 @@ export default class ParcelController extends UtilityService {
         this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
       } else {
         const filter = this.ucFirstStr(req.query.filter);
-        const where = isadmin ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
-        const values = isadmin ? [filter] : [req.params.userId, filter];
+        const where = !req.params.userId ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
+        const values = req.params.userId ? [req.params.userId, filter] : [filter];
         const query = { text: `SELECT * FROM parcels WHERE ${where}`, values };
         db.sqlQuery(query).then((result) => {
           const parcels = result.rows;
@@ -456,55 +456,37 @@ export default class ParcelController extends UtilityService {
    * Count delivery orders
    *
    * @static
-   * @param {string} option
    * @returns {function} An express middleware function that handles the GET request
    * @method countOrders
    * @memberof ParcelController
    */
-  static countOrders(option) {
-    const select = (value, userId) => {
-      return {
-        admin: {
-          text: `SELECT COUNT('parcelid') as ${value} FROM parcels WHERE deliverystatus = $1`,
-          values: [value]
-        },
-        user: {
-          text: `SELECT COUNT('parcelid') as ${value}
-                 FROM parcels 
-                 WHERE deliverystatus = $1 AND userid = $2`,
-          values: [value, userId]
-        }
-      };
-    };
+  static countOrders() {
     return (req, res) => {
-      const { decoded } = req.body;
-      if (req.params.userId && (Number(decoded.userid) !== Number(req.params.userId))) {
-        this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
-      } else {
-        let value;
-        const counts = { total: 0 };
-        const values = ['Cancelled', 'Delivered', 'Placed', 'Transiting'];
-        const helper = (result, i) => {
-          value = values[i].toLowerCase();
-          counts[value] = Number(result.rows[0][value]);
-          counts.total += Number(counts[value]);
-        };
-        db.sqlQuery(select(values[0], decoded.userid)[option]).then((c) => {
-          helper(c, 0);
-          db.sqlQuery(select(values[1], decoded.userid)[option]).then((d) => {
-            helper(d, 1);
-            db.sqlQuery(select(values[2], decoded.userid)[option]).then((p) => {
-              helper(p, 2);
-              db.sqlQuery(select(values[3], decoded.userid)[option]).then((t) => {
-                helper(t, 3);
-                this.successResponse({
-                  res, message: 'Delivery order breakdown', data: { counts }
-                });
-              });
-            });
-          });
-        }).catch(e => console.log(e.toString()));
-      }
+      const query = {
+        text: `WITH cancelled AS (SELECT COUNT(parcelid) AS cancelled FROM parcels WHERE deliverystatus = $1),
+              delivered AS (SELECT COUNT(parcelid) AS delivered FROM parcels WHERE deliverystatus = $2),
+              placed AS (SELECT COUNT(parcelid) AS placed FROM parcels WHERE deliverystatus = $3),
+              transiting AS (SELECT COUNT(parcelid) AS transiting FROM parcels WHERE deliverystatus = $4),
+              total AS (SELECT SUM(cancelled + delivered + placed + transiting) AS total
+                FROM cancelled 
+                JOIN delivered ON delivered IS NOT NULL
+                JOIN placed ON placed IS NOT NULL
+                JOIN transiting ON transiting IS NOT NULL
+              )
+              SELECT * FROM placed
+              JOIN cancelled ON cancelled IS NOT NULL 
+              JOIN delivered ON delivered IS NOT NULL
+              JOIN transiting ON transiting IS NOT NULL
+              JOIN total ON total IS NOT NULL`,
+        values: ['Cancelled', 'Delivered', 'Placed', 'Transiting']
+      };
+      db.sqlQuery(query).then((result) => {
+        const orders = result.rows[0];
+        const message = 'Breakdown of delivery orders';
+        this.successResponse({
+          res, code: 200, message, data: { orders }
+        });
+      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 }

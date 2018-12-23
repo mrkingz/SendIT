@@ -40,7 +40,8 @@ export default class UserValidator extends Validator {
       let schemas = {
         name: this.getNameSchema(),
         phone: this.getPhoneSchema(),
-        password: this.getPasswordSchema()
+        password: this.getPasswordSchema(option),
+        reset: this.getPasswordSchema(option),
       };
       return this.validate(req, res, next, Joi.object().keys(schemas[option]), () => {
         return { decoded };
@@ -61,9 +62,21 @@ export default class UserValidator extends Validator {
     .keys(this.getNameSchema())
     .keys(this.getPhoneSchema())
     .keys(this.getPasswordSchema())
-    .keys({
-      email: Joi.string().required().email().max(100).label('E-mail address').lowercase(),
-    });
+    .keys(this.getEmailSchema());
+  }
+
+  /**
+   * Create email validation schema
+   *
+   * @static
+   * @returns {object} the email validation schema
+   * @method getEmailSchema
+   * @memberof UserValidator
+   */
+  static getEmailSchema() {
+    return {
+      email: Joi.string().required().email().max(100).label('E-mail address').lowercase()
+    };
   }
 
   /**
@@ -95,14 +108,22 @@ export default class UserValidator extends Validator {
    * Create password validation schema
    *
    * @static
+   * @param {string} option
    * @returns {object} the password validation schema
    * @method getPasswordSchema
    * @memberof UserValidator
    */
-  static getPasswordSchema() {
-    return {
+  static getPasswordSchema(option) {
+    const obj = {
       password: Joi.string().required().min(8).max(60)
     };
+    // Remember users are not authenticated when recovering forgotten password
+    // So, we will indentifier this user with email address;
+    // as such, we need to make sure we validate email address
+    if (option === 'reset') {
+      obj.email = this.getEmailSchema().email;
+    }
+    return obj;
   }
   
   /**

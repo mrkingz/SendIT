@@ -92,6 +92,20 @@ export default class PageController {
 	}
 
 	/**
+	 * Get user orders page
+	 *
+	 * @static
+	 * @returns {function} An express middleware that handles the GET request
+	 * @method getUserOrders
+	 * @memberof PageController
+	 */
+	static getUserOrders() {
+		return (req, res) => {
+			return res.sendFile(this.getHTMLPath('user-orders'));
+		};
+	}
+
+	/**
 	 * Get the profile page
 	 *
 	 * @static

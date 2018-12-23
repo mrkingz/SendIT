@@ -10,6 +10,7 @@ pageRouter.get('/signin', PageController.getLogin());
 pageRouter.get('/dashboard', PageController.getDashboard());
 pageRouter.get('/create', PageController.getCreate());
 pageRouter.get('/orders', PageController.getOrders());
+pageRouter.get('/users/orders', PageController.getUserOrders());
 pageRouter.get('/orders/:parcelId', PageController.getDetails());
 pageRouter.get('/profile', PageController.getProfile());
 pageRouter.get('/password', PageController.getPassword());

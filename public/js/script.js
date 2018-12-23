@@ -2,7 +2,7 @@
 let oDropdown, modal, vCode, pageReload = false;
 const baseUrl = '/api/v1';
 $(`input[type='text']`).prop({ autocomplete: 'off' });
-$('.control').on('keypress blur', () => {
+$('.control, #submit').on('keypress blur click', () => {
   $('#message div').addClass('zoomOut animated faster').fadeOut(500);
 });
 
@@ -287,7 +287,7 @@ const showModal = (obj) => {
   switch (type) {
     case 'confirm':
         html += `<div class="modal-body">
-                    <div id="confirm-title">${title}</div>
+                    <div class="modal-title" id="confirm-title">${title}</div>
                     ${content}
                     <div class="confirm-btns">
                       <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
@@ -310,8 +310,10 @@ const showModal = (obj) => {
 };
 
 const hideModal = () => {
-  modal.style.display = 'none';
-  document.querySelector('body').removeChild(modal);
+  if (modal) {
+    modal.style.display = 'none';
+    document.querySelector('body').removeChild(modal);
+  }
 };
 
 const showSpinner = () => {
@@ -420,7 +422,7 @@ const verifyPhone = async (e, user) => {
     document.querySelector('.modal-body div').innerText = 'Verify phone number';
     btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user, updatePhone)">Confirm</button>`;
     generateCode();
-    codeInfo('Enter the code sent to', user.phonenumber);
+    codeInfo('Enter the code sent to', phone.value);
   } else {
     processing({ start: false, message: 'Continue' });
   }

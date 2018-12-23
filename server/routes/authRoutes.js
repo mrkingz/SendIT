@@ -16,7 +16,7 @@ authRouter.post('/api/v1/auth/login',
   UserController.signin());
 
 authRouter.post('/api/v1/auth/email', 
-  UserController.checkExist('email'));
+  UserController.checkExist('email', 'No user with email address found'));
 
 authRouter.get('/api/v1/auth/profileDetails', 
   UserController.authenticateUser(),
@@ -35,7 +35,11 @@ authRouter.put('/api/v1/auth/phoneNumber',
 authRouter.put('/api/v1/auth/changePassword', 
   UserController.authenticateUser(),
   UserValidator.validateUserUpdate('password'),
-  UserController.changePassword());
+  UserController.changePassword({ isAuthenticated: true }));
+
+authRouter.put('/api/v1/auth/resetPassword', 
+  UserValidator.validateUserUpdate('reset'),
+  UserController.changePassword({ isAuthenticated: false }));
 
 authRouter.post('/api/v1/auth/verifyPassword', 
   UserController.authenticateUser(),

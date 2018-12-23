@@ -71,10 +71,7 @@ parcelRouter.put('/api/v1/parcels/:parcelId(\\d+)/editReceiver',
 
 parcelRouter.get('/api/v1/parcels/count',
 	UserController.authenticateUser(),
-	ParcelController.countOrders('admin'));
-
-parcelRouter.get('/api/v1/users/:userId(\\d+)/parcels/count',
-	UserController.authenticateUser(),
-	ParcelController.countOrders('user'));
+	UserController.authorizeUser(),
+	ParcelController.countOrders());
 
 export default parcelRouter;

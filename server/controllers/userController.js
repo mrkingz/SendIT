@@ -136,11 +136,33 @@ export default class UserController extends UtilityService {
   static getProfileDetails() {
     return (req, res) => {
       const query = {
-        text: `SELECT * FROM users WHERE userid = $1 LIMIT 1`,
-        values: [req.body.decoded.userid]
+        text: `WITH placed AS (SELECT COUNT(parcelid) AS placed FROM parcels WHERE deliverystatus = $2 AND userid = $1),
+            cancelled AS (SELECT COUNT(parcelid) AS cancelled FROM parcels WHERE deliverystatus = $3 AND userid = $1),
+            delivered AS (SELECT COUNT(parcelid) AS delivered FROM parcels WHERE deliverystatus = $4 AND userid = $1),
+            transiting AS (SELECT COUNT(parcelid) AS transiting FROM parcels WHERE deliverystatus = $5 AND userid = $1),
+            total AS (SELECT SUM(cancelled + delivered + placed + transiting) AS total
+                  FROM cancelled 
+                  JOIN delivered ON delivered IS NOT NULL
+                  JOIN placed ON placed IS NOT NULL
+                  JOIN transiting ON transiting IS NOT NULL
+                )
+            SELECT * FROM users 
+            JOIN placed ON userid = $1
+            JOIN cancelled ON userid = $1 
+            JOIN delivered ON userid = $1
+            JOIN transiting ON userid = $1
+            JOIN total ON total IS NOT NULL LIMIT 1`,
+        values: [
+          req.body.decoded.userid, 'Placed', 'Cancelled', 'Delivered', 'Transiting'
+        ]
       };
       db.sqlQuery(query).then((result) => {
-        const { password, ...user } = result.rows[0];
+        const { 
+          password, cancelled, delivered, placed, transiting, total, ...user
+        } = result.rows[0];
+        user.orders = {
+          cancelled, delivered, placed, transiting, total
+        };
         const message = 'Profile details successfully retrieved';
         return _.isEmpty(user)
                 ? this.errorResponse({ res, code: 404, message: 'User does not exist' })
@@ -296,18 +318,19 @@ export default class UserController extends UtilityService {
   static checkExist(field, msg) {
     return (req, res) => {
       const query = {
-        text: `SELECT ${field} FROM users WHERE ${field} = $1`,
+        text: `SELECT * FROM users WHERE ${field} = $1`,
         values: [req.body[field]]
       };
       db.sqlQuery(query).then((result) => {
         if (_.isEmpty(result.rows)) {
-          return this.successResponse({
-            res, code: 404, message: (msg || `${this.ucFirstStr(field)} does not exist`) 
+          return this.errorResponse({
+            res, code: 404, message: (msg || `No user with ${field} found`)
           });
         }
-        const message = (message || `${this.ucFirstStr(field)} has been used`);
+        const message = (message || `A user with ${field} has been used`);
+        const { password, ...user } = result.rows[0];
         this.successResponse({ 
-          res, code: 302, message, data: { ...result.rows[0] } 
+          res, code: 302, message, data: { user } 
         });
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -349,21 +372,26 @@ export default class UserController extends UtilityService {
    * Update password
    *
    * @static
+   * @param {object} auth
    * @returns {function} An express middleware function that hanmdles the PUT request
    * @method changePassword
    * @memberof UserController
    */
-  static changePassword() {
+  static changePassword(auth) {
     return (req, res) => {
       const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
       const query = {
         text: `UPDATE users SET password = $1, updatedat =$2 
-              WHERE userid = $3 RETURNING *`,
-        values: [pass, new Date(), req.body.decoded.userid]
+              WHERE ${auth.isAuthenticated ? 'userid' : 'email'} = $3 RETURNING *`,
+        values: [ 
+          pass, new Date(), auth.isAuthenticated ? req.body.decoded.userid : req.body.email
+        ]
       };
       db.sqlQuery(query).then((result) => {
         const { password, ...user } = result.rows[0];
-        this.successResponse({ res, message: 'New password saved successfuly', data: { user } });
+        this.successResponse({ 
+          res, message: 'New password saved successfuly', data: { user } 
+        });
       })
       .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
