@@ -4,7 +4,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import decode from 'jwt-decode';
 import db from '../database';
-import UtilityService from '../services/UtilityService';
+import services from '../services';
+
+const { UtilityService } = services;
 
 dotenv.load();
 
@@ -68,13 +70,13 @@ export default class UserController extends UtilityService {
           if (!_.isEmpty(result.rows)) {
             if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
               const { 
-                password, firstname, lastname, createdat, updatedat, ...details 
+                password, createdat, updatedat, ...details 
               } = result.rows[0];
               return this.successResponse({
                 res, 
                 message: 'Successfully signed in',
                 data: { 
-                  user: { firstname, lastname, ...details },
+                  user: { ...details, createdat, updatedat },
                   token: this.generateToken(details)
                  } 
               });
@@ -283,7 +285,7 @@ export default class UserController extends UtilityService {
         const decoded = decode(token);
         return this.findUser(decoded)
           .then(user => this.successResponse({ res, code: 302, data: { user } }))
-          .catch(() => {});
+          .catch(() => db.dbError());
       }
     };
   }

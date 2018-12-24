@@ -47,7 +47,7 @@ export default class ParcelValidator extends Validator {
 			delete req.body.decoded;
 			return this.validate(req, res, next, this.getParcelSchema(), () => {
 				return {
-					price: Number(req.body.weight) * 100,
+					price: Number(req.body.weight) * 1000,
 					trackingNo: new Date().getTime(),
 					decoded
 				};

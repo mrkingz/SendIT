@@ -1,6 +1,6 @@
-import UserController from './userController';
-import ParcelController from './parcelController';
-import PageController from './pageController';
+import UserController from './UserController';
+import ParcelController from './ParcelController';
+import PageController from './PageController';
 
 const controllers = {
   UserController,

@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import db from '../database';
-import UtilityService from '../services/UtilityService';
+import services from '../services';
 
+const { NotificationService, UtilityService } = services;
 
 /**
  * @export
@@ -38,6 +39,18 @@ export default class ParcelController extends UtilityService {
       };
       db.sqlQuery(query).then((result) => {
         const parcel = result.rows[0];
+        NotificationService.sendEmail({ 
+          receiver: { email: decoded.email, name: decoded.firstname.concat(` ${decoded.lastname}`) },
+          message: `<p>Your delivery order was succe</p>
+                    <p>Below is your order details:</p>
+                    <p><b>Weight:</b> ${parcel.weight} kgs<br>
+                    <b>Description:</b> ${parcel.description}<br>
+                    <b>Delivery cost: &#8358; </b>${parcel.price}<br>
+                    <b>Delivery method</b>${parcel.deliverymethod} delivery<br>
+                    <b>Delivery status:</b> ${parcel.deliverystatus}<br>
+                    <b>Tracking number:</b> ${parcel.trackingno}</p>
+                    <p>You will be notified once processing begins.</p>`
+        });
         this.successResponse({
           res, code: 201, message: 'Delivery order successfully created', data: { parcel }
         });
@@ -56,13 +69,8 @@ export default class ParcelController extends UtilityService {
       if (req.query.filter) {
         return next();
       }
-
       const query = {
-        text: `SELECT DISTINCT 
-                parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername, users.phoneNumber 
-              FROM parcels 
-              INNER JOIN users 
-              ON parcels.userid = users.userid`
+        text: `SELECT * FROM parcels`
       };
       db.sqlQuery(query).then((result) => {
         const parcels = result.rows;
@@ -84,11 +92,15 @@ export default class ParcelController extends UtilityService {
   static getParcel() {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
-        const parcel = result.rows;
+        const parcelDetails = result.rows[0];
+        const { 
+          name, email, phonenumber, ...parcel 
+        } = parcelDetails;
+        parcel.sender = { name, email, phonenumber };
         return (_.isEmpty(parcel))
           ? this.errorResponse({ res, code: 404, message: 'No delivery order found' })
           : this.successResponse({
-            res, code: 302, message: 'Parcel successfully retrieved', data: { parcel: parcel[0] }
+            res, code: 302, message: 'Parcel successfully retrieved', data: { parcel }
           });
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -139,7 +151,9 @@ export default class ParcelController extends UtilityService {
         this.errorResponse({ res, code: 401, message: 'Sorry, not a valid logged in user' });
       } else {
         const filter = this.ucFirstStr(req.query.filter);
-        const where = !req.params.userId ? `deliverystatus = $1` : `userid = $1 AND deliverystatus = $2`;
+        const where = !req.params.userId 
+                       ? `deliverystatus = $1` 
+                       : `userid = $1 AND deliverystatus = $2`;
         const values = req.params.userId ? [req.params.userId, filter] : [filter];
         const query = { text: `SELECT * FROM parcels WHERE ${where}`, values };
         db.sqlQuery(query).then((result) => {
@@ -211,7 +225,8 @@ export default class ParcelController extends UtilityService {
   static getCancelOrderQuery(status, userId, parcelId) {
     return {
       text: `UPDATE parcels 
-            SET deliverystatus = $1, updatedat = $2 WHERE parcelid = $3 AND userid = $4 RETURNING *`,
+             SET deliverystatus = $1, updatedat = $2
+             WHERE parcelid = $3 AND userid = $4 RETURNING *`,
       values: [status, new Date(), parcelId, userId]
     };
   }
@@ -228,7 +243,7 @@ export default class ParcelController extends UtilityService {
   static getParcelQuery(parcelId) {
     return {
       text: `SELECT DISTINCT
-              parcels.*, CONCAT(firstname,(' '||lastname)) AS sendername 
+              parcels.*, CONCAT(firstname,(' '||lastname)) AS name, email, phonenumber
             FROM parcels 
             INNER JOIN users 
             ON parcels.userid = users.userid AND parcelid = $1`,
@@ -276,7 +291,10 @@ export default class ParcelController extends UtilityService {
   static updateLocation() {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
-        const parcel = result.rows[0], msg = 'location cannot be updated';
+        let { 
+          name, email, phonenumber, ...parcel
+        } = result.rows[0];
+        const msg = 'location cannot be updated';
         if (_.isEmpty(result.rows)) {
           this.errorResponse({ res, code: 404, message: 'No delivery order found' });
         } else if (['Cancelled', 'Delivered'].includes(parcel.deliverystatus)) {
@@ -295,12 +313,18 @@ export default class ParcelController extends UtilityService {
             ]
           };
           db.sqlQuery(updateQuery).then((updated) => {
+            parcel = updated.rows[0];
             const message = 'Present location successfully updated';
+            NotificationService.sendEmail({ 
+              receiver: { email, name },
+              message: `<p>Your parcel with tracking number: <b>${parcel.trackingno}</b>
+                       is currently at ${parcel.presentlocation}</p>`
+            });
             this.successResponse({
-              res, message, data: { parcel: updated.rows[0] }
+              res, message, data: { parcel }
             });
           })
-            .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
+          .catch(() => this.errorResponse({ res, message: 'Sorry, could not update location' }));
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
@@ -381,7 +405,10 @@ export default class ParcelController extends UtilityService {
   static updateStatus() {
     return (req, res) => {
       db.sqlQuery(this.getParcelQuery(req.params.parcelId)).then((result) => {
-        const parcel = result.rows[0], msg = 'status cannot be updated';
+        let { 
+          name, email, phonenumber, ...parcel 
+        } = result.rows[0];
+        const msg = 'status cannot be updated';
         if (_.isEmpty(result.rows)) {
           this.errorResponse({ res, code: 404, message: 'No delivery order found' });
         } else if (['Cancelled', 'Delivered'].includes(parcel.deliverystatus)) {
@@ -394,12 +421,19 @@ export default class ParcelController extends UtilityService {
                   WHERE parcelid = $3 RETURNING *`,
             values: [req.body.deliveryStatus, new Date(), req.params.parcelId]
           };
-          db.sqlQuery(updateQuery).then((updated) => {
+          return db.sqlQuery(updateQuery).then((updated) => {
+            parcel = updated.rows[0];
+            const status = req.body.deliveryStatus;
             const message = 'Delivery order status successfully updated';
-            this.successResponse({
-              res, message, data: { parcel: updated.rows[0] }
+            const str = (status === 'Transiting')
+                         ? ' is now '.concat(status.toLowerCase()) 
+                         : ' was successfully '.concat(status.toLowerCase());
+            NotificationService.sendEmail({ 
+              receiver: { email, name },
+              message: `<p>Your parcel with tracking number: <b>${parcel.trackingno}</b>${str}</p>`
             });
-          }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+            this.successResponse({ res, message, data: { parcel } });
+          });
         }
       }).catch(() => this.errorResponse({ res, message: db.dbError() }));
     };

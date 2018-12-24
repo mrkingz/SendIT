@@ -159,7 +159,7 @@ const updateStatusModal = (e) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="new-delivery-status">Delivery status</label>
-                      <select name="deliveryStatus" id="new-delivery-status" class="control">
+                      <select name="deliveryStatus" id="new-delivery-status" class="control" autofocus>
                         <option value="">Select status</option>
                         <option value="Delivered">Delivered</option>
                         <option value="Transiting">Transiting</option>
@@ -170,7 +170,6 @@ const updateStatusModal = (e) => {
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
-  document.getElementById('receiver-name').focus();
 };
 
 const updatePhoneModal = (e, user) => {
