@@ -39,7 +39,7 @@ class Database {
    * @memberof Database
    */
   dbError() {
-    return `Sorry, a database error occured`;
+    return `Sorry, internal error occured, try again later`;
   }
 
   /**
