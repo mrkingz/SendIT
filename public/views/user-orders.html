@@ -94,7 +94,6 @@
                     const path  = `/users/${user.userid}/parcels`;
                     fetch(request({ 
                         path: filter ? path.concat(`?filter=${filter}`) : path, 
-                        token: localStorage.getItem('token'),
                         method: 'GET' 
                     }))
                     .then(res => res.json())

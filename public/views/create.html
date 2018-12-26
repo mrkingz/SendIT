@@ -366,9 +366,7 @@
             const submitOrder = async (e) => {
                 e.preventDefault();
                 processing({ start: true });
-                await fetch(request({
-                    path: '/parcels', data, token: localStorage.getItem('token') 
-                })).then(res => {
+                await fetch(request({ path: '/parcels', data})).then(res => {
                     if (res.status === 201) {
                         $('input, select').val('');
                         document.getElementById('normal').checked = true;

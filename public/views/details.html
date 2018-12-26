@@ -204,7 +204,6 @@
 				const id = getParcelId();
 				fetch(request({
 					path: user.isadmin ? `/parcels/${id}` : `/users/${user.userid}/parcels/${id}`,
-					token: localStorage.getItem('token'),
 					method: 'GET'
 				})).then(res => res.json())
 					.then((res) => {

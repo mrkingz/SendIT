@@ -13,12 +13,13 @@ $('body').on('change', 'select', (e) => {
 
 const request = (obj) => {
   const headers = new Headers({
+    token: localStorage.getItem('token'),
     Accept: 'application/json',
     'Content-Type': 'application/json',
   });
-  if (obj['token']) {
-    headers.append('token', obj['token']);
-  }
+  // if (obj['token']) {
+  //   headers.append('token', obj['token']);
+  // }
   // We don't body in a GET request
   // So we'll just create the request object with the method and headers 
   if (obj['method'] === 'GET') {
@@ -52,7 +53,6 @@ const updateRequest = async (obj) => {
   await showSpinner();
   fetch(request({
     path: obj.path,
-    token: localStorage.getItem('token'),
     data: obj['data'],
     method: 'PUT'
   })).then(res => res.json())
@@ -93,7 +93,7 @@ const processing = (obj) => {
   }
 };
 
-const message = (msg, status, elem, animate = true) => {
+const message = (msg, status, elem, animate) => {
   const type = {
     success: 'alert-success',
     fail: 'alert-danger',

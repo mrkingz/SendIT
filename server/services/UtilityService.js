@@ -130,38 +130,4 @@ export default class UtilityService {
     let all = (!_.isUndefined(removeAll)) ? removeAll : true;
     return (all) ? string.trim().replace(/[ ]+/g, '') : string.trim().replace(/[ ]+/g, ' ');
   }
-
-  /**
-   * Return an error message from the server
-   * @static
-   * @param {object} obj - the object containing the response detail
-   * @return {object} Returns the error response
-   * @memberof UtilityService
-   */
-  static errorResponse(obj) {
-    return obj.res.status(obj['code'] || 500).json({
-      status: 'Fail',
-      message: obj['message']
-    });
-  }
-
-  /**
-   * 
-   * 
-   * Return an error message from the server
-   * @static
-   * @param {object} obj - the object containing the response detail
-   * @return {object} Returns the response
-   * @memberof UtilityService
-   */
-  static successResponse(obj) {
-    const {
-      res, code, message, data
-    } = obj;
-    return res.status(code || 200).json({
-      status: 'Success',
-      message,
-      data
-    });
-  }
 }

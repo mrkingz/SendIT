@@ -23,16 +23,19 @@ export default class NotificationService {
     const mailOptions = {
       from: process.env.EMAIL,
       to: options.receiver.email,
-      subject: 'SendIT Notification',
+      subject: options.subject || `SendIT Notification`,
       html: `<h3>Hi, ${options.receiver.name};</h3>
               <p>${options.message}</p>
-              <p><b>Thank you for patronage!</b></p>
-              <p>Regards!</p>`
+              <p><b>Thank you for your patronage!</b></p>
+              <p><b>SendIT Management </b></p>
+              <p> Regards!</p>`
     };
-    try {
       // eslint-disable-next-line no-unused-vars
-      transporter.sendMail(mailOptions, (error, info) => {});
-    } catch (e) {}
+    transporter.sendMail(mailOptions, (error) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.log(error);
+      }
+    });
   }
 
   /**

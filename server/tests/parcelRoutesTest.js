@@ -127,7 +127,7 @@ describe('Test parcel routes', () => {
 			.send(noWeight)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Weight is required');
 				done();
@@ -146,7 +146,7 @@ describe('Test parcel routes', () => {
 			.send(noMethod)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Delivery method is required');
 				done();
@@ -165,7 +165,7 @@ describe('Test parcel routes', () => {
 			.send(noPAddress)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup address is required');
 				done();
@@ -184,7 +184,7 @@ describe('Test parcel routes', () => {
 			.send(noPCity)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup city is required');
 				done();
@@ -203,7 +203,7 @@ describe('Test parcel routes', () => {
 			.send(noPState)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup state is required');
 				done();
@@ -222,7 +222,7 @@ describe('Test parcel routes', () => {
 			.send(noPDate)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup date is required');
 				done();
@@ -241,7 +241,7 @@ describe('Test parcel routes', () => {
 			.send(noDAddress)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination address is required');
 				done();
@@ -260,7 +260,7 @@ describe('Test parcel routes', () => {
 			.send(noDCity)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination city is required');
 				done();
@@ -279,7 +279,7 @@ describe('Test parcel routes', () => {
 			.send(noDState)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination state is required');
 				done();
@@ -298,7 +298,7 @@ describe('Test parcel routes', () => {
 			.send(noRName)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal(`Receiver name is required`);
 				done();
@@ -317,7 +317,7 @@ describe('Test parcel routes', () => {
 			.send(noRPhone)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal(`Receiver phone number is required`);
 				done();
@@ -335,7 +335,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, weight: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Weight must be a number');
 				done();
@@ -353,7 +353,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, deliveryMethod: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Delivery method is not allowed to be empty');
 				done();
@@ -371,7 +371,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, pickupAddress: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup address is not allowed to be empty');
 				done();
@@ -389,7 +389,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, pickupCity: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup city is not allowed to be empty');
 				done();
@@ -407,7 +407,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, pickupState: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup state is not allowed to be empty');
 				done();
@@ -425,7 +425,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, pickupDate: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Pickup date is not allowed to be empty');
 				done();
@@ -443,7 +443,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, destinationAddress: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination address is not allowed to be empty');
 				done();
@@ -461,7 +461,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, destinationCity: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination city is not allowed to be empty');
 				done();
@@ -479,7 +479,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, destinationState: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination state is not allowed to be empty');
 				done();
@@ -497,7 +497,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, receiverName: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Receiver name is not allowed to be empty');
 				done();
@@ -515,7 +515,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, receiverPhone: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Receiver phone number is not allowed to be empty');
 				done();
@@ -533,7 +533,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, weight: 'foo' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Weight must be a number');
 				done();
@@ -551,7 +551,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, deliveryMethod: 'Quick' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
 					.to.equal('Delivery method must be one of [Fast, Normal]');
@@ -570,7 +570,7 @@ describe('Test parcel routes', () => {
 			.send({ ...parcel, receiverPhone: '080865tghghff7i87' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
 					.to.equal('Receiver phone number is inavlid');
@@ -838,7 +838,7 @@ describe('Test parcel routes', () => {
 				.send({})
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(422);
+					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message).to.equal('Destination address is required');
 					done();
@@ -857,7 +857,7 @@ describe('Test parcel routes', () => {
 				.send({ destinationAddress: '16, Ajayi Crowter Street' })
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(422);
+					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message).to.equal('Destination city is required');
 					done();
@@ -879,7 +879,7 @@ describe('Test parcel routes', () => {
 				})
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(422);
+					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message).to.equal('Destination state is required');
 					done();
@@ -923,7 +923,7 @@ describe('Test parcel routes', () => {
 			})
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination address is not allowed to be empty');
 				done();
@@ -945,7 +945,7 @@ describe('Test parcel routes', () => {
 			})
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination city is not allowed to be empty');
 				done();
@@ -967,7 +967,7 @@ describe('Test parcel routes', () => {
 			})
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Destination state is not allowed to be empty');
 				done();
@@ -986,7 +986,7 @@ describe('Test parcel routes', () => {
 				.send({ deliveryStatus: 'Transiting' })
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(422);
+					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message)
 						.to.equal('Present location is required');
@@ -1006,7 +1006,7 @@ describe('Test parcel routes', () => {
 				.send({ presentLocation: '', deliveryStatus: 'Transiting' })
 				.end((err, res) => {
 					const response = res.body;
-					expect(res.statusCode).to.equal(422);
+					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message)
 						.to.equal('Present location is not allowed to be empty');
@@ -1168,7 +1168,7 @@ describe('Test parcel routes', () => {
 			.send({})
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
 					.to.equal('Delivery status is required');
@@ -1187,7 +1187,7 @@ describe('Test parcel routes', () => {
 			.send({ deliveryStatus: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
 					.to.equal('Delivery status is not allowed to be empty');
@@ -1206,7 +1206,7 @@ describe('Test parcel routes', () => {
 			.send({ deliveryStatus: 'Whatever' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
 					.to.equal('Delivery status must be one of [Transiting, Delivered]');

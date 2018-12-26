@@ -1,7 +1,4 @@
-
-import _ from 'lodash';
 import Joi from 'joi';
-import db from '../database';
 import Validator from './validator';
 
 /**
@@ -21,6 +18,20 @@ export default class UserValidator extends Validator {
   static validateUser() {
     return (req, res, next) => {
       return this.validate(req, res, next, this.getUserSchema());
+    };
+  }
+
+  /**
+   * Validate email address
+   *
+   * @static
+   * @returns {function} Returns an express middleware function that handles the validation
+   * @method validateEmail
+   * @memberof UserValidator
+   */
+  static validateEmail() {
+    return (req, res, next) => {
+      return this.validate(req, res, next, Joi.object().keys(this.getEmailSchema()));
     };
   }
 
@@ -53,14 +64,13 @@ export default class UserValidator extends Validator {
 	 * Create user validation schema
 	 *
 	 * @static
-	 * @method getUserSchema
 	 * @returns {object} the user validation schema
+   * @method getUserSchema
 	 * @memberof UserValidator
 	 */
 	static getUserSchema() {
     return Joi.object()
     .keys(this.getNameSchema())
-    .keys(this.getPhoneSchema())
     .keys(this.getPasswordSchema())
     .keys(this.getEmailSchema());
   }
@@ -114,11 +124,9 @@ export default class UserValidator extends Validator {
    * @memberof UserValidator
    */
   static getPasswordSchema(option) {
-    const obj = {
-      password: Joi.string().required().min(8).max(60)
-    };
+    const obj = { password: Joi.string().required().min(8).max(60) };
     // Remember users are not authenticated when recovering forgotten password
-    // So, we will indentifier this user with email address;
+    // So, we will indentify this user with email address;
     // as such, we need to make sure we validate email address
     if (option === 'reset') {
       obj.email = this.getEmailSchema().email;
@@ -143,10 +151,7 @@ export default class UserValidator extends Validator {
         default: return err;
       }
     });
-    return {
-      firstname: name,
-      lastname: name
-    };
+    return { firstname: name, lastname: name };
   }
 
   /**
@@ -170,35 +175,6 @@ export default class UserValidator extends Validator {
         password: Joi.string().required().error(message)
       });
       return this.validate(req, res, next, schema);
-    };
-  }
-
-  /**
-   * Validates if a user sign up credential has been used
-   * 
-   * @param {string} string - the property name 
-   * @param {string} message - the message to retun (optional)
-   * @static
-   * @method isUnique
-   * @returns {function} Returns an express middleswar function that does the validation
-   * @memberof UserValidator
-   */
-  static isUnique(string, message) {
-    return (req, res, next) => {
-      const str = string.toLowerCase();
-      const query = {
-        name: 'is-unique',
-        text: `SELECT ${str} FROM users WHERE ${str} = $1 LIMIT 1`,
-        values: [req.body[str]]
-      };
-
-      db.sqlQuery(query)
-      .then((result) => {  
-        return (_.isEmpty(result.rows))
-          ? next()
-          : this.errorResponse({ res, code: 409, message: (message || `${string} has been used`) });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
     };
   }
 }

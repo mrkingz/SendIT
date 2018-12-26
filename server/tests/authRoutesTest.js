@@ -10,7 +10,6 @@ const user = {
 	firstname: 'James',
 	lastname: 'Ogugayo',
 	email: 'example@gmail.com',
-	phoneNumber: '08085120241',
 	password: 'Password1'
 };
 describe('Test authentication routes', () => {
@@ -41,8 +40,6 @@ describe('Test authentication routes', () => {
 					.to.be.a('string').that.is.equal(user.lastname);
 				expect(response.data.user).to.have.own.property('email')
 					.to.be.a('string').that.is.equal(user.email);
-				expect(response.data.user).to.have.own.property('phonenumber')
-					.to.be.a('string').that.is.equal(user.phoneNumber);
 				expect(response.data.user).to.have.own.property('isadmin')
 					.to.be.a('boolean').that.is.equal(false);
 				expect(response.data.user).to.have.property('createdat');
@@ -57,7 +54,7 @@ describe('Test authentication routes', () => {
 			.send(noFName)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Firstname is required');
 				done();
@@ -71,7 +68,7 @@ describe('Test authentication routes', () => {
 			.send(noLName)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Lastname is required');
 				done();
@@ -86,23 +83,9 @@ describe('Test authentication routes', () => {
 			.send(noEmail)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('E-mail address is required');
-				done();
-			});
-	});
-
-	it('It should not create a user if phone number is undefined', (done) => {
-		const { phoneNumber, ...noPhone } = user;
-		server
-			.post('/api/v1/auth/signup')
-			.send(noPhone)
-			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(422);
-				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Phone number is required');
 				done();
 			});
 	});
@@ -114,7 +97,7 @@ describe('Test authentication routes', () => {
 			.send(noPassword)
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Password is required');
 				done();
@@ -141,7 +124,7 @@ describe('Test authentication routes', () => {
 			.send({ firstname: '', ...emptyFN })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Firstname is not allowed to be empty');
 				done();
@@ -155,7 +138,7 @@ describe('Test authentication routes', () => {
 			.send({ lastname: '', ...emptyLN })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Lastname is not allowed to be empty');
 				done();
@@ -168,35 +151,9 @@ describe('Test authentication routes', () => {
 			.send({ ...user, email: '' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('E-mail address is not allowed to be empty');
-				done();
-			});
-	});
-
-	it('It should not create a user if phone number is empty', (done) => {
-		server
-			.post('/api/v1/auth/signup')
-			.send({ ...user, phoneNumber: '' })
-			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(422);
-				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Phone number is not allowed to be empty');
-				done();
-			});
-	});
-
-	it('It should not create a user if phone number is invalid', (done) => {
-		server
-			.post('/api/v1/auth/signup')
-			.send({ ...user, phoneNumber: '676788' })
-			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(422);
-				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Phone number is inavlid');
 				done();
 			});
 	});
@@ -207,7 +164,7 @@ describe('Test authentication routes', () => {
 			.send({ ...user, email: 'example' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('E-mail address must be a valid email');
 				done();
@@ -220,7 +177,7 @@ describe('Test authentication routes', () => {
 			.send({ ...user, password: ' ' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Password is not allowed to be empty');
 				done();
@@ -233,7 +190,7 @@ describe('Test authentication routes', () => {
 			.send({ ...user, password: 'Pass' })
 			.end((err, res) => {
 				const response = res.body;
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('Password length must be at least 8 characters long');
 				done();
@@ -285,7 +242,7 @@ describe('Test authentication routes', () => {
 			.end((err, res) => {
 				const response = res.body;
 				expect(response).to.be.an('object');
-				expect(res.statusCode).to.equal(422);
+				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
 				expect(response.message).to.equal('E-mail address and password are required');
 				done();
