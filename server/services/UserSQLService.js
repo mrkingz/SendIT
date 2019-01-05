@@ -9,7 +9,7 @@
  */
 export default class UserSQLService {
 	/**
-	 * Create Insert user sql query object 
+	 * Create insert user sql query object 
 	 *
 	 * @static
 	 * @param {array} values
@@ -18,8 +18,8 @@ export default class UserSQLService {
 	 */
 	static insertUser(values) {
 		return {
-			text: `INSERT INTO users (email, firstname, lastname, password, createdat, updatedat) 
-			 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+			text: `INSERT INTO users ("email", "firstname", "lastname", "password", 
+				  "createdAt", "updatedAt") VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
 			values
 		};
 	}
@@ -35,7 +35,7 @@ export default class UserSQLService {
 	static findUserBy(data) {
 		const key = Object.keys(data)[0];
 		return {
-			text: `SELECT * FROM users WHERE ${key} = $1`,
+			text: `SELECT * FROM users WHERE "${key}" = $1`,
 			values: [data[key]]
 		};
 	}
@@ -51,18 +51,18 @@ export default class UserSQLService {
 	static editUser(options) {
 		switch (options.key) {
 			case 'name': return {
-				text: `UPDATE users SET firstname = $1, lastname = $2, updatedat = $3
-								WHERE userid = $4 RETURNING *`,
+				text: `UPDATE users SET "firstname" = $1, "lastname" = $2, "updatedAt" = $3
+								WHERE "userId" = $4 RETURNING *`,
 				values: [
 					options.values.firstname, options.values.lastname,
 					new Date(),
-					options.values.decoded.userid
+					options.values.decoded.userId
 				]
 			};
-			case 'phoneNumber': return {
-				text: `UPDATE users SET phonenumber = $1, updatedat = $2
-							 WHERE userid = $3 RETURNING *`,
-				values: [options.values.phoneNumber, new Date(), options.values.decoded.userid]
+			case '"': return {
+				text: `UPDATE users SET "phoneNumber" = $1, "updatedA"t = $2
+							 WHERE userId = $3 RETURNING *`,
+				values: [options.values.phoneNumber, new Date(), options.values.decoded.userId]
 			};
 		}
 	}
@@ -77,10 +77,11 @@ export default class UserSQLService {
 	 * @memberof SQLService
 	 */
 	static findUser(credentials) {
-		const { userid, email, isadmin } = credentials;
+		const { userId, email, isAdmin } = credentials;
 		return {
-			text: `SELECT * FROM users WHERE userid = $1 AND email = $2 AND isadmin = $3 LIMIT 1`,
-			values: [userid, email, isadmin]
+			text: `SELECT * FROM users WHERE "userId" = $1 
+				  AND "email" = $2 AND "isAdmin" = $3 LIMIT 1`,
+			values: [userId, email, isAdmin]
 		};
 	}
 
@@ -93,13 +94,13 @@ export default class UserSQLService {
 	 * @memberof SQLService
 	 */
 	static getProfile(userId) {
-		const count = 'SELECT COUNT(parcelid) AS';
-		const from = 'FROM parcels WHERE deliverystatus';
+		const count = 'SELECT COUNT("parcelId") AS';
+		const from = 'FROM parcels WHERE "deliveryStatus"';
 		return {
-			text: `WITH placedT AS (${count} placed ${from} = $2 AND userid = $1),
-							cancelledT AS (${count} cancelled ${from} = $3 AND userid = $1),
-							deliveredT AS (${count} delivered ${from} = $4 AND userid = $1),
-							transitingT AS (${count} transiting ${from} = $5 AND userid = $1),
+			text: `WITH placedT AS (${count} placed ${from} = $2 AND "userId" = $1),
+							cancelledT AS (${count} cancelled ${from} = $3 AND "userId" = $1),
+							deliveredT AS (${count} delivered ${from} = $4 AND "userId" = $1),
+							transitingT AS (${count} transiting ${from} = $5 AND "userId" = $1),
 							totalT AS (SELECT SUM(cancelled + delivered + placed + transiting) AS total
 								FROM cancelledT 
 								JOIN deliveredT ON delivered IS NOT NULL
@@ -107,10 +108,10 @@ export default class UserSQLService {
 								JOIN transitingT ON transiting IS NOT NULL
 							)
 							SELECT * FROM users 
-							JOIN placedT ON userid = $1
-							JOIN cancelledT ON userid = $1 
-							JOIN deliveredT ON userid = $1
-							JOIN transitingT ON userid = $1
+							JOIN placedT ON "userId" = $1
+							JOIN cancelledT ON "userId" = $1 
+							JOIN deliveredT ON "userId" = $1
+							JOIN transitingT ON "userId" = $1
 							JOIN totalT ON totalT IS NOT NULL LIMIT 1`,
 			values: [userId, 'Placed', 'Cancelled', 'Delivered', 'Transiting']
 		};
@@ -126,12 +127,12 @@ export default class UserSQLService {
 	 * @memberof SQLService
 	 */
 	static updatePassword(options) {
-		const { password, userid, email } = options.values;
+		const { password, userId, email } = options.values;
 		return {
-			text: `UPDATE users SET password = $1, updatedat =$2 
-						WHERE ${options.isAuthenticated ? 'userid' : 'email'} = $3 RETURNING *`,
+			text: `UPDATE users SET "password" = $1, "updatedAt" =$2 
+						WHERE ${options.isAuthenticated ? "userId" : "email"} = $3 RETURNING *`,
 			values: [
-				password, new Date(), options.isAuthenticated ? userid : email
+				password, new Date(), options.isAuthenticated ? userId : email
 			]
 		};
 	}

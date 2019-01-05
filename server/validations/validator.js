@@ -27,7 +27,7 @@ export default class Validator extends Controller {
 		return Joi.validate(this.trimAttr(req.body), schema, (err, data) => {
 			if (err) {
 				const message = this.ucFirstStr(err.details[0].message.replace(/['"]/g, ''));
-				this.errorResponse({ res, statusCode: 400, message });
+				return this.response(res, { statusCode: 400, message });
 			}
 			req.body = _.isFunction(callback) ? _.merge(data, callback()) : data;
 			return next();

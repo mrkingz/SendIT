@@ -17,9 +17,6 @@ const request = (obj) => {
     Accept: 'application/json',
     'Content-Type': 'application/json',
   });
-  // if (obj['token']) {
-  //   headers.append('token', obj['token']);
-  // }
   // We don't body in a GET request
   // So we'll just create the request object with the method and headers 
   if (obj['method'] === 'GET') {

@@ -47,8 +47,8 @@
 									Order details
 								</div>
 								<div class="panel">
-									<div class="flex justify-content-between mb-sm">
-										<div> <a href="/orders" class="btn btn-link size-11 skyblue-color">Go back</a></div>
+									<div class="flex justify-content-between mb-md">
+										<div> <a href="/orders" class="btn btn-link size-11 btn-sm skyblue-color">Go back</a></div>
 										<div class="dropdown" id="dropdown"></div>
 									</div>
 
@@ -199,11 +199,9 @@
 	<script>
 		const getParcelId = () => location.pathname.split('/')[2];
 		let parcel;
-		const getDetails = (id) => {
-			authUser.then((user) => {
-				const id = getParcelId();
+		const getDetails = () => {
 				fetch(request({
-					path: user.isadmin ? `/parcels/${id}` : `/users/${user.userid}/parcels/${id}`,
+					path: `/parcels/${getParcelId()}`,
 					method: 'GET'
 				})).then(res => res.json())
 					.then((res) => {
@@ -223,7 +221,6 @@
 							message(res.message);
 						}
 					}).catch(error => message(error.message, error.status));
-			})
 		}
 
 		const selectStatus = () => {

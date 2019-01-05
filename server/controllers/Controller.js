@@ -9,36 +9,40 @@ import UtilityService from '../services/UtilityService';
  */
 export default class Controller extends UtilityService {
   /**
+   * 
+   * 
    * Return an error message from the server
    * @static
-   * @param {object} obj - the object containing the response detail
-   * @return {object} Returns the error response
+   * @param {object} res HTTP response object
+   * @param {object} dataObj - the object containing the response detail
+   * @return {object} Returns the response
    * @memberof Controller
    */
-  static errorResponse(obj) {
-    return obj.res.status(obj.statusCode || 500).json({
-      status: 'Fail',
-      message: obj['message']
+  static response(res, dataObj) {
+    let { statusCode, message, data } = dataObj;
+    statusCode = statusCode || 200;
+    return res.status(statusCode).json({
+      status: statusCode >= 400 ? 'Fail' : 'Success',
+      message,
+      data
     });
   }
 
   /**
    * 
-   * 
-   * Return an error message from the server
    * @static
-   * @param {object} obj - the object containing the response detail
-   * @return {object} Returns the response
+   * @param {object} res HTTP response object
+   * @param {object} error error object
+   * @returns {string} Returns the error message
+   * @method serverError
    * @memberof Controller
    */
-  static successResponse(obj) {
-    const {
-      res, statusCode, message, data
-    } = obj;
-    return res.status(statusCode || 200).json({
-      status: 'Success',
-      message,
-      data
+  static serverError(res, error) {
+    return res.status(500).json({
+      status: 'Fail',
+      message: error && process.env.NODE_ENV.trim() === 'development'
+        ? error.message 
+        : `Sorry, internal error occured, try again later!`
     });
   }
 }

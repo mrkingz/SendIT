@@ -1,5 +1,4 @@
 import decode from 'jwt-decode';
-import db from '../database';
 import UserService from '../services/UserService';
 import Controller from './Controller';
 
@@ -20,12 +19,8 @@ export default class UserController extends Controller {
   static register() {
     return (req, res) => {
        UserService.createUser(req.body)
-        .then((user) => {
-          this.successResponse({ 
-            res, statusCode: 201, message: 'Sign up was successfull', data: { user } 
-          });
-        })
-        .catch(() => this.errorResponse({ res, message: db.dbError() }));
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -40,12 +35,8 @@ export default class UserController extends Controller {
   static signin() {
     return (req, res) => {
       UserService.signinUser(req.body)
-        .then((result) => {
-          return (result.statusCode !== 401)
-            ? this.successResponse({ res, ...result })
-            : this.errorResponse({ res, ...result });
-        })
-        .catch(() => this.errorResponse({ res, message: db.dbError() }));
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -61,10 +52,8 @@ export default class UserController extends Controller {
   static editProfileDetails(option) {
     return (req, res) => {
       UserService.editUserProfile({ key: option, values: this.ucFirstObj(req.body) })
-      .then((result) => {
-        return this.successResponse({ res, ...result });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -78,12 +67,9 @@ export default class UserController extends Controller {
    */
   static getProfileDetails() {
     return (req, res) => {
-      UserService.fetchUserProfile(req.body.decoded.userid).then((result) => {
-        return (result.statusCode === 404)
-                ? this.errorResponse({ res, ...result })
-                : this.successResponse({ res, ...result });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.fetchUserProfile(req.body.decoded.userId)
+      .then(result => this.response(res, result))
+      .catch(error => this.serverError(res, error));
     };
   }
 
@@ -102,9 +88,9 @@ export default class UserController extends Controller {
           req.body.decoded = result;
           return next();
         }
-        this.errorResponse({ res, ...result });
+        this.response(res, result);
       })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      .catch(error => this.serverError(res, error));
     };
   }
 
@@ -117,11 +103,12 @@ export default class UserController extends Controller {
    */
   static authorizeUser() {
     return (req, res, next) => {
-      return (req.body.decoded.isadmin)
+      return (req.body.decoded.isAdmin)
         ? next()
-        : this.errorResponse({ 
-            res, statusCode: 401, message: 'You do not have the privilege for this operation' 
-          });
+        : this.response( res, { 
+          statusCode: 401, 
+          message: 'You do not have the privilege for this operation' 
+        });
     };
   }
 
@@ -141,9 +128,9 @@ export default class UserController extends Controller {
         return UserService.findUser(decode(token))
           .then((result) => { 
             const { password, ...user } = result;
-            this.successResponse({ res, statusCode: 302, data: { user } });
+            this.response(res, { statusCode: 302, data: { user } });
           })
-          .catch(() => this.errorResponse({ res, message: db.dbError() }));
+          .catch(error => this.serverError(res, error));
       }
     };
   }
@@ -160,11 +147,9 @@ export default class UserController extends Controller {
    */
   static checkIfExist(field, label) {
     return (req, res) => {
-      UserService.findBy({ email: req.body[field] }, label).then((result) => {
-        return (result.statusCode === 404)
-          ? this.errorResponse({ res, ...result })
-          : this.successResponse({ res, ...result });
-      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.findBy({ email: req.body[field] }, label)
+      .then(result => this.response(res, result))
+      .catch(error => this.serverError(res, error));
     };
   }
 
@@ -179,16 +164,13 @@ export default class UserController extends Controller {
   static verifyPassword() {
     return (req, res) => {
       if (!req.body.password) {
-        return this.errorResponse({
-          res, statusCode: 422, message: 'Password is required'
+        return this.response(res, {
+          statusCode: 400, message: 'Password is required'
         });
       }
-      UserService.verifyPassword(req.body).then((result) => {
-        return result.statusCode === 406
-                ? this.errorResponse({ res, ...result })
-                : this.successResponse({ res, ...result });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.verifyPassword(req.body)
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -204,8 +186,8 @@ export default class UserController extends Controller {
   static changePassword(auth) {
     return (req, res) => {
       return UserService.resetPassword(req.body, auth.isAuthenticated)
-      .then(result => this.successResponse({ res, ...result }))
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -226,10 +208,10 @@ export default class UserController extends Controller {
       UserService.checkIfUnique({ [field]: req.body[field] }, label)
       .then((result) => {  
         return (result.statusCode === 409)
-          ? this.errorResponse({ res, ...result })
+          ? this.response(res, result)
           : next();
       })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      .catch(error => this.serverError(res, error));
     };
   }
 }

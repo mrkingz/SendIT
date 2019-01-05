@@ -30,10 +30,11 @@ export default class NotificationService {
               <p><b>SendIT Management </b></p>
               <p> Regards!</p>`
     };
-      // eslint-disable-next-line no-unused-vars
     transporter.sendMail(mailOptions, (error) => {
       if (process.env.NODE_ENV === 'development') {
-        console.log(error);
+        if (error) {
+          console.log(error);
+        }
       }
     });
   }

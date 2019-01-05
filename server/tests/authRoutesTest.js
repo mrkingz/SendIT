@@ -8,7 +8,7 @@ const server = supertest.agent(app);
 
 const user = {
 	firstname: 'James',
-	lastname: 'Ogugayo',
+	lastname: 'Olodayo',
 	email: 'example@gmail.com',
 	password: 'Password1'
 };
@@ -32,7 +32,7 @@ describe('Test authentication routes', () => {
 				expect(response.message).to.equal('Sign up was successfull');
 				expect(response.data).to.be.an('object');
 				expect(response.data.user).to.be.an('object');
-				expect(response.data.user).to.have.own.property('userid')
+				expect(response.data.user).to.have.own.property('userId')
 					.to.be.a('number');
 				expect(response.data.user).to.have.own.property('firstname')
 					.to.be.a('string').that.is.equal(user.firstname);
@@ -40,9 +40,9 @@ describe('Test authentication routes', () => {
 					.to.be.a('string').that.is.equal(user.lastname);
 				expect(response.data.user).to.have.own.property('email')
 					.to.be.a('string').that.is.equal(user.email);
-				expect(response.data.user).to.have.own.property('isadmin')
+				expect(response.data.user).to.have.own.property('isAdmin')
 					.to.be.a('boolean').that.is.equal(false);
-				expect(response.data.user).to.have.property('createdat');
+				expect(response.data.user).to.have.property('createdAt');
 				done();
 			});
 	});
@@ -196,9 +196,7 @@ describe('Test authentication routes', () => {
 				done();
 			});
 	});
-// });
-
-// describe('Test sign in route', () => {
+	
 	it('It should sign in a user with email and password', (done) => {
 		server
 			.post('/api/v1/auth/login')

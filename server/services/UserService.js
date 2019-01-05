@@ -33,7 +33,7 @@ export default class UserService extends UtilityService {
 		]);
 		return db.sqlQuery(query).then((result) => {
 			const { password, ...user } = result.rows[0];
-			return user;
+			return { statusCode: 201, message: 'Sign up was successfull', data: { user } };
 		});
 	}
 
@@ -51,12 +51,12 @@ export default class UserService extends UtilityService {
 			.then((result) => {
 				if (result.rows[0] && bcrypt.compareSync(data.password, result.rows[0]['password'])) {
 					const {
-						password, createdat, updatedat, ...details
+						password, createdAt, updatedAt, ...details
 					} = result.rows[0];
 					return {
 						message: 'Successfully signed in',
 						data: {
-							user: { ...details, createdat, updatedat },
+							user: { ...details, createdAt, updatedAt },
 							token: this.generateToken(details)
 						}
 					};
@@ -119,8 +119,8 @@ export default class UserService extends UtilityService {
 	 * @memberof UserService
 	 */
 	static findUser(decoded) {
-		const { email, userid, isadmin } = decoded;
-		return db.sqlQuery(UserSQLService.findUser({ email, userid, isadmin }))
+		const { email, userId, isAdmin } = decoded;
+		return db.sqlQuery(UserSQLService.findUser({ email, userId, isAdmin }))
 			.then(result => result.rows[0]);
 	}
 
@@ -169,9 +169,10 @@ export default class UserService extends UtilityService {
 				});
 				if (decoded) {
 					return this.findUser(decoded).then((user) => {
-						return user ? decoded : { statusCode: 401, msg: 'User does not exist' };
+						return user ? decoded : { statusCode: 401, message: 'User does not exist' };
 					});
 				}
+				msg = 'Access denied! Invalid token provided';
 			} catch (err) {
 				msg = (err.message === 'jwt expired')
 					? 'Access denied! Expired token provided'
@@ -244,11 +245,11 @@ export default class UserService extends UtilityService {
 	 * @memberof UserService
 	 */
 	static resetPassword(data, auth) {
-		const { email, userid } = auth ? data.decoded : data;
+		const { email, userId } = auth ? data.decoded : data;
 		const pass = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
 		return db.sqlQuery(UserSQLService.updatePassword({
 			isAuthenticated: auth,
-			values: { password: pass, email, userid }
+			values: { password: pass, email, userId }
 		})).then((result) => {
 			if (!auth) {
 				this.sendNewPasswordEmail(result.rows[0], data.password);
@@ -272,16 +273,16 @@ export default class UserService extends UtilityService {
 			subject: 'New Password',
 			receiver: { email, name: firstname.concat(` ${lastname}`) },
 			message: `<p>
-									In response to your forgotten password, 
-									we have generated a new password for you<
-								/p>
-								<p>Below are your new sign in credentials</p>
-								<p><b>E-mail address:</b> ${email}<br>
-								<b>Password:</b> ${password}<br>
-								<h3>
-									After you sign in successfully, 
-									we advice you change it to a password of your choice!
-								</h3>`
+						 In response to your forgotten password, 
+						 we have generated a new password for you<
+					 /p>
+					 <p>Below are your new sign in credentials</p>
+					 <p><b>E-mail address:</b> ${email}<br>
+					 <b>Password:</b> ${password}<br>
+					 <h3>
+						 After you sign in successfully, 
+					 	 we advice you change it to a password of your choice!
+					 </h3>`
 		});
 	}
 

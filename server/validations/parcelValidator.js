@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import Validator from './validator';
 import UserValidator from './userValidator';
+import ParcelService from '../services/ParcelService';
 
 /**
  * @export
@@ -47,8 +48,6 @@ export default class ParcelValidator extends Validator {
 			delete req.body.decoded;
 			return this.validate(req, res, next, this.getParcelSchema(), () => {
 				return {
-					price: Number(req.body.weight) * 1000,
-					trackingNo: new Date().getTime(),
 					decoded
 				};
 			});
@@ -85,7 +84,7 @@ export default class ParcelValidator extends Validator {
 				Joi.number().integer().greater(0).positive(),
 				Joi.number().precision(2).greater(0).positive()
 			]).required(),
-			description: Joi.string().max(255).default('N/A'),
+			description: Joi.string().max(255).allow(''),
 			deliveryMethod: Joi.string().valid('Fast', 'Normal').required()
 				.max(20).label('Delivery method'),
 		};
@@ -101,10 +100,10 @@ export default class ParcelValidator extends Validator {
 	 */
 	static getPickupDetailsSchema() {
 		return {
-			pickupAddress: Joi.string().required().max(150).label('Pickup address'),
-			pickupCity: Joi.string().required().max(100).label('Pickup city'),
-			pickupState: Joi.string().required().max(100).label('Pickup state'),
-			pickupDate: Joi.string().required().label('Pickup date')
+			pickUpAddress: Joi.string().required().max(150).label('Pickup address'),
+			pickUpLGAId: Joi.string().required().max(100).label('Pickup LGA id'),
+			pickUpStateId: Joi.string().required().max(100).label('Pickup state Id'),
+			pickUpDate: Joi.string().required().label('Pickup date')
 		};
 	}
 
@@ -119,8 +118,8 @@ export default class ParcelValidator extends Validator {
 	static getDestinationDetailsSchema() {
 		return {
 			destinationAddress: Joi.string().required().max(150).label('Destination address'),
-			destinationCity: Joi.string().required().max(100).label('Destination city'),
-			destinationState: Joi.string().required().max(100).label('Destination state'),
+			destinationLGAId: Joi.string().required().max(100).label('Destination L.G.A. Id'),
+			destinationStateId: Joi.string().required().max(100).label('Destination state Id'),
 		};
 	}
 
@@ -135,8 +134,8 @@ export default class ParcelValidator extends Validator {
 	static getReceiverDetailsSchema() {
 		return {
 			receiverName: Joi.string().required().max(200).label(`Receiver name`),
-			receiverPhone: UserValidator.getPhoneSchema({ 
-				key: 'receiverPhone', str: 'Receiver' 
+			receiverPhone: UserValidator.getPhoneSchema({
+				key: 'receiverPhone', str: 'Receiver'
 			}).receiverPhone
 		};
 	}
@@ -145,34 +144,51 @@ export default class ParcelValidator extends Validator {
 	 * Validate present location
 	 * 
 	 * @static
-	 * @param {update} updateType the type of update operation
-	 * @method validateLocation
+	 * @param {string} option
 	 * @returns {function} Returns an express middleware function that handles the validation
+	 * @method validateAdminUpdate
 	 * @memberof ParcelValidator
 	 */
-	static validateAdminUpdate(updateType) {
+	static validateAdminUpdate(option) {
 		return (req, res, next) => {
-			const { decoded, deliveryStatus, presentLocation } = req.body;
+			const { decoded, deliveryStatus } = req.body;
 			delete req.body.decoded;
-			if (deliveryStatus) {
-				req.body.deliveryStatus = this.ucFirstStr(deliveryStatus.toLowerCase());
-			} else if (presentLocation) {
-				req.body.presentLocation = this.ucFirstStr(presentLocation.toLowerCase(), true);
-			}
 			const schema = {
-				location: Joi.object().keys({
-					deliveryStatus: Joi.string().required().valid('Transiting', 'Delivered')
-						.max(100).label('Delivery status'),
-					presentLocation: Joi.string().required().max(100).label('Present location')
-				}),
-				status: Joi.object().keys({
-					deliveryStatus: Joi.string().required().valid('Transiting', 'Delivered')
-						.max(100).label('Delivery status')
-				})
+				status: {
+					deliveryStatus: Joi.string().insensitive().required()
+						.valid('Transiting', 'Delivered').max(100).label('Delivery status')
+				},
+				location: {
+					locationStateId: Joi.number().integer().greater(0).positive().required()
+						.label('Location state Id'),
+					locationLGAId: Joi.number().integer().greater(0).positive().required()
+						.label('Location L.G.A. Id')
+				}
 			};
-			return this.validate(req, res, next, schema[updateType], () => {
-				return { decoded };
+			return this.validate(req, res, next, schema[option], () => {
+				return { decoded, deliveryStatus: this.ucFirstStr(deliveryStatus) };
 			});
+		};
+	}
+
+		/**
+	 * Check if a place exist
+	 *
+	 * @static
+	 * @param {string} text
+	 * @returns {function} An express middleware function that handles the GET Req 
+	 * @memberof ParcelValidator
+	 */
+	static findPlace(text) {
+		return (req, res, next) => {
+			const { decoded, ...data } = req.body;
+			ParcelService.findPlace({ ...data, text })
+				.then((result) => {
+					return result.statusCode === 404
+						? this.response(res, result)
+						: next();
+				})
+				.catch(error => this.serverError(res, error));
 		};
 	}
 }
