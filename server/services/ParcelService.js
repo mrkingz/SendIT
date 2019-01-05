@@ -65,11 +65,12 @@ export default class ParcelService extends UtilityService {
    * Get the total numbers of orders in the system
    *
    * @static
+   * @param {int} userId
    * @returns {object} object containing the breakdown of total orders as properties
    * @memberof ParcelService
    */
-  static countOrders() {
-    return db.sqlQuery(ParcelSQLService.selectCounts())
+  static countOrders(userId) {
+    return db.sqlQuery(ParcelSQLService.selectCounts(userId))
       .then((result) => {
         return (!result.rows[0])
           ? { statusCode: 404, message: 'No delivery order found' }
@@ -107,12 +108,12 @@ export default class ParcelService extends UtilityService {
       .then((result) => {
         const parcel = result.rows[0];
         const { email, firstname, lastname } = decoded;
-        const sender = { email, name: `${firstname} ${lastname}` };
+        const sender = { name: `${firstname} ${lastname}`, email };
         this.dispatchEmail(this.getEmailPayload(sender, parcel));
         return { 
           statusCode: 201, 
           message: 'Delivery order successfully created',
-          data: { parcel: this.formatParcel({ parcel, sender }) }
+          data: { parcel: this.formatParcel({ ...parcel, sender }) }
         };
       });
   }
@@ -623,7 +624,16 @@ export default class ParcelService extends UtilityService {
    */
 	static fetchPlaces(options) {
 		return db.sqlQuery(ParcelSQLService.fetchPlaces(options))
-			.then(result => result.rows[0]);
+			.then((result) => {
+        const states = result.rows;
+        return states[0]
+          ? { 
+              statusCode: 302, 
+              message: `${options.text} retrieved successfully`, 
+              data: { [options.text === 'States' ? 'states' : 'lgas']: states } 
+            }
+          : { statusCode: 404, message: 'No state found' };
+      });
 	}
 
 	/**

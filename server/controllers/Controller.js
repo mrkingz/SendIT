@@ -19,12 +19,14 @@ export default class Controller extends UtilityService {
    * @memberof Controller
    */
   static response(res, dataObj) {
-    let { statusCode, message, data } = dataObj;
-    statusCode = statusCode || 200;
-    return res.status(statusCode).json({
-      status: statusCode >= 400 ? 'Fail' : 'Success',
-      message,
-      data
+    return Promise.resolve(dataObj).then((obj) => {
+      let { statusCode, message, data } = obj;
+      statusCode = statusCode || 200;
+      return res.status(statusCode).json({
+        status: statusCode >= 400 ? 'Fail' : 'Success',
+        message,
+        data
+      });
     });
   }
 

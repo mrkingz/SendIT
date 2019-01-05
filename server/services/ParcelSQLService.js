@@ -108,11 +108,11 @@ export default class ParcelSQLService {
     const defaults = [new Date(), options.values.parcelId, options.values.userId];
     const start = `UPDATE parcels SET "updatedAt" = $1`;
     const end = `WHERE "parcelId" = $2 AND "userId" = $3 RETURNING *`;
-    const obj = { 
-      start, end, values: options.values, defaults 
+    const obj = {
+      start, end, values: options.values, defaults
     };
     switch (options.update) {
-      case 'cancel': 
+      case 'cancel':
       case 'delivery-status': return this.getStatusUpdateQuery(obj);
       case 'location': return this.getLocationUpdateQuery(obj);
       case 'destination': return this.getDestinationUpdateQuery(obj);
@@ -132,7 +132,7 @@ export default class ParcelSQLService {
    * @memberof ParcelSQLService
    */
   static getReceiverUpdateQuery(obj) {
-    const { 
+    const {
       start, end, values, defaults
     } = obj;
     const { receiverName, receiverPhone } = values;
@@ -141,7 +141,7 @@ export default class ParcelSQLService {
       values: [...defaults, receiverName, receiverPhone]
     };
   }
-  
+
   /**
    * Create pick up details update query object
    *
@@ -152,11 +152,11 @@ export default class ParcelSQLService {
    * @memberof ParcelSQLService
    */
   static getPickupUpdateQuery(obj) {
-    const { 
+    const {
       start, end, values, defaults
     } = obj;
     const {
-      pickUpAddress, pickUpLGAId, pickUpStateId, pickUpDate 
+      pickUpAddress, pickUpLGAId, pickUpStateId, pickUpDate
     } = values;
     return {
       text: `${start}, "pickUpAddress" = $4, "pickUpLGAId" = $5, 
@@ -175,7 +175,7 @@ export default class ParcelSQLService {
    * @memberof ParcelSQLService
    */
   static getLocationUpdateQuery(obj) {
-    const { 
+    const {
       start, end, values, defaults
     } = obj;
     return {
@@ -194,10 +194,10 @@ export default class ParcelSQLService {
    * @memberof ParcelSQLService
    */
   static getDestinationUpdateQuery(obj) {
-    const { 
+    const {
       start, end, values, defaults
     } = obj;
-    const { 
+    const {
       destinationAddress, destinationLGAId, destinationStateId
     } = values;
     return {
@@ -217,11 +217,11 @@ export default class ParcelSQLService {
    * @memberof ParcelSQLService
    */
   static getStatusUpdateQuery(obj) {
-    const { 
+    const {
       start, end, values, defaults
     } = obj;
-    const { 
-      deliveryStatus, sentOn, deliveredOn 
+    const {
+      deliveryStatus, sentOn, deliveredOn
     } = values;
     return {
       text: `${start}, "deliveryStatus" = $4, "sentOn" = $5, "deliveredOn" = $6 ${end}`,
@@ -239,33 +239,34 @@ export default class ParcelSQLService {
    * @memberof ParcelSQLService
    */
   static getParcelUpdateQuery(obj) {
-    const { 
+    const {
       start, end, values, defaults
     } = obj;
-    const { 
-      weight, description, deliveryMethod, price 
+    const {
+      weight, description, deliveryMethod, price
     } = values;
-    return { 
+    return {
       text: `${start}, "weight" = $4, "description" = $5, "deliveryMethod" = $6,
             "price" = $7 ${end}`,
       values: [
         ...defaults, weight, description === '' ? null : description, deliveryMethod, price
       ]
-    }; 
+    };
   }
 
   /**
    * Count delivery orders in the system
    *
    * @static
+   * @param {int} userId 
    * @returns {object} the query object
    * @method selectCounts
    * @memberof ParcelSQLService
    */
-  static selectCounts() {
+  static selectCounts(userId) {
     const select = `SELECT COUNT("parcelId") AS`;
-    const from = `FROM parcels WHERE "deliveryStatus"`;
-    return {
+    const from = `FROM parcels WHERE ${userId ? '"userId" = $5 AND ' : ''} "deliveryStatus"`;
+    const query = {
       text: `WITH cancelledT AS (${select} cancelled ${from} = $1),
       deliveredT AS (${select} delivered ${from} = $2),
       placedT AS (${select} placed ${from} = $3),
@@ -283,6 +284,11 @@ export default class ParcelSQLService {
       JOIN totalT ON total IS NOT NULL`,
       values: ['Cancelled', 'Delivered', 'Placed', 'Transiting']
     };
+    if (userId) {
+      query.values.push(userId);
+      return query;
+    }
+    return query;
   }
 
   /**
@@ -298,15 +304,29 @@ export default class ParcelSQLService {
     const { stateId, lgaId } = options;
     const query = {};
     if (lgaId) {
-        query.text = `SELECT states."stateId", states.state, "lgaId", lga 
+      query.text = `SELECT states."stateId", states.state, "lgaId", lga 
                       FROM states 
                       JOIN lgas ON states."stateId" = lgas."stateId"
                       WHERE states."stateId" = $1 AND lgas."lgaId" = $2`;
-        query.values = [stateId, lgaId];
+      query.values = [stateId, lgaId];
     } else {
-        query.text = `SELECT * FROM states WHERE "stateId" = $1`;
-        query.values = [stateId];       
+      query.text = `SELECT * FROM states WHERE "stateId" = $1`;
+      query.values = [stateId];
     }
     return query;
+  }
+
+  /**
+   * Fetch places
+   *
+   * @static
+   * @param {object} options
+   * @returns {object} the query object
+   * @memberof ParcelSQLService
+   */
+  static fetchPlaces(options) {
+    return options.stateId
+      ? { text: `SELECT * FROM lgas WHERE "stateId" = $1`, values: [options.stateId] }
+      : { text: `SELECT * FROM states` };
   }
 }

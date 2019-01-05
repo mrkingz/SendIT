@@ -61,8 +61,7 @@ class Database {
    * @memberof Database
    */
   sqlQuery(query) {
-    return this._pool.connect()
-      .then(client => client.query(query));
+    return this._pool.query(query);
   }
 
   /**

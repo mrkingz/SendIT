@@ -84,4 +84,14 @@ parcelRouter.get('/api/v1/parcels/count',
 	UserController.authorizeUser(),
 	ParcelController.countOrders());
 
+parcelRouter.get('/api/v1/users/:userId(\\d+)/parcels/count',
+	UserController.authenticateUser(),
+	ParcelController.countOrders());
+
+parcelRouter.get('/api/v1/states', 
+	ParcelController.getPlaces('States'));
+
+parcelRouter.get('/api/v1/states/:stateId(\\d+)/lgas', 
+	ParcelController.getPlaces('Local Government Areas'));
+
 export default parcelRouter;

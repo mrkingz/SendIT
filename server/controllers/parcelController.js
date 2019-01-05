@@ -74,6 +74,24 @@ export default class ParcelController extends Controller {
   }
 
   /**
+   * Get states or lgas
+   *
+   * @static
+   * @param {string} text
+   * @returns {function} An express middleware function that handles the get request
+   * @memberof getPlaces
+   * @memberof ParcelController
+   */
+  static getPlaces(text) {
+    return (req, res) => {
+      const stateId = req.params.stateId || null;
+      ParcelService.fetchPlaces(stateId ? { stateId, text } : { text })
+      .then(result => this.response(res, result))
+      .catch(error => this.serverError(res, error));
+    };
+  }
+
+  /**
    * Filter parcels
    *
    * @static
@@ -124,7 +142,15 @@ export default class ParcelController extends Controller {
    */
   static countOrders() {
     return (req, res) => {
-      return ParcelService.countOrders()
+      const userId = req.body.decoded.userId;
+      // If URL contains user id
+      // Then we know we are fetching a specific user parcels
+      const isUserParcels = typeof req.params.userId !== 'undefined';
+      if (isUserParcels && Number(userId) !== Number(req.params.userId)) {
+        const message = 'Sorry, not a valid logged in user';
+        return this.response( res, { statusCode: 401, message });
+      }
+      return ParcelService.countOrders(isUserParcels ? userId : null)
         .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
     };
