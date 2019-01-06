@@ -1,5 +1,6 @@
 /* eslint-disable default-case */
 /* eslint-disable no-fallthrough */
+import moment from 'moment';
 import db from '../database';
 import UtilityService from '../services/UtilityService';
 import ParcelSQLService from '../services/ParcelSQLService';
@@ -91,18 +92,18 @@ export default class ParcelService extends UtilityService {
    * @memberof ParcelService
    */
   static createParcel(data) {
-    const moment = new Date(), {
-      weight, description, deliveryMethod, pickUpAddress, pickUpLGAId, pickUpStateId,
-      pickUpDate, destinationAddress, destinationLGAId, destinationStateId,
+    const date = new Date(), {
+      weight, description, deliveryMethod, pickUpAddress, pickUpLGAId, 
+      pickUpStateId, destinationAddress, destinationLGAId, destinationStateId,
       receiverName, receiverPhone, decoded
     } = data;
-    const trackingNo = moment.getTime();
+    const trackingNo = date.getTime();
     const values = [
       weight, description === '' ? null : description, deliveryMethod,
       this.ucFirstStr(pickUpAddress, { bool: true }), pickUpLGAId, pickUpStateId,
-      pickUpDate, this.ucFirstStr(destinationAddress, { bool: true }), destinationLGAId,
+      this.ucFirstStr(destinationAddress, { bool: true }), destinationLGAId,
       destinationStateId, trackingNo, this.computePrice(weight), decoded.userId,
-      this.ucFirstStr(receiverName, { bool: true }), receiverPhone, moment, moment
+      this.ucFirstStr(receiverName, { bool: true }), receiverPhone, date, date
     ];
     return db.sqlQuery(ParcelSQLService.insertParcel(values))
       .then((result) => {
@@ -128,6 +129,19 @@ export default class ParcelService extends UtilityService {
    */
   static dispatchEmail(payload) {
     NotificationService.sendEmail(payload);
+  }
+
+/**
+ *
+ *
+ * @static
+ * @param {*} stateId
+ * @param {*} lgaId
+ * @memberof ParcelService
+ */
+static getPresentLocation(stateId, lgaId) {
+    db.sqlQuery(ParcelSQLService.fetchPlace({ stateId, lgaId }))
+    .then(result => result.rows[0]);
   }
 
   /**
@@ -270,14 +284,16 @@ export default class ParcelService extends UtilityService {
   static getEmailPayload(sender, parcel, update) {
     let message, str;
     switch (update) {
-      case 'location': message = `<p>Your parcel with tracking number: <b>${parcel.trackingNo}</b>
-        is currently at ${parcel.presentLocation}</p>`;
+      // eslint-disable-next-line no-case-declarations
+      case 'location': let loc, string = `Your parcel with tracking number:`;
+        loc = `${parcel.locationLGA}, ${parcel.locationState}`;
+        message = `<p>${string}<b>${parcel.trackingNo}</b>is currently at ${loc}</p>`;
         break;
       case 'delivery-status': str = (parcel.deliveryStatus === 'Transiting')
         ? ' is now '.concat(parcel.deliveryStatus.toLowerCase())
         : ' was successfully '.concat(parcel.deliveryStatus.toLowerCase());
         message = `<p>Your parcel with tracking number:<b> ${parcel.trackingNo}</b>${str}</p>`;
-      default: message = `<p>Your delivery order was succe</p>
+      default: message = `<p>Your delivery order was successfully placed</p>
         <p>Below is your order details:</p>
         <p><b>Weight:</b> ${parcel.weight} kgs<br>
         <b>Description:</b> ${parcel.description ? parcel.description : 'N/A'}<br>
@@ -352,8 +368,8 @@ export default class ParcelService extends UtilityService {
       deliveryStatus: data.deliveryStatus,
       trackingNo: data.trackingNo,
       price: data.price,
-      sentOn: data.sentOn,
-      deliveredOn: data.deliveredOn,
+      sentOn: data.sentOn ? moment(data.sentOn).format("MMMM Do, YYYY") : null,
+      deliveredOn: data.deliveredOn ? moment(data.deliveredOn).format("MMMM Do, YYYY") : null,
       userId: data.userId
     };
   }
@@ -445,10 +461,10 @@ export default class ParcelService extends UtilityService {
    */
   static getPickUpUpdates(fields) {
     const {
-      pickUpAddress, pickUpLGAId, pickUpStateId, pickUpDate
+      pickUpAddress, pickUpLGAId, pickUpStateId
     } = fields;
     return {
-      pickUpAddress, pickUpLGAId, pickUpStateId, pickUpDate
+      pickUpAddress, pickUpLGAId, pickUpStateId
     };
   }
 
@@ -466,6 +482,28 @@ export default class ParcelService extends UtilityService {
       receiverName: fields.receiverName,
       receiverPhone: fields.receiverPhone
     };
+  }
+
+  /**
+   *
+   * @param {object} options
+   * @static
+   * @returns {Promise} a promise
+   * @memberof ParcelService
+   */
+  static getAreas(options) {
+    const { stateId, lgaId } = options;
+    return db.sqlQuery(ParcelSQLService.fetchPlace({ stateId, lgaId }))
+      .then((result) => {
+        const area = result.rows[0];
+        return area
+          ? { 
+              statusCode: 302, 
+              message: 'State and L.G.A. successfully retreived', 
+              data: { area }
+            }
+          : { statusCode: 404, message: 'State and L.G.A combination does not exist' };
+      });
   }
 
   /**
@@ -558,15 +596,18 @@ export default class ParcelService extends UtilityService {
       if (!data) return { statusCode: 404, message: 'No delivery order found' };
       const error = this.checkStatus(data, fields.deliveryStatus, update);
       if (error.hasError) return { statusCode: 403, message: error.messageBag };
-
       // Notice we get the id of the user who creatd the found parcel 
       // The goal is to optimize database operation by updating with user and parcel id
       options = { update, fields, values: { userId: data.userId, parcelId, isAdmin } };
       return db.sqlQuery(ParcelSQLService.updateParcel(this.getUpdates(options, data)))
         .then((result) => {
           const parcel = result.rows[0], sender = data.sender;
-          if (['delivery-status', 'location'].includes(options.update)) {
-            this.dispatchEmail(this.getEmailPayload(sender, parcel, options.update));
+          if (update === 'delivery-status') {
+            this.dispatchEmail(this.getEmailPayload(sender, parcel, update));
+          } else if (update === 'location') {
+            parcel.locationLGA = fields.location.lga;
+            parcel.locationState = fields.location.state;
+            this.dispatchEmail(this.getEmailPayload(sender, parcel, update));
           }
           return { 
             statusCode: 200, 
@@ -604,10 +645,10 @@ export default class ParcelService extends UtilityService {
         options.msg += `${str.replace(':text', update.replace(/[-]+/g, ' ')).trim()}`;
       } else if (oldStatus === status[1] || (oldStatus === status[2] && newStatus === status[2])) {
         options.msg = `Delivery status is already updated to ${oldStatus}`;
-      } else if (!hasLocation && newStatus === status[1]) {
+      } else if (hasLocation && oldStatus === 'Placed' && newStatus === status[1]) {
         options.msg = `Parcel not yet transiting, cannot update status to ${status[1]}`;
       } else if (!hasLocation) {
-        options.msg = 'No record of present location found, status cannot be updated';
+        options.msg = `No record of present location found, cannot update status to ${status[2]}`;
       }
     }
     return options.msg;

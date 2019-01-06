@@ -102,8 +102,7 @@ export default class ParcelValidator extends Validator {
 		return {
 			pickUpAddress: Joi.string().required().max(150).label('Pickup address'),
 			pickUpLGAId: Joi.string().required().max(100).label('Pickup LGA id'),
-			pickUpStateId: Joi.string().required().max(100).label('Pickup state Id'),
-			pickUpDate: Joi.string().required().label('Pickup date')
+			pickUpStateId: Joi.string().required().max(100).label('Pickup state Id')
 		};
 	}
 
@@ -184,9 +183,11 @@ export default class ParcelValidator extends Validator {
 			const { decoded, ...data } = req.body;
 			ParcelService.findPlace({ ...data, text })
 				.then((result) => {
-					return result.statusCode === 404
-						? this.response(res, result)
-						: next();
+					if (result.statusCode === 404) {
+						return this.response(res, result);
+					}
+					req.body.location = result;
+					return next();
 				})
 				.catch(error => this.serverError(res, error));
 		};

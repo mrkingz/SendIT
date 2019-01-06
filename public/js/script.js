@@ -124,18 +124,17 @@ const isUnique = (field, msg) => {
 };
 
 const hasEmpty = (fields, msg) => {
-  const length = fields.length;
-  let field, emptyField;
-  for (let i = 0; i < length; i++) {
-    document.getElementById(fields[i]).classList.remove('invalid');
-    field = document.getElementById(fields[i]);
-    removeElement(document.getElementById(`${fields[i]}-error`));
-    removeListeners(field);
-    if (!emptyField && field.value.trim() === '') {
-      emptyField = field;
+  let elem, emptyField;
+  fields.forEach((field) => {
+    document.getElementById(field).classList.remove('invalid');
+    elem = document.getElementById(field);
+    removeElement(document.getElementById(`${field}-error`));
+    removeListeners(elem);
+    if (!emptyField && elem.value.trim() === '') {
+      emptyField = elem;
     }
-  }
-  if (emptyField) {
+  });
+  if (emptyField) { 
     displayError(emptyField, msg);
     return true;
   }

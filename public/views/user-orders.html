@@ -91,7 +91,7 @@
                     showSpinner()
                 }
                 authUser.then((user) => {
-                    const path  = `/users/${user.userid}/parcels`;
+                    const path  = `/users/${user.userId}/parcels`;
                     fetch(request({ 
                         path: filter ? path.concat(`?filter=${filter}`) : path, 
                         method: 'GET' 
@@ -131,7 +131,7 @@
                         <div class="nexted">
                             <div class="card-header">
                                 <div class="card-title">
-                                    <label class="bold">Tracking #: ${order.trackingno}</label>
+                                    <label class="bold">Tracking #: ${order.trackingNo}</label>
                                 </div>
                             </div>
                             <div class="card-wrapper">
@@ -141,21 +141,21 @@
                                 </div>
                                 <div class="card-row">
                                     <div class="data-header">Parcel description</div>
-                                    <div class="data">${order.description}</div>
+                                    <div class="data">${order.description || 'No recored'}</div>
                                 </div>                                                                                                                                           
                                 <div class="card-row">
                                     <div class="data-header">Delivery method</div>
-                                    <div class="data">${order.deliverymethod}</div>
+                                    <div class="data">${order.deliveryMethod}</div>
                                 </div>
                                 <div class="card-row">
                                     <div class="data-header">Status</div>
-                                    <div class="data red-color">${order.deliverystatus}</div>
+                                    <div class="data red-color">${order.deliveryStatus}</div>
                                 </div>
                             </div>
                         </div>
                     </div>                                                          
                     <div class="details-link-div">
-                        <a href="/orders/${order.parcelid}" class="btn btn-link btn-sm skyblue-color">Details</a>
+                        <a href="/orders/${order.parcelId}" class="btn btn-link btn-sm skyblue-color">Details</a>
                     </div>`;
                 return card;
             }

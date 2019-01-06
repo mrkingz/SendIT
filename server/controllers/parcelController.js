@@ -133,6 +133,23 @@ export default class ParcelController extends Controller {
   }
 
   /**
+   *
+   *
+   * @static
+   * @returns {function} An express middleware function that handle the GET request
+   * @memberof ParcelController
+   */
+  static getAreas() {
+    return (req, res) => {
+      return ParcelService.getAreas({
+        stateId: req.params.stateId,
+        lgaId: req.params.lgaId
+      }).then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
+    };
+  }
+
+  /**
    * Get the total count of all parcel delivery orders
    *
    * @static

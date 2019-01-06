@@ -94,4 +94,7 @@ parcelRouter.get('/api/v1/states',
 parcelRouter.get('/api/v1/states/:stateId(\\d+)/lgas', 
 	ParcelController.getPlaces('Local Government Areas'));
 
+parcelRouter.get('/api/v1/states/:stateId(\\d+)/lgas/:lgaId(\\d+)', 
+	ParcelController.getAreas());
+
 export default parcelRouter;

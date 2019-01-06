@@ -14,9 +14,9 @@ const checkAuth = async () => {
       })
     })).then(res => res.json()).then((res) => {
       if (res.data.user) {
-        const { firstname, lastname, isadmin } = res.data.user;
+        const { firstname, lastname, isAdmin } = res.data.user;
         document.getElementById('name').innerHTML = `${firstname} ${lastname}`;
-        document.getElementById('role').innerHTML = isadmin ? `(Administrator)` : '';
+        document.getElementById('role').innerHTML = isAdmin ? `(Administrator)` : '';
         return res.data.user;
       }
     });

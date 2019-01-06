@@ -167,7 +167,6 @@ class Database {
 							"pickUpAddress" VARCHAR (150) NOT NULL,
 							"pickUpLGAId" integer NOT NULL,
 							"pickUpStateId" integer NOT NULL,
-							"pickUpDate" VARCHAR NOT NULL,
 							"destinationAddress" VARCHAR (150) NOT NULL,
 							"destinationLGAId" integer NOT NULL,
 							"destinationStateId" integer NOT NULL,
@@ -271,10 +270,11 @@ class Database {
   seedAdmin() {
     const moment = new Date();
     const password = bcrypt.hashSync(`Password1`, bcrypt.genSaltSync(10));
+    const email = process.env.EMAIL;
     const query = {
       text: `INSERT INTO users (firstname, lastname, "isAdmin", email, password, "createdAt", "updatedAt")
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
-      values: [`Admin`, `Admin`, true, `admin@gmail.com`, password, moment, moment]
+      values: [`Gabriel`, `Owvigho`, true, email, password, moment, moment]
     };
     return this.sqlQuery(query).then(() => { 
       console.log(`Admin successfully seeded`);

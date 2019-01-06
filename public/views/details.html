@@ -58,7 +58,7 @@
 											<div class="nexted">
 												<div class="card-header">
 													<div class="card-title card-title-line">
-														<label class="bold">Tracking #: <span id="data-trackingno"></span></label>
+														<label class="bold">Tracking #: <span id="data-trackingNo"></span></label>
 													</div>
 												</div>
 												<div class="card-wrapper">
@@ -67,30 +67,31 @@
 														<div class="data-header">Weight</div>
 														<div class="data weight" id="data-weight"></div>
 													</div>
-
 													<div class="card-row">
 														<div class="data-header">Parcel description</div>
 														<div class="data" id="data-description"></div>
 													</div>
-
 													<div class="card-row">
 														<div class="data-header">Date sent</div>
-														<div class="data" id="data-senton"></div>
+														<div class="data" id="data-sentOn"></div>
 													</div>
-
+													<div class="card-row">
+														<div class="data-header">Date delivered</div>
+														<div class="data" id="data-deliveredOn"></div>
+													</div>
 													<div class="card-row">
 														<div class="data-header">Delivery method</div>
-														<div class="data" id="data-deliverymethod"></div>
+														<div class="data" id="data-deliveryMethod"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Status</div>
-														<div class="data red-color" id="data-deliverystatus"></div>
+														<div class="data red-color" id="data-deliveryStatus"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Present location</div>
-														<div class="data" id="data-presentlocation"></div>
+														<div class="data" id="data-presentLocation"></div>
 													</div>
 												</div>
 											</div>
@@ -104,29 +105,25 @@
 												<div class="card-wrapper">
 													<div class="card-row">
 														<div class="data-header">Address</div>
-														<div class="data" id="data-pickupaddress"></div>
+														<div class="data" id="data-from-address"></div>
 													</div>
 													<div class="card-row">
-														<div class="data-header">City/Town</div>
-														<div class="data" id="data-pickupcity"></div>
+														<div class="data-header">L.G.A.</div>
+														<div class="data" id="data-from-lga"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">State</div>
-														<div class="data" id="data-pickupstate"></div>
+														<div class="data" id="data-from-state"></div>
 													</div>
 
 													<div class="card-row">
-														<div class="data-header">Date</div>
-														<div class="data" id="data-pickupdate"></div>
-													</div>
-													<div class="card-row">
 														<div class="data-header">Sender name</div>
-														<div class="data" id="data-sendername"></div>
+														<div class="data" id="data-sender-name"></div>
 													</div>
 													<div class="card-row">
 														<div class="data-header">Sender's phone No.</div>
-														<div class="data" id="data-senderphone">--</div>
+														<div class="data" id="data-sender-phone">--</div>
 													</div>
 												</div>
 											</div>
@@ -143,26 +140,26 @@
 
 													<div class="card-row">
 														<div class="data-header">State</div>
-														<div class="data" id="data-destinationstate"></div>
+														<div class="data" id="data-to-state"></div>
 													</div>
 
 													<div class="card-row">
-														<div class="data-header">City/Town</div>
-														<div class="data" id="data-destinationcity"></div>
+														<div class="data-header">L.G.A.</div>
+														<div class="data" id="data-to-lga"></div>
 													</div>
 
 													<div class="card-row">
 														<div class="data-header">Address</div>
-														<div class="data" id="data-destinationaddress"></div>
+														<div class="data" id="data-to-address"></div>
 													</div>
 													<div class="card-row">
 														<div class="data-header">Receiver name</div>
-														<div class="data" id="data-receivername"></div>
+														<div class="data" id="data-receiver-name"></div>
 													</div>
 
 													<div class="card-row">
-														<div class="data-header">Receiver's phone No.</div>
-														<div class="data" id="data-receiverphone"></div>
+														<div class="data-header">Receiver phone number</div>
+														<div class="data" id="data-receiver-phone"></div>
 													</div>
 												</div>
 											</div>
@@ -207,20 +204,47 @@
 					.then((res) => {
 						if (res.status === 'Success') {
 							parcel = res.data.parcel;
-							let elem;
-							Object.keys(parcel).forEach((key) => {
-								elem = document.getElementById(`data-${key}`);
-								if (elem) {
-									elem.innerHTML = parcel[key] ? parcel[key] : 'Not available';
-									elem.parentNode.style.display = 'inline-flex';
-								}
-							})
-							appendMenu(parcel.userid, parcel.deliverystatus);
+							const { from, to, presentLocation, ...data } = parcel;
+							const { sender, ...pickUp } = from;
+							const { receiver, ...destination } = to;
+							displayData(data);
+							displayData(pickUp, 'from');
+							displayData(sender, 'sender');
+							displayData(to, 'to');
+							displayData(receiver, 'receiver');
+							displayLocation(presentLocation);
+							appendMenu(parcel.userId, parcel.deliveryStatus);
 						} else {
 							document.getElementById('order-details').classList.add('hide')
 							message(res.message);
 						}
 					}).catch(error => message(error.message, error.status));
+		}
+
+		const displayData = (data, str) => {
+			let elem;
+			Object.keys(data).forEach((key) => {
+				elem = document.getElementById(str ? `data-${str}-${key}` : `data-${key}`);
+				if (elem) {
+					let text
+					switch (key) {
+						case 'description': 
+							text = 'No recored';
+							break;
+						default: text = 'Not updated'
+					}
+					elem.innerHTML = data[key] ? data[key] : text;
+					elem.parentNode.style.display = 'inline-flex';
+				}
+			});
+		}
+
+		const displayLocation = (pLocation) => {
+			const elem = document.getElementById('data-presentLocation')
+			elem.innerHTML =  pLocation && !!(pLocation.state && pLocation.lga)
+				? `${pLocation.lga}, ${pLocation.state}`
+				: `Not updated`;
+			elem.parentNode.style.display = 'inline-flex';
 		}
 
 		const selectStatus = () => {
@@ -232,8 +256,7 @@
 		const appendMenu = async (userId, deliveryStatus) => {
 			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-sm dropbtn">
                       <i class="fa fa-bars bold"></i></button>
-                    <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;
-			const deleteBtn = `<button class="menu-btn" onclick="showConfirmModal('delete', deleteOrder)">Delete order</button></div>`;
+                    <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;;
 			const editBtns = `<button class="menu-btn" onclick="editDestinationModal(event, parcel)">Edit destination</button>
 							  <button class="menu-btn" onclick="editParcelModal(event, parcel)">Edit parcel details</button>
 							  <button class="menu-btn" onclick="editPickupModal(event, parcel)">Edit pickup details</button>
@@ -241,9 +264,9 @@
 			const menu = await authUser.then((user) => {
 				let str = "";
 				if (deliveryStatus !== 'Cancelled' && deliveryStatus !== 'Delivered') {
-					if (user.isadmin) {
+					if (user.isAdmin) {
 						const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
-						str = `${user.userid === userId ? cancelBtn.concat(editBtns) : ""}
+						str = `${user.userId === userId ? cancelBtn.concat(editBtns) : ""}
                       			<button class="menu-btn" onclick="updateLocationModal(event)">Update location</button>
                      			<button class="menu-btn" onclick="updateStatusModal(event)">Update status</button>`;
 					} else {
@@ -252,11 +275,11 @@
 					}
 
 				}
-				if (deliveryStatus === 'Placed' && user.userid === userId) {
+				if (deliveryStatus === 'Placed' && user.userId === userId) {
 					document.querySelectorAll('.edit-btn')
 						.forEach(elem => elem.style.visibility = 'visible')
 				}
-				return user.userid === userId ? str.concat(deleteBtn) : str;
+				return user.userId === userId ? str.concat('</div>') : str;
 			});
 			document.getElementById('dropdown').innerHTML = menu ? open.concat(`${menu}</div>`) : '';
 		}
@@ -294,23 +317,18 @@
 
 		const updatePresentLocation = async (e) => {
 			e.preventDefault();
-			const fields = ['state', 'city'];
+			const fields = ['state', `lga`];
 			if (!hasEmpty(fields)) {
 				updateRequest({
 					path: `/parcels/${getParcelId()}/presentLocation`,
-					data: await getFormData(fields, (data) => {
-						return {
-							deliveryStatus: document.getElementById('current-delivery-status').value,
-							presentLocation: `${data.city}, ${data.state}`
-						};
-					})
+					data: await getFormData(fields)
 				});
 			}
 		}
 
 		const editDestination = (e) => {
 			e.preventDefault();
-			const fields = ['address', 'state', 'city'];
+			const fields = ['address', 'state', 'lga'];
 			if (!hasEmpty(fields)) {
 				updateRequest({
 					path: `/parcels/${getParcelId()}/destination`,
@@ -321,7 +339,7 @@
 
 		const editPickup = (e) => {
 			e.preventDefault();
-			const fields = ['pick-up-address', 'pick-up-state', 'pick-up-city', 'pick-up-date'];
+			const fields = ['pick-up-address', 'pick-up-state', 'pick-up-lga'];
 			if (!hasEmpty(fields)) {
 				updateRequest({
 					path: `/parcels/${getParcelId()}/editPickup`,

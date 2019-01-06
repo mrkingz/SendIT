@@ -30,11 +30,10 @@ export default class NotificationService {
               <p><b>SendIT Management </b></p>
               <p> Regards!</p>`
     };
-    transporter.sendMail(mailOptions, (error) => {
+    transporter.sendMail(mailOptions, (error, info) => {
       if (process.env.NODE_ENV === 'development') {
-        if (error) {
-          console.log(error);
-        }
+        if (error) console.log(error);
+        if (info) console.log(info.response);
       }
     });
   }

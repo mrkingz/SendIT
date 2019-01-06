@@ -19,10 +19,10 @@ export default class ParcelSQLService {
     return {
       text: `INSERT INTO parcels (
               "weight", "description", "deliveryMethod", "pickUpAddress", "pickUpLGAId", 
-              "pickUpStateId", "pickUpDate", "destinationAddress", "destinationLGAId",
+              "pickUpStateId", "destinationAddress", "destinationLGAId",
               "destinationStateId", "trackingNo","price", "userId", "receiverName", 
               "receiverPhone", "createdAt", "updatedAt") VALUES (
-              $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17
+              $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16
             ) RETURNING *`,
       values
     };
@@ -47,7 +47,7 @@ export default class ParcelSQLService {
         values: isUserParcels ? [filter, userId] : [filter]
       };
     }
-    return isUserParcels
+    return !isUserParcels
       ? { text: select }
       : {
         text: `${select} WHERE parcels."userId" = $1`,
@@ -70,23 +70,25 @@ export default class ParcelSQLService {
     const lgaSelect = `SELECT lgas."lgaId", lgas."stateId", lgas.lga`;
     const fields = `"pickUpState", "pickUpLGA", "destinationState", "destinationLGA",
                     "locationLGA", "locationState"`;
+    const locations = `(SELECT states.state FROM states 
+                        WHERE states."stateId" = parcels."locationStateId") AS "locationState",
+                      (SELECT lgas.lga FROM lgas 
+                        WHERE lgas."stateId" = parcels."locationStateId" 
+                        AND lgas."lgaId" = parcels."locationLGAId") AS "locationLGA"`;
     const joins = `JOIN pickUpStateT ON pickUpStateT."stateId" = parcels."pickUpStateId"
                    JOIN pickUpLGAT ON pickUpLGAT."lgaId" = parcels."pickUpLGAId" 
                    JOIN destinationStateT ON destinationStateT."stateId" = parcels."destinationStateId"
-                   JOIN destinationLGAT ON destinationLGAT."lgaId" = parcels."destinationLGAId"
-                   JOIN locationStateT ON locationStateT IS NOT NULL
-                   JOIN locationLGAT ON locationLGAT IS NOT NULL`;
+                   JOIN destinationLGAT ON destinationLGAT."lgaId" = parcels."destinationLGAId"`;
     query.text = `WITH pickUpStateT AS (${stateSelect} AS "pickUpState" FROM states),
                   pickUpLGAT AS (${lgaSelect} AS "pickUpLGA" FROM lgas),
                   destinationStateT AS (${stateSelect} AS "destinationState" FROM states),
-                  destinationLGAT AS (${lgaSelect} AS "destinationLGA" FROM lgas),
-                  locationStateT AS (${stateSelect} AS "locationState" FROM states),
-                  locationLGAT AS (${lgaSelect} AS "locationLGA" FROM lgas)`;
+                  destinationLGAT AS (${lgaSelect} AS "destinationLGA" FROM lgas)`;
     if (isAdmin) {
-      query.text += `SELECT DISTINCT parcels.*, CONCAT(firstname, (' '||lastname)) AS name, 
-                    email, "phoneNumber", ${fields} FROM parcels JOIN users 
-                    ON parcels."userId" = users."userId"  ${joins} 
-                    WHERE parcels."parcelId" = $1 LIMIT 1`;
+      query.text += `SELECT parcels.*, CONCAT(firstname, (' '||lastname)) AS name, email, "phoneNumber",
+                    "pickUpState", "pickUpLGA", "destinationState", "destinationLGA", ${locations}
+                    FROM parcels 
+                    JOIN users ON users."userId" = parcels."userId" ${joins}
+                    WHERE parcels."parcelId" = $1`;
     } else {
       query.text += `SELECT DISTINCT parcels.*, ${fields} FROM parcels ${joins} 
         AND parcels."parcelId" = $1 AND users."userId" = $2 LIMIT 1`;
@@ -156,12 +158,11 @@ export default class ParcelSQLService {
       start, end, values, defaults
     } = obj;
     const {
-      pickUpAddress, pickUpLGAId, pickUpStateId, pickUpDate
+      pickUpAddress, pickUpLGAId, pickUpStateId
     } = values;
     return {
-      text: `${start}, "pickUpAddress" = $4, "pickUpLGAId" = $5, 
-            "pickUpStateId" = $6, "pickUpDate" = $7 ${end}`,
-      values: [...defaults, pickUpAddress, pickUpLGAId, pickUpStateId, pickUpDate]
+      text: `${start}, "pickUpAddress" = $4, "pickUpLGAId" = $5, "pickUpStateId" = $6 ${end}`,
+      values: [...defaults, pickUpAddress, pickUpLGAId, pickUpStateId]
     };
   }
 

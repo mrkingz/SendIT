@@ -59,7 +59,7 @@ export default class UserSQLService {
 					options.values.decoded.userId
 				]
 			};
-			case '"': return {
+			case 'phone': return {
 				text: `UPDATE users SET "phoneNumber" = $1, "updatedA"t = $2
 							 WHERE userId = $3 RETURNING *`,
 				values: [options.values.phoneNumber, new Date(), options.values.decoded.userId]
@@ -130,7 +130,7 @@ export default class UserSQLService {
 		const { password, userId, email } = options.values;
 		return {
 			text: `UPDATE users SET "password" = $1, "updatedAt" =$2 
-						WHERE ${options.isAuthenticated ? "userId" : "email"} = $3 RETURNING *`,
+						WHERE ${options.isAuthenticated ? '"userId"' : "email"} = $3 RETURNING *`,
 			values: [
 				password, new Date(), options.isAuthenticated ? userId : email
 			]

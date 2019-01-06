@@ -85,31 +85,28 @@
 
                                                     <div class="control-group">
                                                         <label class="required" for="pick-up-address">Address</label>
-                                                        <input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
+                                                        <input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address" autocomplete="off">
                                                     </div>
 
                                                     <div class="row">
                                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                                             <div class="control-group">
-                                                                <label class="required" for="pick-up-city">City/Town</label>
-                                                                <input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" autocomplete="off">
+                                                                <label class="required" for="pick-up-state">State</label>
+                                                                <select id="pick-up-state" name="pickUpStateId" class="control">
+                                                                    <option value="">Select state</option>
+                                                                    <option value="1">Abia</option>
+                                                                </select>
                                                             </div>
                                                         </div>
                                                         <div class="col-lg-6 col-md-6 col-sm-12">
                                                             <div class="control-group">
-                                                                <label class="required" for="pick-up-state">State</label>
-                                                                <select id="pick-up-state" name="pickupState" class="control">
-                                                                    <option value="">Select state</option>
-                                                                    <option value="Abuja">Abuja</option>
-                                                                    <option value="Lagos">Lagos</option>
+                                                                <label class="required" for="pick-up-lga">L.G. Area</label>
+                                                                <select id="pick-up-lga" name="pickUpLGAId" class="control">
+                                                                    <option value="">Select L.G.A.</option>
+                                                                    <option value="1">Aba North</option>
                                                                 </select>
                                                             </div>
                                                         </div>
-                                                    </div>
-
-                                                    <div class="control-group">
-                                                        <label class="required" for="pick-up-date">Pick up date</label>
-                                                        <input type="date" class="control col-lg-5 col-md-5 col-sm-12" name="pickupDate" id="pick-up-date" autocomplete="off">
                                                     </div>
                                                 </div>
                                             </div>
@@ -130,17 +127,19 @@
                                                 <div class="row">
                                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                                         <div class="control-group">
-                                                            <label class="required" for="destination-city">City/Town</label>
-                                                            <input type="text" class="control" name="destinationCity" id="destination-city" placeholder="City/Town" autocomplete="off">
+                                                            <label class="required" for="destination-state">State</label>
+                                                            <select name="destinationStateId" id="destination-state" class="control">
+                                                                <option value="">Select state</option>
+                                                                <option value="1">Abia</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-sm-12">
                                                         <div class="control-group">
-                                                            <label class="required" for="destination-state">State</label>
-                                                            <select name="destinationState" id="destination-state" class="control">
+                                                            <label class="required" for="destination-lga">L.G. Area</label>
+                                                            <select id="destination-lga" name="destinationLGAId" class="control">
                                                                 <option value="">Select state</option>
-                                                                <option value="Kano">Kano</option>
-                                                                <option value="Lagos">Lagos</option>
+                                                                <option value="1">Aba North</option>
                                                             </select>
                                                         </div>
                                                     </div>
@@ -208,12 +207,7 @@
 
                                                     <div class="card-row">
                                                         <div class="data-header">Pick up location</div>
-                                                        <div class="data" id="data-pickup"></div>
-                                                    </div>
-                                                    
-                                                    <div class="card-row">
-                                                        <div class="data-header">Pick up date</div>
-                                                        <div class="data" id="data-pickupDate"></div>
+                                                        <div class="data" id="data-pickUp"></div>
                                                     </div>
 
                                                     <div class="card-row">
@@ -309,22 +303,42 @@
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
-            let data;
+						let data; areas = {};
+						const getAreas = (stateId, lgaId) => {
+							return fetch((request({ 
+								path: `/states/${stateId}/lgas/${lgaId}`,
+								method: 'GET'
+							}))).then( res => res.json());
+						}
             const create = async (e) => {
-                e.preventDefault();
+								e.preventDefault();
+								processing({start: true});
                 const fields = [
-                    'weight', 'pick-up-address', 'pick-up-city', 'pick-up-state', 'pick-up-date',
-                    'destination-address', 'destination-city', 'destination-state', 'receiver-name', 'receiver-phone'
+                    'weight', 'pick-up-address', 'pick-up-lga', 'pick-up-state',
+                    'destination-address', 'destination-lga', 'destination-state',
+                    'receiver-name', 'receiver-phone'
                 ];
                 const phone = document.getElementById('receiver-phone');
                 const weigth = document.getElementById('weight')
                 if (!hasEmpty(fields) && isValidWeight(weigth) && isValidPhone(phone)) {
                     data = await getFormData(fields, (data) => {
-                        const description = document.getElementById('description').value;
-                        data['description'] = description !== '' ? description : 'N/A';
-                        data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value
-                        return data;
-                    });
+											const description = document.getElementById('description').value;
+											data['description'] = description !== '' ? description : 'N/A';
+											data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value
+											return data;
+										});
+										let stateId = document.getElementById('pick-up-state').value;
+										let lgaId = document.getElementById('pick-up-lga').value;
+										await getAreas(stateId, lgaId).then(stateData => {
+											const { state, lga } = stateData.data.area;
+											stateId = document.getElementById('destination-state').value;
+											lgaId = document.getElementById('destination-lga').value;
+											areas.from = { state, lga }
+											return getAreas(stateId, lgaId).then(lgaData => {
+												const { area } = lgaData.data;
+												areas.to = { state: area.state, lga: area.lga }
+											})
+										})
                     await preview(JSON.parse(data));
                     toggleOrder({ show: false, animation: 'bounceInRight' });
                 }
@@ -338,29 +352,27 @@
             const preview = async (data) => {
                 let elem, text;
                 const elemArr = [
-                    'weight', 'description', 'deliveryMethod', 'pickup',
-                    'pickupDate', 'estimated', 'destination', 'receiverName', 'receiverPhone'
+                    'weight', 'description', 'deliveryMethod', 'pickUp',
+                    'estimated', 'destination', 'receiverName', 'receiverPhone'
                 ];
                 computeCost(data.weight)
                 await elemArr.forEach((str) => {
                     elem = document.getElementById(`data-${str}`);
                     switch(str) {
-                        case 'pickup': 
-                            text = `${data['pickupAddress']}, ${data['pickupCity']}, ${data['pickupState']}`;
+                        case 'pickUp': 
+                            text = `${data['pickUpAddress']}, ${areas.from.lga}, ${areas.from.state} State`;
                             break;
                         case 'destination': 
-                            text = `${data['destinationAddress']}, ${data['destinationCity']}, ${data['destinationState']}`;
+                            text = `${data['destinationAddress']}, ${areas.to.lga}, ${areas.to.state} State`;
                             break;
                         case 'estimated':
                             text = `Maximum of ${ (data['deliveryMethod'] === 'Fast') ? 3 : 7 } days from pick up date`;
                             break;
-                        case 'description':
-                            text = data['description'].trim() !== '' ? data['description'] : 'N/A';
-                            break;
                         default: text = data[str];
                     }
                     elem.innerHTML = text;
-                })
+								})
+								processing({ start: false, message: 'Continue'})
             }
 
             const submitOrder = async (e) => {
@@ -376,7 +388,7 @@
                 .then(res => {     
                     if (res.status === 'Success') {         
                         document.querySelector('#success #message').innerHTML = res.message;
-                        document.getElementById('trackingNo').innerHTML = res.data.parcel.trackingno;
+                        document.getElementById('trackingNo').innerHTML = res.data.parcel.trackingNo;
                         const orderQuote = document.getElementById('order-quotation');
                         const orderSuccess = document.getElementById('order-success');
                         toggleOrderSteps(orderQuote, false, ['bounceOut', 'Animated']).then(() => {
