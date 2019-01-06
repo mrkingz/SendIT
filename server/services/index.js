@@ -1,8 +1,12 @@
+import UserSQLService from './UserSQLService';
+import UserService from './UserService';
 import UtilityService from './UtilityService';
 import NotificationService from './NotificationService';
 
-const servises = {
+const services = {
+    UserSQLService,
+    UserService,
     UtilityService,
     NotificationService
 };
-export default servises;
+export default services;

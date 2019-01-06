@@ -13,12 +13,10 @@ $('body').on('change', 'select', (e) => {
 
 const request = (obj) => {
   const headers = new Headers({
+    token: localStorage.getItem('token'),
     Accept: 'application/json',
     'Content-Type': 'application/json',
   });
-  if (obj['token']) {
-    headers.append('token', obj['token']);
-  }
   // We don't body in a GET request
   // So we'll just create the request object with the method and headers 
   if (obj['method'] === 'GET') {
@@ -52,7 +50,6 @@ const updateRequest = async (obj) => {
   await showSpinner();
   fetch(request({
     path: obj.path,
-    token: localStorage.getItem('token'),
     data: obj['data'],
     method: 'PUT'
   })).then(res => res.json())
@@ -93,7 +90,7 @@ const processing = (obj) => {
   }
 };
 
-const message = (msg, status, elem, animate = true) => {
+const message = (msg, status, elem, animate) => {
   const type = {
     success: 'alert-success',
     fail: 'alert-danger',
@@ -127,18 +124,17 @@ const isUnique = (field, msg) => {
 };
 
 const hasEmpty = (fields, msg) => {
-  const length = fields.length;
-  let field, emptyField;
-  for (let i = 0; i < length; i++) {
-    document.getElementById(fields[i]).classList.remove('invalid');
-    field = document.getElementById(fields[i]);
-    removeElement(document.getElementById(`${fields[i]}-error`));
-    removeListeners(field);
-    if (!emptyField && field.value.trim() === '') {
-      emptyField = field;
+  let elem, emptyField;
+  fields.forEach((field) => {
+    document.getElementById(field).classList.remove('invalid');
+    elem = document.getElementById(field);
+    removeElement(document.getElementById(`${field}-error`));
+    removeListeners(elem);
+    if (!emptyField && elem.value.trim() === '') {
+      emptyField = elem;
     }
-  }
-  if (emptyField) {
+  });
+  if (emptyField) { 
     displayError(emptyField, msg);
     return true;
   }

@@ -6,12 +6,15 @@
   "scripts": {
     "start": "babel-node ./server/app.js",
     "start:dev": "SET NODE_ENV=development && nodemon --watch server --exec babel-node ./server/app",
-    "tests": "SET NODE_ENV=test && mocha --compilers js:babel-core/register server/tests/**/*.js --timeout 100000 --exit",
+    "tests": "SET NODE_ENV=test && mocha --require babel-core/register server/tests/**/*.js --timeout 100000 --exit",
     "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 100000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate:test": "SET NODE_ENV=test && babel-node ./server/database/migrate.js --exit",
-    "migrate:dev": "SET NODE_ENV=development && babel-node ./server/database/migrate.js --exit",
-    "migrate:prod": "SET NODE_ENV=production && babel-node ./server/database/migrate.js --exit"
+    "migrate:dev": "SET NODE_ENV=development && babel-node ./server/database/migrate.js",
+    "migrate:prod": "SET NODE_ENV=production && babel-node ./server/database/migrate.js --exit",
+    "seed:dev": "SET NODE_ENV=development && babel-node ./server/database/seed.js",
+    "seed:prod": "SET NODE_ENV=development && babel-node ./server/database/seed.js --exit",
+    "migrate:refresh": "npm run migrate:dev && npm run seed:dev"
   },
   "nyc": {
     "exclude": [
@@ -42,6 +45,7 @@
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-plugin-istanbul": "^5.1.0",
+    "babel-polyfill": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
     "babel-register": "^6.26.0",
@@ -56,6 +60,7 @@
     "jsonwebtoken": "^8.3.0",
     "jwt-decode": "^2.2.0",
     "lodash": "^4.17.11",
+    "moment": "^2.23.0",
     "morgan": "^1.9.1",
     "nodemailer": "^4.7.0",
     "pg": "^7.6.1",

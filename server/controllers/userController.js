@@ -1,21 +1,13 @@
-import _ from 'lodash';
-import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import decode from 'jwt-decode';
-import db from '../database';
-import services from '../services';
-
-const { UtilityService } = services;
-
-dotenv.load();
+import UserService from '../services/UserService';
+import Controller from './Controller';
 
 /**
  * @export
  * @class UserController
- * @extends { UtilityService }
+ * @extends { Controller }
  */
-export default class UserController extends UtilityService {
+export default class UserController extends Controller {
 	/**
    * Register new user
 	 * 
@@ -26,28 +18,9 @@ export default class UserController extends UtilityService {
 	 */
   static register() {
     return (req, res) => {
-      const moment = new Date();
-      let { 
-        email, firstname, lastname, phoneNumber 
-      } = req.body;
-      const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-      const query = {
-        text: `INSERT INTO 
-                users (email, firstname, lastname, password, phonenumber, createdat, updatedat) 
-               VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
-        values: [
-          email, this.ucFirstStr(firstname), this.ucFirstStr(lastname), 
-          pass, phoneNumber, moment, moment
-        ]
-      };
-      db.sqlQuery(query)
-        .then((result) => {
-          const { password, ...user } = result.rows[0];
-          return this.successResponse({ 
-            res, code: 201, message: 'Sign up was successfull', data: { user } 
-          });
-        })
-        .catch(() => this.errorResponse({ res, message: db.dbError() }));
+       UserService.createUser(req.body)
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -61,30 +34,9 @@ export default class UserController extends UtilityService {
 	 */
   static signin() {
     return (req, res) => {
-      const query = {
-        text: `SELECT * FROM users WHERE email = $1`,
-        values: [req.body.email]
-      };
-      db.sqlQuery(query)
-        .then((result) => {
-          if (!_.isEmpty(result.rows)) {
-            if (bcrypt.compareSync(req.body.password, result.rows[0].password)) {
-              const { 
-                password, createdat, updatedat, ...details 
-              } = result.rows[0];
-              return this.successResponse({
-                res, 
-                message: 'Successfully signed in',
-                data: { 
-                  user: { ...details, createdat, updatedat },
-                  token: this.generateToken(details)
-                 } 
-              });
-            }
-          }
-          return this.errorResponse({ res, code: 401, message: 'Invalid sign in credentials' });
-        })
-        .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.signinUser(req.body)
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -99,31 +51,9 @@ export default class UserController extends UtilityService {
    */
   static editProfileDetails(option) {
     return (req, res) => {
-      const { 
-        firstname, lastname, phoneNumber, decoded 
-      } = req.body;
-      const queries = {
-        name: {
-          text: `UPDATE users SET firstname = $1, lastname = $2, updatedat = $3
-                 WHERE userid = $4 RETURNING *`,
-          values: [
-            this.ucFirstStr(firstname), this.ucFirstStr(lastname), new Date(), decoded.userid
-          ]
-        },
-        phonenumber: {
-          text: `UPDATE users SET phonenumber = $1, updatedat = $2
-                 WHERE userid = $3 RETURNING *`,
-          values: [phoneNumber, new Date(), decoded.userid]
-        }
-      };
-      db.sqlQuery(queries[option.replace(/[-]+/g, '')]).then((result) => {
-        const { password, ...user } = result.rows[0];
-        const message = `${this.ucFirstStr(option.replace(/[-]+/g, ' '))} successfully updated`;
-        this.successResponse({
-          res, code: 200, message, data: { user } 
-        });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.editUserProfile({ key: option, values: this.ucFirstObj(req.body) })
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -137,60 +67,10 @@ export default class UserController extends UtilityService {
    */
   static getProfileDetails() {
     return (req, res) => {
-      const query = {
-        text: `WITH placed AS (SELECT COUNT(parcelid) AS placed FROM parcels WHERE deliverystatus = $2 AND userid = $1),
-            cancelled AS (SELECT COUNT(parcelid) AS cancelled FROM parcels WHERE deliverystatus = $3 AND userid = $1),
-            delivered AS (SELECT COUNT(parcelid) AS delivered FROM parcels WHERE deliverystatus = $4 AND userid = $1),
-            transiting AS (SELECT COUNT(parcelid) AS transiting FROM parcels WHERE deliverystatus = $5 AND userid = $1),
-            total AS (SELECT SUM(cancelled + delivered + placed + transiting) AS total
-                  FROM cancelled 
-                  JOIN delivered ON delivered IS NOT NULL
-                  JOIN placed ON placed IS NOT NULL
-                  JOIN transiting ON transiting IS NOT NULL
-                )
-            SELECT * FROM users 
-            JOIN placed ON userid = $1
-            JOIN cancelled ON userid = $1 
-            JOIN delivered ON userid = $1
-            JOIN transiting ON userid = $1
-            JOIN total ON total IS NOT NULL LIMIT 1`,
-        values: [
-          req.body.decoded.userid, 'Placed', 'Cancelled', 'Delivered', 'Transiting'
-        ]
-      };
-      db.sqlQuery(query).then((result) => {
-        const { 
-          password, cancelled, delivered, placed, transiting, total, ...user
-        } = result.rows[0];
-        user.orders = {
-          cancelled, delivered, placed, transiting, total
-        };
-        const message = 'Profile details successfully retrieved';
-        return _.isEmpty(user)
-                ? this.errorResponse({ res, code: 404, message: 'User does not exist' })
-                : this.successResponse({ 
-                  res, code: 302, message, data: { user } 
-                });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.fetchUserProfile(req.body.decoded.userId)
+      .then(result => this.response(res, result))
+      .catch(error => this.serverError(res, error));
     };
-  }
-
-  /**
-   * Generate a JWT for authenticated user
-   *
-   * @param {object} credentials
-   * @returns {string} the generated token
-   * @memberof UserController
-   */
-  static generateToken(credentials) {
-    return jwt.sign({
-      ...credentials
-    }, process.env.SECRET_KEY, {
-        issuer: process.env.ISSUER,
-        subject: process.env.SUBJECT,
-        expiresIn: process.env.EXPIRATION
-      });
   }
 
 	/**
@@ -201,72 +81,34 @@ export default class UserController extends UtilityService {
 	 */
   static authenticateUser() {
     return (req, res, next) => {
-      let message = 'Access denied! Token not provided';
       let token = req.cookies.token || req.getAuthorization || req.query.token ||
-        req.body.token || req.headers.token;
-      if (token) {
-        const regex = new RegExp('/^Bearer (\S+)$/');
-        const match = regex.exec(token);
-        token = (match) ? match[1] : token;
-        try {
-          const decoded = jwt.verify(token, process.env.SECRET_KEY, {
-            issuer: process.env.ISSUER
-          });
-          if (decoded) {
-            return this.findUser(decoded).then((user) => {
-              if (user) {
-                req.body.decoded = decoded;
-                return next();
-              }
-              this.errorResponse({ res, code: 401, message: 'Sorry, user does not exist' });
-            });
-          }
-        } catch (error) {
-          message = (error.message === 'jwt expired')
-            ? 'Access denied! Token has expired'
-            : 'Access denied! Invalid authentication token';
+                  req.body.token || req.headers.token;
+      UserService.authenticate(token).then((result) => {
+        if (result.statusCode !== 401) {
+          req.body.decoded = result;
+          return next();
         }
-      }
-      return this.errorResponse({ res, code: 401, message });
-    };
-  }
-
-  /**
-   * Find a user
-   *
-   * @static
-   * @param {object} credentials the credentials from user token
-   * @method findUser
-   * @returns {object} the user details, if found; otherwise null
-   * @memberof UserController
-   */
-  static findUser(credentials) {
-    const { userid, email, isadmin } = credentials;
-    const query = {
-      text: `SELECT * FROM users WHERE userid = $1 AND email = $2 AND isadmin = $3`,
-      values: [userid, email, isadmin]
-    };
-    return db.sqlQuery(query)
-      .then((result) => {
-        const { password, ...user } = result.rows[0];
-        return _.isEmpty(result.rows) ? null : user;
+        this.response(res, result);
       })
-      .catch(() => db.dbError());
+      .catch(error => this.serverError(res, error));
+    };
   }
 
   /**
    * Authorize a user
    * @static
    * @returns {function} Returns an express middleware that handles the authorization
+   * @method authorizeUser
    * @memberof UserController
    */
   static authorizeUser() {
     return (req, res, next) => {
-      return (req.body.decoded.isadmin)
+      return (req.body.decoded.isAdmin)
         ? next()
-        : this.errorResponse({ 
-            res, code: 401, message: 'You do not have the privilege for this operation' 
-          });
+        : this.response( res, { 
+          statusCode: 401, 
+          message: 'You do not have the privilege for this operation' 
+        });
     };
   }
 
@@ -280,32 +122,17 @@ export default class UserController extends UtilityService {
 	 */
   static checkAuth() {
     return (req, res) => {
-      const { token } = req.body;
-      if (this.validateToken(token)) {
-        const decoded = decode(token);
-        return this.findUser(decoded)
-          .then(user => this.successResponse({ res, code: 302, data: { user } }))
-          .catch(() => db.dbError());
+      const token = req.cookies.token || req.getAuthorization || req.query.token ||
+                  req.body.token || req.headers.token;
+      if (UserService.validateToken(token)) {
+        return UserService.findUser(decode(token))
+          .then((result) => { 
+            const { password, ...user } = result;
+            this.response(res, { statusCode: 302, data: { user } });
+          })
+          .catch(error => this.serverError(res, error));
       }
     };
-  }
-
-  /**
-  * Validate token
-  * 
-  * @static
-  * @param {string} token
-  * @returns {boolean} boolean
-  * @method validateToken
-  * @memberof UserController
-  */
-  static validateToken(token) {
-    if (token) {
-      const currentTime = Date.now();
-      const tokenExp = decode(token).exp * 1000;
-      return currentTime < tokenExp;
-    }
-    return false;
   }
 
   /**
@@ -313,28 +140,16 @@ export default class UserController extends UtilityService {
    *
    * @static
    * @param {string} field the field to check for
-   * @param {string} msg the message to send back to client (Optional)
+   * @param {string} label text to use as field name (optional)
    * @returns {function} An express middleware that handles the GET request
+   * @method checkIfExist
    * @memberof UserController
    */
-  static checkExist(field, msg) {
+  static checkIfExist(field, label) {
     return (req, res) => {
-      const query = {
-        text: `SELECT * FROM users WHERE ${field} = $1`,
-        values: [req.body[field]]
-      };
-      db.sqlQuery(query).then((result) => {
-        if (_.isEmpty(result.rows)) {
-          return this.errorResponse({
-            res, code: 404, message: (msg || `No user with ${field} found`)
-          });
-        }
-        const message = (message || `A user with ${field} has been used`);
-        const { password, ...user } = result.rows[0];
-        this.successResponse({ 
-          res, code: 302, message, data: { user } 
-        });
-      }).catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.findBy({ email: req.body[field] }, label)
+      .then(result => this.response(res, result))
+      .catch(error => this.serverError(res, error));
     };
   }
 
@@ -349,24 +164,13 @@ export default class UserController extends UtilityService {
   static verifyPassword() {
     return (req, res) => {
       if (!req.body.password) {
-        return this.errorResponse({
-          res, code: 422, message: 'Password is required'
+        return this.response(res, {
+          statusCode: 400, message: 'Password is required'
         });
       }
-      const query = {
-        text: `SELECT * FROM users WHERE userid = $1`,
-        values: [req.body.decoded.userid]
-      };
-      db.sqlQuery(query).then((result) => {
-        const { password, ...user } = result.rows[0];
-        if (bcrypt.compareSync(req.body.password, password)) {
-          return this.successResponse({
-            res, code: 200, message: 'Password is valid', data: { user } 
-          });
-        } 
-        this.errorResponse({ res, code: 406, message: 'Sorry, incorrect password' });
-      })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      UserService.verifyPassword(req.body)
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -381,21 +185,33 @@ export default class UserController extends UtilityService {
    */
   static changePassword(auth) {
     return (req, res) => {
-      const pass = bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10));
-      const query = {
-        text: `UPDATE users SET password = $1, updatedat =$2 
-              WHERE ${auth.isAuthenticated ? 'userid' : 'email'} = $3 RETURNING *`,
-        values: [ 
-          pass, new Date(), auth.isAuthenticated ? req.body.decoded.userid : req.body.email
-        ]
-      };
-      db.sqlQuery(query).then((result) => {
-        const { password, ...user } = result.rows[0];
-        this.successResponse({ 
-          res, message: 'New password saved successfuly', data: { user } 
-        });
+      return UserService.resetPassword(req.body, auth.isAuthenticated)
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
+    };
+  }
+
+
+  /**
+   * Validates if a user sign up credential has been used
+   * 
+   * @param {string} field the property name 
+   * @param {string} label text to use as field name (optional)
+   * @static
+   * @returns {function} Returns an express middleswar function that does the validation
+   * @method isUnique
+   * @memberof UserController
+   */
+  static isUnique(field, label) {
+    return (req, res, next) => {
+      field = field.toLowerCase();
+      UserService.checkIfUnique({ [field]: req.body[field] }, label)
+      .then((result) => {  
+        return (result.statusCode === 409)
+          ? this.response(res, result)
+          : next();
       })
-      .catch(() => this.errorResponse({ res, message: db.dbError() }));
+      .catch(error => this.serverError(res, error));
     };
   }
 }

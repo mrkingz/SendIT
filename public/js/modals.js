@@ -4,19 +4,20 @@ const editDestinationModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="address">Address</label>
-                      <input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" value="${parcel.destinationaddress}">
+                      <input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" value="${parcel.to.address}">
                     </div>
                     <div class="control-group">
                       <label class="required" for="state">State</label>
-                      <select name="destinationState" id="state" class="control" value="${parcel.destinationstate}">
-                      <option value="Imo">Imo</option>
-                        <option value="Kano">Kano</option>
-                        <option value="Lagos">Lagos</option>
+                      <select name="destinationStateId" id="state" class="control" value="${parcel.to.stateId}">
+                      <option value="1">Abia</option>
+                        <option value="2">Adamawa</option>
                       </select>
                     </div>
                     <div class="control-group">
-                      <label class="required" for="city">City/Town</label>
-                      <input type="text" class="control" name="destinationCity" id="city" placeholder="City/Town" value="${parcel.destinationcity}">
+                      <label class="required" for="city">L.G. Area</label>
+                      <select name="destinationLGAId" id="lga" class="control" value="${parcel.to.lgaId}">
+                        <option value="1">Aba North</option>
+                      </select>
                     </div>
                     <div class="control-group">
                       <button class="btn btn-primary" onclick="editDestination(event)">Save</button>
@@ -27,7 +28,7 @@ const editDestinationModal = (e, parcel) => {
     content, 
     title: e.target.innerText, 
     callback: () => {
-      document.getElementById('state').style.color = 'initial';
+      $('select').css({ color: 'initial' });
     }
   });
   document.getElementById('address').focus();
@@ -64,7 +65,8 @@ const editParcelModal = (e, parcel) => {
     content, 
     title: e.target.innerText, 
     callback: () => {
-      document.querySelector(`.control-group #${parcel.deliverymethod.toLowerCase()}`).checked = true;
+      const id = parcel.deliveryMethod.toLowerCase();
+      document.querySelector(`.control-group #${id}`).checked = true;
     }
   });
   document.querySelector('.control-group #weight').focus();
@@ -74,22 +76,19 @@ const editPickupModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="pick-up-address">Address</label>
-                      <input type="text" class="control" name="pickupAddress" id="pick-up-address" placeholder="Address" value="${parcel.pickupaddress}">
+                      <input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address" value="${parcel.from.address}">
                     </div>
                     <div class="control-group">
                       <label class="required" for="pick-up-state">State</label>
-                      <select id="pick-up-state" name="pickupState" class="control" value="${parcel.pickupstate}">
-                        <option value="Abuja">Abuja</option>
-                        <option value="Lagos">Lagos</option>
+                      <select id="pick-up-state" name="pickUpStateId" class="control" value="${parcel.from.stateId}">
+                        <option value="1">Abia</option>
                       </select>
                     </div>
                     <div class="control-group">
-                      <label class="required" for="pick-up-city">City/Town</label>
-                      <input type="text" class="control" name="pickupCity" id="pick-up-city" placeholder="City/Town" value="${parcel.pickupcity}">
-                    </div>
-                    <div class="control-group">
-                      <label class="required" for="pick-up-date">Pick up date</label>
-                      <input type="date" class="control" name="pickupDate" id="pick-up-date" autocomplete="off" value="${parcel.pickupdate}">
+                      <label class="required" for="pick-up-lga">L.G. Area</label>
+                      <select name="pickUpLGAId" id="pick-up-lga" class="control" value="${parcel.from.lgaId}">
+                        <option value="1">Aba North</option>
+                      </select>
                     </div>
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="editPickup(event)">Save</button>
@@ -109,11 +108,11 @@ const editReceiverModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="receiver-name">Receicver's full name</label>
-                      <input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name" value="${parcel.receivername}">
+                      <input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name" value="${parcel.to.receiver.name}">
                     </div>         
                     <div class="control-group">
                       <label class="required" for="receiver-phone">Receicver's phone</label>
-                      <input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" value="${parcel.receiverphone}">
+                      <input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" value="${parcel.to.receiver.phone}">
                     </div>
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="editReceiver(event)">Save</button>
@@ -129,30 +128,25 @@ const editReceiverModal = (e, parcel) => {
 const updateLocationModal = (e) => {
   const content = `<form class="form">
                     <div class="control-group">
-                      <label for="current-delivery-status">Delivery status</label>
-                      <select name="deliveryStatus" id="current-delivery-status" class="control">
-                        <option value="Delivered">Delivered</option>
-                        <option value="Transiting">Transiting</option>
-                      </select>
-                    </div>
-                    <div class="control-group">
                       <label class="required" for="present-state">State</label>
-                      <select name="state" id="state" class="control">
+                      <select name="locationStateId" id="state" class="control" autofocus>
                         <option value="">Select state</option>
-                        <option value="Lagos">Lagos</option>
+                        <option value="1">Abia</option>
                       </select>
                     </div>
                     <div class="control-group">
-                      <label class="required" for="present-city">City/Town</label>
-                      <input type="text" class="control" name="city" id="city" placeholder="City/Town">
+                      <label class="required" for="lga">L.G. Area</label>
+                      <select name="locationLGAId" id="lga" class="control" value="${parcel.to.lgaId}">
+                        <option value="">Select L.G.A.</option>
+                        <option value="1">Aba North</option>
+                      </select>
                     </div>
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="updatePresentLocation(event)">Save</button>
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
-  selectStatus();
-  document.getElementById('state').focus();
+  $('#state').css({ color: 'initial' });
 };
 
 const updateStatusModal = (e) => {

@@ -128,7 +128,7 @@
         <script src="../js/script.js"></script>
         <script>
             authUser.then((user) => {
-                if (user.isadmin) {
+                if (user.isAdmin) {
                     const orderBtn = document.createElement('a');
                     orderBtn.href = '/orders';
                     orderBtn.innerText = 'Delivery orders';
