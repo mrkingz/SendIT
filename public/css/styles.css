@@ -809,6 +809,10 @@ html {
     min-height: 300px;
 }
 
+option:first-of-type { 
+    color: rgb(155, 155, 155);
+}
+
 .nav {
     width: 100%;
 }

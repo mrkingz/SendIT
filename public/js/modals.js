@@ -8,15 +8,14 @@ const editDestinationModal = (e, parcel) => {
                     </div>
                     <div class="control-group">
                       <label class="required" for="state">State</label>
-                      <select name="destinationStateId" id="state" class="control" value="${parcel.to.stateId}">
-                      <option value="1">Abia</option>
-                        <option value="2">Adamawa</option>
+                      <select name="destinationStateId" id="state" onchange="loadLGAs(event)" class="control" value="${parcel.to.stateId}">
+                      <option value="">Select state</option>
                       </select>
                     </div>
                     <div class="control-group">
                       <label class="required" for="city">L.G. Area</label>
                       <select name="destinationLGAId" id="lga" class="control" value="${parcel.to.lgaId}">
-                        <option value="1">Aba North</option>
+                        <option value="">Select L.G. Area</option>
                       </select>
                     </div>
                     <div class="control-group">
@@ -31,6 +30,7 @@ const editDestinationModal = (e, parcel) => {
       $('select').css({ color: 'initial' });
     }
   });
+  loadStates(['state']);
   document.getElementById('address').focus();
 };
 
@@ -78,16 +78,16 @@ const editPickupModal = (e, parcel) => {
                       <label class="required" for="pick-up-address">Address</label>
                       <input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address" value="${parcel.from.address}">
                     </div>
-                    <div class="control-group">
+                    <div class="control-group"> 
                       <label class="required" for="pick-up-state">State</label>
-                      <select id="pick-up-state" name="pickUpStateId" class="control" value="${parcel.from.stateId}">
-                        <option value="1">Abia</option>
+                      <select id="state" name="pickUpStateId" class="control" onchange="loadLGAs(event)" value="${parcel.from.stateId}">
+                        <option value="">Select state</option>
                       </select>
                     </div>
                     <div class="control-group">
                       <label class="required" for="pick-up-lga">L.G. Area</label>
-                      <select name="pickUpLGAId" id="pick-up-lga" class="control" value="${parcel.from.lgaId}">
-                        <option value="1">Aba North</option>
+                      <select name="pickUpLGAId" id="lga" class="control" value="${parcel.from.lgaId}">
+                        <option value="">Select L.G. Area</option>
                       </select>
                     </div>
                     <div class="control-group mb-0">
@@ -101,6 +101,7 @@ const editPickupModal = (e, parcel) => {
       $('select').css({ color: 'initial' });
     }
   });
+  loadStates(['state']);
   document.getElementById('pick-up-address').focus();
 };
 
@@ -131,14 +132,12 @@ const updateLocationModal = (e) => {
                       <label class="required" for="present-state">State</label>
                       <select name="locationStateId" id="state" class="control" autofocus>
                         <option value="">Select state</option>
-                        <option value="1">Abia</option>
                       </select>
                     </div>
                     <div class="control-group">
                       <label class="required" for="lga">L.G. Area</label>
-                      <select name="locationLGAId" id="lga" class="control" value="${parcel.to.lgaId}">
+                      <select name="locationLGAId" id="lga" class="control" value="${parcel.to.lgaId}" onchange="loadLGAs(event)">
                         <option value="">Select L.G.A.</option>
-                        <option value="1">Aba North</option>
                       </select>
                     </div>
                     <div class="control-group mb-0">
@@ -147,6 +146,7 @@ const updateLocationModal = (e) => {
                   </form>`;
   showModal({ content, title: e.target.innerText });
   $('#state').css({ color: 'initial' });
+  loadStates(['state']);
 };
 
 const updateStatusModal = (e) => {

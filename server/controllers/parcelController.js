@@ -1,5 +1,5 @@
 import ParcelService from '../services/ParcelService';
-import Controller from './Controller';
+import Controller from './controller';
 
 /**
  * @export

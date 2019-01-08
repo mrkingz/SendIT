@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import Joi from 'joi';
-import Controller from "../controllers/Controller";
+import Controller from "../controllers/controller";
 
 /**
  *
