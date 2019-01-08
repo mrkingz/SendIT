@@ -468,6 +468,44 @@ const isValideCode = () => {
   return true;
 };
 
+const loadStates = async (array) => {
+  await fetch(request({
+    path: '/states', method: 'GET'
+  })).then(res => res.json()).then((result) => {
+    let options = '';
+    result.data.states.forEach((item) => {
+      options += `<option value="${item.stateId}">${item.state}</option>`;
+    });
+    return options;
+  }).then((options) => {
+    array.forEach((item) => {
+      document.getElementById(`${item}`).insertAdjacentHTML('beforeend', options);
+    });
+  });
+};
+
+  const loadLGAs = async (e) => {
+    const stateId = e.target.value;
+    const lgaNode = document.getElementById(`${e.target.id.replace('state', 'lga')}`);
+    let options = `<option value="">Select L.G.Area</option>`;
+    if (stateId) {
+      await fetch(request({
+        path: `/states/${stateId}/lgas`, method: 'GET'
+      })).then(res => res.json()).then((result) => {
+        result.data.lgas.forEach((item) => {
+          options += `<option value="${item.lgaId}">${item.lga}</option>`;
+        });
+        return options;
+      }).then((ops) => {
+        lgaNode.innerHTML = '';
+        lgaNode.insertAdjacentHTML('beforeend', ops);
+      });
+    } else {
+      lgaNode.innerHTML = options;
+    }
+    lgaNode.style.color = '#636c72';
+  };
+
 const signout = () => { 
   localStorage.removeItem('token');
 };
