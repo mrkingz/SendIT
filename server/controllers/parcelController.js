@@ -1,4 +1,4 @@
-import ParcelService from '../services/parcelService';
+import ParcelService from '../services/ParcelService';
 import Controller from './Controller';
 
 /**
