@@ -1,6 +1,6 @@
 import decode from 'jwt-decode';
 import UserService from '../services/UserService';
-import Controller from './controller';
+import Controller from './Controller';
 
 /**
  * @export
