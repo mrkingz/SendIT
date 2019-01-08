@@ -5,7 +5,6 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import routes from './routes';
-import db from './database/index';
 
 dotenv.config();
 const app = express();
@@ -46,21 +45,10 @@ app.all('*', (req, res) => {
     message: 'Sorry, there is nothing here!'
   });
 });
-
-try {
-  const port = process.env.PORT || 8000;
-    if (env !== 'test' && env !== 'development') {
-      db.createTables();
-    }
-    app.listen(port, () => {
-      if (env === 'test' || env === 'development') {
-        console.log(`Server running on port: ${port}`);
-      }
-    });
-} catch (err) {
-  if (env === 'test' && env === 'development') {
-    console.log(err);
+const listener = app.listen(process.env.PORT || 8000, () => {
+  if (env === 'test' || env === 'development') {
+    console.log(`Server running on port: ${listener.address().port}`);
   }
-}
+});
 
 export default app;

@@ -197,8 +197,11 @@
 		const getParcelId = () => location.pathname.split('/')[2];
 		let parcel;
 		const getDetails = () => {
+			authUser.then((user) => {
 				fetch(request({
-					path: `/parcels/${getParcelId()}`,
+					path: user.isAdmin 
+						? `/parcels/${getParcelId()}` 
+						: `/users/${user.userId}/parcels/${getParcelId()}`,
 					method: 'GET'
 				})).then(res => res.json())
 					.then((res) => {
@@ -209,7 +212,7 @@
 							const { receiver, ...destination } = to;
 							displayData(data);
 							displayData(pickUp, 'from');
-							displayData(sender, 'sender');
+							if (user.isAdmin) displayData(sender, 'sender');
 							displayData(to, 'to');
 							displayData(receiver, 'receiver');
 							displayLocation(presentLocation);
@@ -219,6 +222,7 @@
 							message(res.message);
 						}
 					}).catch(error => message(error.message, error.status));
+				});
 		}
 
 		const displayData = (data, str) => {
@@ -254,6 +258,7 @@
 		}
 
 		const appendMenu = async (userId, deliveryStatus) => {
+			if (deliveryStatus === 'Cancelled') return;
 			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-sm dropbtn">
                       <i class="fa fa-bars bold"></i></button>
                     <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;;
