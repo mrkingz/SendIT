@@ -68,30 +68,26 @@ export default class ParcelSQLService {
     const query = {};
     const stateSelect = `SELECT states."stateId", states.state`;
     const lgaSelect = `SELECT lgas."lgaId", lgas."stateId", lgas.lga`;
-    const fields = `"pickUpState", "pickUpLGA", "destinationState", "destinationLGA",
-                    "locationLGA", "locationState"`;
-    const locations = `(SELECT states.state FROM states 
-                        WHERE states."stateId" = parcels."locationStateId") AS "locationState",
-                      (SELECT lgas.lga FROM lgas 
-                        WHERE lgas."stateId" = parcels."locationStateId" 
-                        AND lgas."lgaId" = parcels."locationLGAId") AS "locationLGA"`;
-    const joins = `JOIN pickUpStateT ON pickUpStateT."stateId" = parcels."pickUpStateId"
-                   JOIN pickUpLGAT ON pickUpLGAT."lgaId" = parcels."pickUpLGAId" 
-                   JOIN destinationStateT ON destinationStateT."stateId" = parcels."destinationStateId"
-                   JOIN destinationLGAT ON destinationLGAT."lgaId" = parcels."destinationLGAId"`;
     query.text = `WITH pickUpStateT AS (${stateSelect} AS "pickUpState" FROM states),
                   pickUpLGAT AS (${lgaSelect} AS "pickUpLGA" FROM lgas),
                   destinationStateT AS (${stateSelect} AS "destinationState" FROM states),
-                  destinationLGAT AS (${lgaSelect} AS "destinationLGA" FROM lgas)`;
-    if (isAdmin) {
-      query.text += `SELECT parcels.*, CONCAT(firstname, (' '||lastname)) AS name, email, "phoneNumber",
-                    "pickUpState", "pickUpLGA", "destinationState", "destinationLGA", ${locations}
-                    FROM parcels 
-                    JOIN users ON users."userId" = parcels."userId" ${joins}
-                    WHERE parcels."parcelId" = $1`;
-    } else {
-      query.text += `SELECT DISTINCT parcels.*, ${fields} FROM parcels ${joins} 
-        AND parcels."parcelId" = $1 AND users."userId" = $2 LIMIT 1`;
+                  destinationLGAT AS (${lgaSelect} AS "destinationLGA" FROM lgas)
+                  SELECT parcels.*, CONCAT(firstname, (' '||lastname)) AS name, email, "phoneNumber",
+                    "pickUpState", "pickUpLGA", "destinationState", "destinationLGA", 
+                  (SELECT states.state FROM states 
+                    WHERE states."stateId" = parcels."locationStateId") AS "locationState",
+                  (SELECT lgas.lga FROM lgas 
+                    WHERE lgas."stateId" = parcels."locationStateId" 
+                    AND lgas."lgaId" = parcels."locationLGAId") AS "locationLGA"
+                  FROM parcels 
+                  JOIN users ON users."userId" = parcels."userId"
+                  JOIN pickUpStateT ON pickUpStateT."stateId" = parcels."pickUpStateId"
+                  JOIN pickUpLGAT ON pickUpLGAT."lgaId" = parcels."pickUpLGAId" 
+                  JOIN destinationStateT ON destinationStateT."stateId" = parcels."destinationStateId"
+                  JOIN destinationLGAT ON destinationLGAT."lgaId" = parcels."destinationLGAId"
+                  WHERE parcels."parcelId" = $1`;
+    if (!isAdmin) { 
+      query.text += `AND users."userId" = $2 LIMIT 1`;
     }
     query.values = isAdmin ? [parcelId] : [parcelId, userId];
     return query;

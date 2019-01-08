@@ -11,12 +11,11 @@ const parcel = {
 	description: 'Binatone Standing fan',
 	deliveryMethod: 'Fast',
 	pickUpAddress: '23, Bola Ige Street',
-	pickUpCity: 'Ikeja',
-	pickUpState: 'Lagos',
-	pickUpDate: '22/12/2018',
+	pickUpLGAId: 1,
+	pickUpStateId: 1,
 	destinationAddress: '23, Bola Ige Street',
-	destinationCity: 'Ikeja',
-	destinationState: 'Lagos',
+	destinationLGAId: 20,
+	destinationStateId: 2,
 	receiverName: 'Obiebi Michael',
 	receiverPhone: '08054329076'
 };
@@ -41,12 +40,12 @@ describe('Test parcel routes', () => {
 		server
 			.post('/api/v1/auth/login')
 			.send({
-				email: 'admin@gmail.com',
+				email: 'sendit.contactus@gmail.com',
 				password: 'Password1'
 			})
 			.end((err, res) => {
 				const response = res.body;
-				adminToken = response.data.token;
+				adminToken = res.body.status === 'Success' ? response.data.token : null;
 				done();
 			});
 	});
@@ -89,26 +88,17 @@ describe('Test parcel routes', () => {
 					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data.parcel).to.have.own.property('deliveryMethod')
 					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
-				expect(response.data.parcel).to.have.own.property('pickUpAddress')
-					.to.be.a('string').that.is.equal(parcel.pickUpAddress);
-				expect(response.data.parcel).to.have.own.property('pickUpcity')
-					.to.be.a('string').that.is.equal(parcel.pickUpCity);
-				expect(response.data.parcel).to.have.own.property('pickUpState')
-					.to.be.a('string').that.is.equal(parcel.pickUpState);
-				expect(response.data.parcel).to.have.own.property('pickUpDate')
-					.to.be.a('string').that.is.equal(parcel.pickUpDate);
+				expect(response.data.parcel).to.have.own.property('from')
+					.to.be.an('object');
+				expect(response.data.parcel).to.have.own.property('to')
+					.to.be.an('object');
 				expect(response.data.parcel).to.have.property('userId')
 					.to.be.a('number');
 				expect(response.data.parcel).to.have.own.property('price')
 					.to.be.a('number');
-				expect(response.data.parcel).to.have.own.property('presentLocation')
-					.to.be.a('string');
+				expect(response.data.parcel).to.have.own.property('presentLocation');
 				expect(response.data.parcel).to.have.own.property('deliveryStatus')
 					.to.be.a('string');
-				expect(response.data.parcel).to.have.own.property('receiverName')
-					.to.be.a('string').that.is.equal(parcel.receiverName);
-				expect(response.data.parcel).to.have.own.property('receiverPhone')
-					.to.be.a('string').that.is.equal(parcel.receiverPhone);
 				expect(response.data.parcel).to.have.property('createdAt');
 				expect(response.data.parcel).to.have.property('updatedAt');
 				done();
@@ -167,13 +157,13 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp Address is required');
+				expect(response.message).to.equal('Pickup address is required');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if pickUp city is undefined', (done) => {
-		const { pickUpCity, ...noPCity } = parcel;
+	it('It should not create a parcel order if pickUpLGAId is undefined', (done) => {
+		const { pickUpLGAId, ...noPLGAId } = parcel;
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -181,18 +171,18 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send(noPCity)
+			.send(noPLGAId)
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp city is required');
+				expect(response.message).to.equal('Pickup LGA id is required');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if pickUp State is undefined', (done) => {
-		const { pickUpState, ...noPState } = parcel;
+	it('It should not create a parcel order if pickUp StateId is undefined', (done) => {
+		const { pickUpStateId, ...noPStateId } = parcel;
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -200,31 +190,12 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send(noPState)
+			.send(noPStateId)
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp State is required');
-				done();
-			});
-	});
-
-	it('It should not create a parcel order if pickUp Date is undefined', (done) => {
-		const { pickUpDate, ...noPDate } = parcel;
-		server
-			.post('/api/v1/parcels')
-			.set('Connection', 'keep alive')
-			.set('Accept', 'application/json')
-			.set('Content-Type', 'application/json')
-			.type('form')
-			.set('token', token)
-			.send(noPDate)
-			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(400);
-				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp Date is required');
+				expect(response.message).to.equal('Pickup state Id is required');
 				done();
 			});
 	});
@@ -243,13 +214,13 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination Address is required');
+				expect(response.message).to.equal('Destination address is required');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if destination city is undefined', (done) => {
-		const { destinationCity, ...noDCity } = parcel;
+	it('It should not create a parcel order if destination LGA Id is undefined', (done) => {
+		const { destinationLGAId, ...noDLGAId } = parcel;
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -257,18 +228,18 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send(noDCity)
+			.send(noDLGAId)
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination city is required');
+				expect(response.message).to.equal('Destination L.G.A. Id is required');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if destination State is undefined', (done) => {
-		const { destinationState, ...noDState } = parcel;
+	it('It should not create a parcel order if destination StateId is undefined', (done) => {
+		const { destinationStateId, ...noDStateId } = parcel;
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -276,12 +247,12 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send(noDState)
+			.send(noDStateId)
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination State is required');
+				expect(response.message).to.equal('Destination state Id is required');
 				done();
 			});
 	});
@@ -360,7 +331,7 @@ describe('Test parcel routes', () => {
 			});
 	});
 
-	it('It should not create a parcel order if pickUp Address is empty', (done) => {
+	it('It should not create a parcel order if pick up Address is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -373,12 +344,12 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp Address is not allowed to be empty');
+				expect(response.message).to.equal('Pickup address is not allowed to be empty');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if pickUp city is empty', (done) => {
+	it('It should not create a parcel order if pick up LGAId is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -386,17 +357,17 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send({ ...parcel, pickUpCity: '' })
+			.send({ ...parcel, pickUpLGAId: '' })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp city is not allowed to be empty');
+				expect(response.message).to.equal('Pickup LGA id is not allowed to be empty');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if pickUp State is empty', (done) => {
+	it('It should not create a parcel order if pick up state Id is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -404,35 +375,17 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send({ ...parcel, pickUpState: '' })
+			.send({ ...parcel, pickUpStateId: '' })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp State is not allowed to be empty');
+				expect(response.message).to.equal('Pickup state Id is not allowed to be empty');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if pickUp Date is empty', (done) => {
-		server
-			.post('/api/v1/parcels')
-			.set('Connection', 'keep alive')
-			.set('Accept', 'application/json')
-			.set('Content-Type', 'application/json')
-			.type('form')
-			.set('token', token)
-			.send({ ...parcel, pickUpDate: '' })
-			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(400);
-				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('pickUp Date is not allowed to be empty');
-				done();
-			});
-	});
-
-	it('It should not create a parcel order if destination city is empty', (done) => {
+	it('It should not create a parcel order if destination LGAId is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -445,12 +398,12 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination Address is not allowed to be empty');
+				expect(response.message).to.equal('Destination address is not allowed to be empty');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if destination city is empty', (done) => {
+	it('It should not create a parcel order if destination LGA Id is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -458,17 +411,17 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send({ ...parcel, destinationCity: '' })
+			.send({ ...parcel, destinationLGAId: '' })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination city is not allowed to be empty');
+				expect(response.message).to.equal('Destination L.G.A. Id is not allowed to be empty');
 				done();
 			});
 	});
 
-	it('It should not create a parcel order if destination State is empty', (done) => {
+	it('It should not create a parcel order if destination StateId is empty', (done) => {
 		server
 			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
@@ -476,12 +429,12 @@ describe('Test parcel routes', () => {
 			.set('Content-Type', 'application/json')
 			.type('form')
 			.set('token', token)
-			.send({ ...parcel, destinationState: '' })
+			.send({ ...parcel, destinationStateId: '' })
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination State is not allowed to be empty');
+				expect(response.message).to.equal('Destination state Id is not allowed to be empty');
 				done();
 			});
 	});
@@ -619,26 +572,15 @@ describe('Test parcel routes', () => {
 					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data.parcels[0]).to.have.own.property('deliveryMethod')
 					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpAddress')
-					.to.be.a('string').that.is.equal(parcel.pickUpAddress);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpcity')
-					.to.be.a('string').that.is.equal(parcel.pickUpCity);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpState')
-					.to.be.a('string').that.is.equal(parcel.pickUpState);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpDate')
-					.to.be.a('string').that.is.equal(parcel.pickUpDate);
 				expect(response.data.parcels[0]).to.have.property('userId')
 					.to.be.a('number');
 				expect(response.data.parcels[0]).to.have.own.property('price')
 					.to.be.a('number');
-				expect(response.data.parcels[0]).to.have.own.property('presentLocation')
-					.to.be.a('string');
+				expect(response.data.parcels[0]).to.have.own.property('presentLocation');
 				expect(response.data.parcels[0]).to.have.own.property('deliveryStatus')
 					.to.be.a('string');
-				expect(response.data.parcels[0]).to.have.own.property('receiverName')
-					.to.be.a('string').that.is.equal(parcel.receiverName);
-				expect(response.data.parcels[0]).to.have.own.property('receiverPhone')
-					.to.be.a('string').that.is.equal(parcel.receiverPhone);
+				expect(response.data.parcels[0]).to.have.own.property('from');
+				expect(response.data.parcels[0]).to.have.own.property('to');
 				expect(response.data.parcels[0]).to.have.property('createdAt');
 				expect(response.data.parcels[0]).to.have.property('updatedAt');
 				done();
@@ -685,26 +627,15 @@ describe('Test parcel routes', () => {
 					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data.parcel).to.have.own.property('deliveryMethod')
 					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
-				expect(response.data.parcel).to.have.own.property('pickUpAddress')
-					.to.be.a('string').that.is.equal(parcel.pickUpAddress);
-				expect(response.data.parcel).to.have.own.property('pickUpcity')
-					.to.be.a('string').that.is.equal(parcel.pickUpCity);
-				expect(response.data.parcel).to.have.own.property('pickUpState')
-					.to.be.a('string').that.is.equal(parcel.pickUpState);
-				expect(response.data.parcel).to.have.own.property('pickUpDate')
-					.to.be.a('string').that.is.equal(parcel.pickUpDate);
 				expect(response.data.parcel).to.have.property('userId')
 					.to.be.a('number');
 				expect(response.data.parcel).to.have.own.property('price')
 					.to.be.a('number');
-				expect(response.data.parcel).to.have.own.property('presentLocation')
-					.to.be.a('string');
+				expect(response.data.parcel).to.have.own.property('presentLocation');
 				expect(response.data.parcel).to.have.own.property('deliveryStatus')
 					.to.be.a('string');
-				expect(response.data.parcel).to.have.own.property('receiverName')
-					.to.be.a('string').that.is.equal(parcel.receiverName);
-				expect(response.data.parcel).to.have.own.property('receiverPhone')
-					.to.be.a('string').that.is.equal(parcel.receiverPhone);
+				expect(response.data.parcel).to.have.own.property('from');
+				expect(response.data.parcel).to.have.own.property('to');
 				expect(response.data.parcel).to.have.property('createdAt');
 				expect(response.data.parcel).to.have.property('updatedAt');
 				done();
@@ -734,26 +665,15 @@ describe('Test parcel routes', () => {
 					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data.parcels[0]).to.have.own.property('deliveryMethod')
 					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpAddress')
-					.to.be.a('string').that.is.equal(parcel.pickUpAddress);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpcity')
-					.to.be.a('string').that.is.equal(parcel.pickUpCity);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpState')
-					.to.be.a('string').that.is.equal(parcel.pickUpState);
-				expect(response.data.parcels[0]).to.have.own.property('pickUpDate')
-					.to.be.a('string').that.is.equal(parcel.pickUpDate);
 				expect(response.data.parcels[0]).to.have.property('userId')
 					.to.be.a('number');
 				expect(response.data.parcels[0]).to.have.own.property('price')
 					.to.be.a('number');
-				expect(response.data.parcels[0]).to.have.own.property('presentLocation')
-					.to.be.a('string');
+				expect(response.data.parcels[0]).to.have.own.property('presentLocation');
 				expect(response.data.parcels[0]).to.have.own.property('deliveryStatus')
 					.to.be.a('string');
-				expect(response.data.parcels[0]).to.have.own.property('receiverName')
-					.to.be.a('string').that.is.equal(parcel.receiverName);
-				expect(response.data.parcels[0]).to.have.own.property('receiverPhone')
-					.to.be.a('string').that.is.equal(parcel.receiverPhone);
+				expect(response.data.parcels[0]).to.have.own.property('from');
+				expect(response.data.parcels[0]).to.have.own.property('to');
 				expect(response.data.parcels[0]).to.have.property('createdAt');
 				expect(response.data.parcels[0]).to.have.property('updatedAt');
 				done();
@@ -782,26 +702,15 @@ describe('Test parcel routes', () => {
 					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data.parcel).to.have.own.property('deliveryMethod')
 					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
-				expect(response.data.parcel).to.have.own.property('pickUpAddress')
-					.to.be.a('string').that.is.equal(parcel.pickUpAddress);
-				expect(response.data.parcel).to.have.own.property('pickUpcity')
-					.to.be.a('string').that.is.equal(parcel.pickUpCity);
-				expect(response.data.parcel).to.have.own.property('pickUpState')
-					.to.be.a('string').that.is.equal(parcel.pickUpState);
-				expect(response.data.parcel).to.have.own.property('pickUpDate')
-					.to.be.a('string').that.is.equal(parcel.pickUpDate);
 				expect(response.data.parcel).to.have.property('userId')
 					.to.be.a('number');
 				expect(response.data.parcel).to.have.own.property('price')
 					.to.be.a('number');
-				expect(response.data.parcel).to.have.own.property('presentLocation')
-					.to.be.a('string');
+				expect(response.data.parcel).to.have.own.property('presentLocation');
 				expect(response.data.parcel).to.have.own.property('deliveryStatus')
 					.to.be.a('string');
-				expect(response.data.parcel).to.have.own.property('receiverName')
-					.to.be.a('string').that.is.equal(parcel.receiverName);
-				expect(response.data.parcel).to.have.own.property('receiverPhone')
-					.to.be.a('string').that.is.equal(parcel.receiverPhone);
+				expect(response.data.parcel).to.have.own.property('from');
+				expect(response.data.parcel).to.have.own.property('to');
 				expect(response.data.parcel).to.have.property('createdAt');
 				expect(response.data.parcel).to.have.property('updatedAt');
 				done();
@@ -840,7 +749,7 @@ describe('Test parcel routes', () => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Destination Address is required');
+					expect(response.message).to.equal('Destination address is required');
 					done();
 				});
 		});
@@ -859,7 +768,7 @@ describe('Test parcel routes', () => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Destination city is required');
+					expect(response.message).to.equal('Destination L.G.A. Id is required');
 					done();
 				});
 		});
@@ -875,13 +784,13 @@ describe('Test parcel routes', () => {
 				.set('token', token)
 				.send({
 					destinationAddress: '16, Ajayi Crowter Street',
-					destinationCity: 'Ikeja'
+					destinationLGAId: 3
 				})
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
-					expect(response.message).to.equal('Destination State is required');
+					expect(response.message).to.equal('Destination state Id is required');
 					done();
 				});
 		});
@@ -896,14 +805,14 @@ describe('Test parcel routes', () => {
 			.set('token', token)
 			.send({
 				destinationAddress: '16, Ajayi Crowter Street',
-				destinationCity: 'Ikeja',
-				destinationState: 'Lagos'
+				destinationLGAId: 20,
+				destinationStateId: 2
 			})
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(200);
 				expect(response.status).to.equal('Success');
-				expect(response.message).to.equal('Parcel destination successfully upDated');
+				expect(response.message).to.equal('Parcel destination successfully updated');
 				done();
 			});
 	});
@@ -918,14 +827,14 @@ describe('Test parcel routes', () => {
 			.set('token', token)
 			.send({
 				destinationAddress: '',
-				destinationCity: 'Ikeja',
-				destinationState: 'Lagos'
+				destinationLGAId: 1,
+				destinationStateId: 1
 			})
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination Address is not allowed to be empty');
+				expect(response.message).to.equal('Destination address is not allowed to be empty');
 				done();
 			});
 	});
@@ -940,14 +849,14 @@ describe('Test parcel routes', () => {
 			.set('token', token)
 			.send({
 				destinationAddress: '18, Oba Oluwole Close',
-				destinationCity: '',
-				destinationState: 'Lagos'
+				destinationLGAId: '',
+				destinationStateId: 2
 			})
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination city is not allowed to be empty');
+				expect(response.message).to.equal('Destination L.G.A. Id is not allowed to be empty');
 				done();
 			});
 	});
@@ -962,20 +871,20 @@ describe('Test parcel routes', () => {
 			.set('token', token)
 			.send({
 				destinationAddress: '18, Oba Oluwole Close',
-				destinationCity: 'Ikeja',
-				destinationState: ''
+				destinationLGAId: 1,
+				destinationStateId: ''
 			})
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination State is not allowed to be empty');
+				expect(response.message).to.equal('Destination state Id is not allowed to be empty');
 				done();
 			});
 	});
 
-	it(`It should not upDate the present location 
-	of a pacel if location is not provided`, (done) => {
+	it(`It should not update the present location 
+	of a pacel if state id is not provided`, (done) => {
 			server
 				.put(`/api/v1/parcels/${parcel1.parcelId}/presentLocation`)
 				.set('Connection', 'keep alive')
@@ -989,7 +898,7 @@ describe('Test parcel routes', () => {
 					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message)
-						.to.equal('Present location is required');
+						.to.equal('Location state Id is required');
 					done();
 				});
 		});
@@ -1003,13 +912,13 @@ describe('Test parcel routes', () => {
 				.set('Content-Type', 'application/json')
 				.type('form')
 				.set('token', adminToken)
-				.send({ presentLocation: '', deliveryStatus: 'Transiting' })
+				.send({ locationStateId: '' })
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(400);
 					expect(response.status).to.equal('Fail');
 					expect(response.message)
-						.to.equal('Present location is not allowed to be empty');
+						.to.equal('Location state Id must be a number');
 					done();
 				});
 		});
@@ -1024,7 +933,7 @@ describe('Test parcel routes', () => {
 				.set('Content-Type', 'application/json')
 				.type('form')
 				.set('token', token)
-				.send({ presentLocation: '' })
+				.send({ locationStateId: 1, locationLGAId: 1 })
 				.end((err, res) => {
 					const response = res.body;
 					expect(res.statusCode).to.equal(401);
@@ -1035,7 +944,45 @@ describe('Test parcel routes', () => {
 				});
 		});
 
-	it('It should not upDate the status of an order if new status is not provided', (done) => {
+	it('It should not update the status of an order if location is not updated', (done) => {
+		server
+			.put(`/api/v1/parcels/${parcel1.parcelId}/status`)
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
+			.set('token', adminToken)
+			.send({ deliveryStatus: 'Transiting' })
+			.end((err, res) => {
+				const response = res.body;
+				expect(res.statusCode).to.equal(403);
+				expect(response.status).to.equal('Fail');
+				expect(response.message)
+					.to.equal('No record of present location found, cannot update status to Transiting');
+				done();
+			});
+	});
+
+	it(`It should upDate the present location`, (done) => {
+		server
+			.put(`/api/v1/parcels/${parcel1.parcelId}/presentLocation`)
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
+			.set('token', adminToken)
+			.send({ locationStateId: 1, locationLGAId: 1 })
+			.end((err, res) => {
+				const response = res.body;
+				expect(res.statusCode).to.equal(200);
+				expect(response.status).to.equal('Success');
+				expect(response.message)
+					.to.equal('Present location successfully updated');
+				done();
+			});
+	});
+
+	it('It should not update the status of an order if location is not updated', (done) => {
 		server
 			.put(`/api/v1/parcels/${parcel1.parcelId}/status`)
 			.set('Connection', 'keep alive')
@@ -1049,32 +996,27 @@ describe('Test parcel routes', () => {
 				expect(res.statusCode).to.equal(200);
 				expect(response.status).to.equal('Success');
 				expect(response.message)
-					.to.equal('Delivery order status successfully upDated');
+					.to.equal('Delivery status successfully updated to Transiting');
 				expect(response.data.parcel).to.have.own.property('deliveryStatus')
 					.to.be.a('string').that.is.equal('Transiting');
 				done();
 			});
 	});
 
-	it(`It should upDate the present location`, (done) => {
+	before((done) => {
 		server
-			.put(`/api/v1/parcels/${parcel1.parcelId}/presentLocation`)
+			.post('/api/v1/parcels')
 			.set('Connection', 'keep alive')
 			.set('Accept', 'application/json')
 			.set('Content-Type', 'application/json')
 			.type('form')
-			.set('token', adminToken)
-			.send({ presentLocation: 'Lagos', deliveryStatus: 'Transiting' })
+			.set('token', token)
+			.send(parcel)
 			.end((err, res) => {
-				const response = res.body;
-				expect(res.statusCode).to.equal(200);
-				expect(response.status).to.equal('Success');
-				expect(response.message)
-					.to.equal('Present location successfully upDated');
+				parcel2 = res.body.data.parcel;
 				done();
 			});
 	});
-
 	before((done) => {
 		server
 			.post('/api/v1/parcels')
@@ -1112,33 +1054,22 @@ describe('Test parcel routes', () => {
 					.to.be.a('string').that.is.equal(parcel.description);
 				expect(response.data.parcel).to.have.own.property('deliveryMethod')
 					.to.be.a('string').that.is.equal(parcel.deliveryMethod);
-				expect(response.data.parcel).to.have.own.property('pickUpAddress')
-					.to.be.a('string').that.is.equal(parcel.pickUpAddress);
-				expect(response.data.parcel).to.have.own.property('pickUpcity')
-					.to.be.a('string').that.is.equal(parcel.pickUpCity);
-				expect(response.data.parcel).to.have.own.property('pickUpState')
-					.to.be.a('string').that.is.equal(parcel.pickUpState);
-				expect(response.data.parcel).to.have.own.property('pickUpDate')
-					.to.be.a('string').that.is.equal(parcel.pickUpDate);
 				expect(response.data.parcel).to.have.property('userId')
 					.to.be.a('number');
 				expect(response.data.parcel).to.have.own.property('price')
 					.to.be.a('number');
-				expect(response.data.parcel).to.have.own.property('presentLocation')
-					.to.be.a('string');
+				expect(response.data.parcel).to.have.own.property('presentLocation');
 				expect(response.data.parcel).to.have.own.property('deliveryStatus')
-					.to.be.a('string').that.is.equal('Cancelled');
-				expect(response.data.parcel).to.have.own.property('receiverName')
-					.to.be.a('string').that.is.equal(parcel.receiverName);
-				expect(response.data.parcel).to.have.own.property('receiverPhone')
-					.to.be.a('string').that.is.equal(parcel.receiverPhone);
+					.to.be.a('string');
+				expect(response.data.parcel).to.have.own.property('from');
+				expect(response.data.parcel).to.have.own.property('to');
 				expect(response.data.parcel).to.have.property('createdAt');
 				expect(response.data.parcel).to.have.property('updatedAt');
 				done();
 			});
 	});
 
-	it('It should not upDate the status of an order if user is not an admin', (done) => {
+	it('It should not update the status of an order if user is not an admin', (done) => {
 		server
 			.put(`/api/v1/parcels/${parcel1.parcelId}/status`)
 			.set('Connection', 'keep alive')
@@ -1157,7 +1088,7 @@ describe('Test parcel routes', () => {
 			});
 	});
 
-	it('It should not upDate the status of an order if new status is not provided', (done) => {
+	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
 			.put(`/api/v1/parcels/${parcel1.parcelId}/status`)
 			.set('Connection', 'keep alive')
@@ -1176,7 +1107,7 @@ describe('Test parcel routes', () => {
 			});
 	});
 
-	it('It should not upDate the status of an order if new status is not provided', (done) => {
+	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
 			.put(`/api/v1/parcels/${parcel1.parcelId}/status`)
 			.set('Connection', 'keep alive')
@@ -1195,7 +1126,7 @@ describe('Test parcel routes', () => {
 			});
 	});
 
-	it('It should not upDate the status of an order if new status is not provided', (done) => {
+	it('It should not update the status of an order if new status is not provided', (done) => {
 		server
 			.put(`/api/v1/parcels/${parcel1.parcelId}/status`)
 			.set('Connection', 'keep alive')
@@ -1214,7 +1145,7 @@ describe('Test parcel routes', () => {
 			});
 	});
 
-	it('It should not upDate the destination of a parcel if cancelled', (done) => {
+	it('It should not update the destination of a parcel if cancelled', (done) => {
 		server
 			.put(`/api/v1/parcels/${parcel2.parcelId}/destination`)
 			.set('Connection', 'keep alive')
@@ -1224,15 +1155,15 @@ describe('Test parcel routes', () => {
 			.set('token', token)
 			.send({
 				destinationAddress: '16, Ajayi Crowter Street',
-				destinationCity: 'Ikeja',
-				destinationState: 'Lagos'
+				destinationLGAId: 2,
+				destinationStateId: 1
 			})
 			.end((err, res) => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(403);
 				expect(response.status).to.equal('Fail');
 				expect(response.message)
-					.to.equal('Parcel already cancelled, destination cannot be upDated');
+					.to.equal('Parcel already cancelled, destination cannot be updated');
 				done();
 			});
 	});

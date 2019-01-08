@@ -274,10 +274,10 @@ class Database {
     const query = {
       text: `INSERT INTO users (firstname, lastname, "isAdmin", email, password, "createdAt", "updatedAt")
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
-      values: [`Gabriel`, `Owvigho`, true, email, password, moment, moment]
+      values: [`Gabriel`, `Owvigho`, true, 'sendit.contactus@gmail.com', password, moment, moment]
     };
     return this.sqlQuery(query).then(() => { 
-      console.log(`Admin successfully seeded`);
+      if (env === `development`) console.log(`Admin successfully seeded`);
       return Promise.resolve(true);
     })
     .catch(error => Promise.reject(error.toString()));
@@ -295,7 +295,7 @@ class Database {
     const stmt = `INSERT INTO states("state") VALUES `; 
     const rows = states.map(state => `('${state.replace(/[-]+/g, ' ')}')`);
     return this.sqlQuery(stmt.concat(rows.join(','))).then(() => {
-      console.log('States successfuly seeded');
+      if (env === `development`) console.log('States successfuly seeded');
       return Promise.resolve(true);
     }).catch(e => console.log(e));
   }
@@ -312,7 +312,7 @@ seedLGAs() {
       return Places.getLGAs(state).map(lga => `(${i + 1}, '${lga}')`);
     });
     return this.sqlQuery(stmt.concat(rows.join(','))).then(() => {
-      console.log(`Local Government Areas successfully seeded`);
+      if (env === `development`) console.log(`Local Government Areas successfully seeded`);
     }).catch(e => console.log(e));
   }
 }

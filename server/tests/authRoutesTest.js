@@ -16,7 +16,9 @@ describe('Test authentication routes', () => {
 	before((done) => {
 		db.dropTables().then(() => {
 			return db.createTables().then(() => {
-				return done();
+				return db.seedInitialData().then(() => {
+					return done();
+				});
 			});
 		}).catch(() => { });
 	});
