@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Parcel delivery order app",
   "main": "app.js",
+  "engines": {
+    "node": "7.10.0"
+  },
   "scripts": {
     "start": "babel-node ./server/app.js",
     "start:dev": "SET NODE_ENV=development && nodemon --watch server --exec babel-node ./server/app",
