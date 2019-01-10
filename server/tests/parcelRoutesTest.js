@@ -362,7 +362,7 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup LGA id is not allowed to be empty');
+				expect(response.message).to.equal('Pickup LGA id must be a number');
 				done();
 			});
 	});
@@ -380,7 +380,7 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Pickup state Id is not allowed to be empty');
+				expect(response.message).to.equal('Pickup state Id must be a number');
 				done();
 			});
 	});
@@ -416,7 +416,7 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination L.G.A. Id is not allowed to be empty');
+				expect(response.message).to.equal('Destination L.G.A. Id must be a number');
 				done();
 			});
 	});
@@ -434,7 +434,7 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination state Id is not allowed to be empty');
+				expect(response.message).to.equal('Destination state Id must be a number');
 				done();
 			});
 	});
@@ -856,7 +856,7 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination L.G.A. Id is not allowed to be empty');
+				expect(response.message).to.equal('Destination L.G.A. Id must be a number');
 				done();
 			});
 	});
@@ -878,7 +878,7 @@ describe('Test parcel routes', () => {
 				const response = res.body;
 				expect(res.statusCode).to.equal(400);
 				expect(response.status).to.equal('Fail');
-				expect(response.message).to.equal('Destination state Id is not allowed to be empty');
+				expect(response.message).to.equal('Destination state Id must be a number');
 				done();
 			});
 	});

@@ -134,7 +134,7 @@ export default class ParcelValidator extends Validator {
 		return {
 			receiverName: Joi.string().required().max(200).label(`Receiver name`),
 			receiverPhone: UserValidator.getPhoneSchema({
-				key: 'receiverPhone', str: 'Receiver'
+				key: 'receiverPhone', str: 'Receiver', label: 'phone number', isRequired: true
 			}).receiverPhone
 		};
 	}
