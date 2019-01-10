@@ -84,7 +84,7 @@ export default class ParcelValidator extends Validator {
 				Joi.number().integer().greater(0).positive(),
 				Joi.number().precision(2).greater(0).positive()
 			]).required(),
-			description: Joi.string().max(255).allow(''),
+			description: Joi.string().max(255).allow('').required(),
 			deliveryMethod: Joi.string().valid('Fast', 'Normal').required()
 				.max(20).label('Delivery method'),
 		};
@@ -101,8 +101,8 @@ export default class ParcelValidator extends Validator {
 	static getPickupDetailsSchema() {
 		return {
 			pickUpAddress: Joi.string().required().max(150).label('Pickup address'),
-			pickUpLGAId: Joi.string().required().max(100).label('Pickup LGA id'),
-			pickUpStateId: Joi.string().required().max(100).label('Pickup state Id')
+			pickUpLGAId: Joi.number().integer().required().label('Pickup LGA id'),
+			pickUpStateId: Joi.number().integer().required().label('Pickup state Id')
 		};
 	}
 
@@ -117,8 +117,8 @@ export default class ParcelValidator extends Validator {
 	static getDestinationDetailsSchema() {
 		return {
 			destinationAddress: Joi.string().required().max(150).label('Destination address'),
-			destinationLGAId: Joi.string().required().max(100).label('Destination L.G.A. Id'),
-			destinationStateId: Joi.string().required().max(100).label('Destination state Id'),
+			destinationLGAId: Joi.number().integer().required().label('Destination L.G.A. Id'),
+			destinationStateId: Joi.number().integer().required().label('Destination state Id'),
 		};
 	}
 

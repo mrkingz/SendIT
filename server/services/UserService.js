@@ -3,9 +3,9 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import decode from 'jwt-decode';
 import db from '../database';
-import UtilityService from '../services/UtilityService';
-import UserSQLService from '../services/UserSQLService';
-import NotificationService from '../services/NotificationService';
+import UtilityService from "./UtilityService";
+import UserSQLService from "./UserSQLService";
+import NotificationService from "./NotificationService";
 
 /**
  *

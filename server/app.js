@@ -6,10 +6,9 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import routes from './routes';
 
-dotenv.config();
+dotenv.load();
 const app = express();
-let env = process.env.NODE_ENV;
-env = typeof env !== 'undefined' ? env.trim() : env;
+let NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV.trim() : 'development';
 
 app.use(logger('dev'));
 
@@ -46,9 +45,8 @@ app.all('*', (req, res) => {
   });
 });
 const listener = app.listen(process.env.PORT || 8000, () => {
-  if (env === 'test' || env === 'development') {
+  if (NODE_ENV !== 'production') {
     console.log(`Server running on port: ${listener.address().port}`);
   }
 });
-
 export default app;
