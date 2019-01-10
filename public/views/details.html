@@ -355,7 +355,7 @@
 
 		const editParcel = async (e) => {
 			e.preventDefault();
-			const fields = ['weight'];
+			const fields = ['weight', 'description'];
 			if (!hasEmpty(fields) && isValidWeight(document.getElementById('weight'))) {
 				updateRequest({
 					path: `/parcels/${getParcelId()}/editParcel`,

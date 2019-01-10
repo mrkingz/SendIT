@@ -1,27 +1,33 @@
 /* eslint-disable no-undef */
 /* eslint-disable no-unused-vars */
+const places = (options) => {
+  const { state, lga } = options;
+  return `<div class="control-group">
+            <label class="required" for="state">State</label>
+            <select name="${state.name}" id="state" onchange="loadLGAs(event)" class="control" value="${state.stateId}">
+            <option value="">Select state</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label class="required" for="city">L.G. Area</label>
+            <select name="${lga.name}" id="lga" class="control" value="${lga.lgaId}">
+              <option valaue="">Select L.G. Area</option>
+            </select>
+          </div>`;
+};
 const editDestinationModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="address">Address</label>
                       <input type="text" class="control" name="destinationAddress" id="address" placeholder="Address" value="${parcel.to.address}">
                     </div>
-                    <div class="control-group">
-                      <label class="required" for="state">State</label>
-                      <select name="destinationStateId" id="state" onchange="loadLGAs(event)" class="control" value="${parcel.to.stateId}">
-                      <option value="">Select state</option>
-                      </select>
-                    </div>
-                    <div class="control-group">
-                      <label class="required" for="city">L.G. Area</label>
-                      <select name="destinationLGAId" id="lga" class="control" value="${parcel.to.lgaId}">
-                        <option value="">Select L.G. Area</option>
-                      </select>
-                    </div>
+                    ${places({ 
+                      state: { stateId: parcel.to.stateId, name: 'destinationStateId' },
+                      lga: { lgaId: parcel.to.lgaId, name: 'destinationLGAId' }
+                    })}
                     <div class="control-group">
                       <button class="btn btn-primary" onclick="editDestination(event)">Save</button>
                     </div>
-                </div>
                 </form>`;
   showModal({
     content, 
@@ -31,7 +37,7 @@ const editDestinationModal = (e, parcel) => {
     }
   });
   loadStates(['state']);
-  document.getElementById('address').focus();
+  document.getElementsByClassName('control')[0].focus();
 };
 
 const editParcelModal = (e, parcel) => {
@@ -41,7 +47,7 @@ const editParcelModal = (e, parcel) => {
                         <input type="text" id="weight" class="control" name="weight" placeholder="Parcel weight" value="${parcel.weight}">
                       </div>
                       <div class="control-group">
-                        <label for="description">Description</label>
+                        <label class="required" for="description">Description</label>
                         <input type="text" class="control" name="description" id="description" placeholder="Description" value="${parcel.description}">
                       </div>
                       <div class="control-group">
@@ -69,27 +75,19 @@ const editParcelModal = (e, parcel) => {
       document.querySelector(`.control-group #${id}`).checked = true;
     }
   });
-  document.querySelector('.control-group #weight').focus();
+  document.getElementsByClassName('control')[0].focus();
 };
 
 const editPickupModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="pick-up-address">Address</label>
-                      <input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address" value="${parcel.from.address}">
+                      <input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address" value="${parcel.from.address}" autofocus>
                     </div>
-                    <div class="control-group"> 
-                      <label class="required" for="pick-up-state">State</label>
-                      <select id="state" name="pickUpStateId" class="control" onchange="loadLGAs(event)" value="${parcel.from.stateId}">
-                        <option value="">Select state</option>
-                      </select>
-                    </div>
-                    <div class="control-group">
-                      <label class="required" for="pick-up-lga">L.G. Area</label>
-                      <select name="pickUpLGAId" id="lga" class="control" value="${parcel.from.lgaId}">
-                        <option value="">Select L.G. Area</option>
-                      </select>
-                    </div>
+                    ${places({ 
+                      state: { stateId: parcel.from.stateId, name: 'pickUpStateId' },
+                      lga: { lgaId: parcel.from.lgaId, name: 'pickUpLGAId' }
+                    })}
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="editPickup(event)">Save</button>
                     </div>
@@ -102,7 +100,6 @@ const editPickupModal = (e, parcel) => {
     }
   });
   loadStates(['state']);
-  document.getElementById('pick-up-address').focus();
 };
 
 const editReceiverModal = (e, parcel) => {
@@ -127,19 +124,12 @@ const editReceiverModal = (e, parcel) => {
 };
 
 const updateLocationModal = (e) => {
+  const { stateId, lgaId } = parcel.presentLocation || {};
   const content = `<form class="form">
-                    <div class="control-group">
-                      <label class="required" for="present-state">State</label>
-                      <select name="locationStateId" id="state" class="control" autofocus>
-                        <option value="">Select state</option>
-                      </select>
-                    </div>
-                    <div class="control-group">
-                      <label class="required" for="lga">L.G. Area</label>
-                      <select name="locationLGAId" id="lga" class="control" value="${parcel.to.lgaId}" onchange="loadLGAs(event)">
-                        <option value="">Select L.G.A.</option>
-                      </select>
-                    </div>
+                    ${places({ 
+                      state: { stateId, name: 'locationStateId' },
+                      lga: { lgaId, name: 'locationLGAId' }
+                    })}
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="updatePresentLocation(event)">Save</button>
                     </div>
@@ -220,7 +210,7 @@ const editNameModal = (e, user) => {
   const content = `<form class="form">
                     <div class="control-group">
                       <label class="required" for="firstname">Firstname</label>
-                      <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" value="${user.firstname}">
+                      <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" value="${user.firstname}" autofocus>
                     </div>
                     <div class="control-group">
                       <label class="required" for="lastname">Lastname</label>
@@ -231,5 +221,4 @@ const editNameModal = (e, user) => {
                     </div>
                   </form>`;
   showModal({ content, title: e.target.innerText });
-  document.getElementById('firstname').focus();
 };

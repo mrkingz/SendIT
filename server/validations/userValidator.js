@@ -50,7 +50,7 @@ export default class UserValidator extends Validator {
       delete req.body.decoded;
       let schemas = {
         name: this.getNameSchema(),
-        phone: this.getPhoneSchema(),
+        phoneNumber: this.getPhoneSchema(),
         password: this.getPasswordSchema(option),
         reset: this.getPasswordSchema(option),
       };
@@ -71,6 +71,7 @@ export default class UserValidator extends Validator {
 	static getUserSchema() {
     return Joi.object()
     .keys(this.getNameSchema())
+    .keys(this.getPhoneSchema({ isRequired: false }))
     .keys(this.getPasswordSchema())
     .keys(this.getEmailSchema());
   }
@@ -99,18 +100,19 @@ export default class UserValidator extends Validator {
    * @memberof UserValidator
    */
   static getPhoneSchema(obj = {}) {
-    const { str, key } = obj;
+    const { str, key, isRequired } = obj;
     const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
     const label = `${str ? str.concat(' ') : ''}phone number`;
     return {
-      [key || 'phoneNumber']: Joi.string().required().max(50).regex(phoneExp)
-        .label(label).error((errors) => {
-          const err = errors[0];
-          switch (err.type) {
-            case 'string.regex.base': return `${label} is inavlid`;
-            default: return err;
-          }
-        })
+      [key || 'phoneNumber']: isRequired 
+        ? Joi.string().required().max(50).regex(phoneExp).label(label).error((errors) => {
+            const err = errors[0];
+            switch (err.type) {
+              case 'string.regex.base': return `${label} is inavlid`;
+              default: return err;
+            }
+          })
+        : Joi.string().allow()
     };
   }
 

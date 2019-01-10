@@ -4,19 +4,19 @@
   "description": "Parcel delivery order app",
   "main": "app.js",
   "engines": {
-    "node": "7.10.0"
+    "node": "11.6.0"
   },
   "scripts": {
     "start": "babel-node ./server/app.js",
-    "start:dev": "SET NODE_ENV=development && nodemon --watch server --exec babel-node ./server/app",
-    "tests": "SET NODE_ENV=test && mocha --require babel-core/register server/tests/**/*.js --timeout 100000 --exit",
+    "start:dev": "cross-env NODE_ENV=development nodemon --watch server --exec babel-node ./server/app",
+    "tests": "cross-env NODE_ENV=test mocha --require babel-core/register server/tests/**/*.js --timeout 100000 --exit",
     "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 100000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
-    "migrate:test": "SET NODE_ENV=test && babel-node ./server/database/migrate.js --exit",
-    "migrate:dev": "SET NODE_ENV=development && babel-node ./server/database/migrate.js",
-    "migrate:prod": "SET NODE_ENV=production && babel-node ./server/database/migrate.js --exit",
-    "seed:dev": "SET NODE_ENV=development && babel-node ./server/database/seed.js",
-    "seed:prod": "SET NODE_ENV=production && babel-node ./server/database/seed.js --exit",
+    "migrate:test": "cross-env NODE_ENV=test babel-node ./server/database/migrate.js --exit",
+    "migrate:dev": "cross-env NODE_ENV=development babel-node ./server/database/migrate.js",
+    "migrate:prod": "cross-env NODE_ENV=production babel-node ./server/database/migrate.js --exit",
+    "seed:dev": "cross-env NODE_ENV=development babel-node ./server/database/seed.js",
+    "seed:prod": "cross-env NODE_ENV=production babel-node ./server/database/seed.js --exit",
     "migrate:refresh": "npm run migrate:dev && npm run seed:dev"
   },
   "nyc": {
