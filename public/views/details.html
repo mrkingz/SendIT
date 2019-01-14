@@ -13,183 +13,155 @@
 </head>
 
 <body onload="getDetails()">
-	<header class="header align-bottom">
-		<div class="header-content">
-			<a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-			<div class="menu-div">
-				<ul class="navbar">
-					<li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-					<li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-				</ul>
+	<div class="main">
+		<header class="header align-bottom">
+			<div class="header-content">
+				<a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+				<div class="menu-div">
+					<ul class="navbar">
+						<li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
+						<li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
+					</ul>
+				</div>
 			</div>
-		</div>
-	</header>
-	<div class="row no-gutters">
-		<div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-
-			<div class="wrapper mx-0 mb-0">
-				<div class="row">
-					<div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-						<div class="align-center panel">
-							<div class="image-div mb-lg avatar-wrapper">
-								<img src="../images/avatar.png" alt="" class="side-image avatar">
-							</div>
-							<div class="size-12 more-details">
-								<div id="name" class="bold my-lg" style="font-size: 20px;"></div>
-								<div id="role"></div>
-							</div>
+		</header>
+		<div class="row no-gutters">
+			<div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
+				<div class="wrapper section">
+					<div id="order-details">
+						<div class="content-header">
+							Order details
 						</div>
-					</div>
-					<div class="col-lg-6 col-md-6 col-sm-12">
-						<div style="padding-bottom: 30px">
-							<div id="order-details">
-								<div class="content-header">
-									Order details
-								</div>
-								<div class="panel">
-									<div class="flex justify-content-between mb-md">
-										<div> <a href="/orders" class="btn btn-link size-11 btn-sm skyblue-color">Go back</a></div>
-										<div class="dropdown" id="dropdown"></div>
+						<div class="panel">
+							<div class="flex justify-content-between mb-md">
+								<div> <a href="/orders" class="btn btn-link size-11 btn-sm skyblue-color">Go back</a></div>
+								<div class="dropdown" id="dropdown"></div>
+							</div>
+							<div class="card">
+								<div class="more-details">
+									<div class="nexted">
+										<div class="card-header">
+											<div class="card-title card-title-line">
+												<label class="bold">Tracking #: <span id="data-trackingNo"></span></label>
+											</div>
+										</div>
+										<div class="card-wrapper">
+
+											<div class="card-row">
+												<div class="data-header">Weight</div>
+												<div class="data weight" id="data-weight"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">Parcel description</div>
+												<div class="data" id="data-description"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">Date sent</div>
+												<div class="data" id="data-sentOn"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">Date delivered</div>
+												<div class="data" id="data-deliveredOn"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">Delivery method</div>
+												<div class="data" id="data-deliveryMethod"></div>
+											</div>
+
+											<div class="card-row">
+												<div class="data-header">Status</div>
+												<div class="data red-color" id="data-deliveryStatus"></div>
+											</div>
+
+											<div class="card-row">
+												<div class="data-header">Present location</div>
+												<div class="data" id="data-presentLocation"></div>
+											</div>
+										</div>
 									</div>
 
-									<div class="card details">
-
-										<div class="more-details">
-											<div class="nexted">
-												<div class="card-header">
-													<div class="card-title card-title-line">
-														<label class="bold">Tracking #: <span id="data-trackingNo"></span></label>
-													</div>
-												</div>
-												<div class="card-wrapper">
-
-													<div class="card-row">
-														<div class="data-header">Weight</div>
-														<div class="data weight" id="data-weight"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">Parcel description</div>
-														<div class="data" id="data-description"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">Date sent</div>
-														<div class="data" id="data-sentOn"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">Date delivered</div>
-														<div class="data" id="data-deliveredOn"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">Delivery method</div>
-														<div class="data" id="data-deliveryMethod"></div>
-													</div>
-
-													<div class="card-row">
-														<div class="data-header">Status</div>
-														<div class="data red-color" id="data-deliveryStatus"></div>
-													</div>
-
-													<div class="card-row">
-														<div class="data-header">Present location</div>
-														<div class="data" id="data-presentLocation"></div>
-													</div>
-												</div>
+									<div class="nexted">
+										<div class="card-header">
+											<div class="card-title">
+												<label class="size-12 bold" for="pickup-details">Pick up details</label>
+											</div>
+										</div>
+										<div class="card-wrapper">
+											<div class="card-row">
+												<div class="data-header">Address</div>
+												<div class="data" id="data-from-address"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">L.G.A.</div>
+												<div class="data" id="data-from-lga"></div>
 											</div>
 
-											<div class="nexted">
-												<div class="card-header">
-													<div class="card-title">
-														<label class="size-12 bold" for="pickup-details">Pick up details</label>
-													</div>
-												</div>
-												<div class="card-wrapper">
-													<div class="card-row">
-														<div class="data-header">Address</div>
-														<div class="data" id="data-from-address"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">L.G.A.</div>
-														<div class="data" id="data-from-lga"></div>
-													</div>
-
-													<div class="card-row">
-														<div class="data-header">State</div>
-														<div class="data" id="data-from-state"></div>
-													</div>
-
-													<div class="card-row">
-														<div class="data-header">Sender name</div>
-														<div class="data" id="data-sender-name"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">Sender's phone No.</div>
-														<div class="data" id="data-sender-phone">--</div>
-													</div>
-												</div>
+											<div class="card-row">
+												<div class="data-header">State</div>
+												<div class="data" id="data-from-state"></div>
 											</div>
 
-											<div class="nexted">
+											<div class="card-row">
+												<div class="data-header">Sender name</div>
+												<div class="data" id="data-sender-name"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">Sender's phone No.</div>
+												<div class="data" id="data-sender-phone">--</div>
+											</div>
+										</div>
+									</div>
 
-												<div class="card-header">
-													<div class="card-title">
-														<label class="size-12 bold">Destination details</label>
-													</div>
-												</div>
+									<div class="nexted">
 
-												<div class="card-wrapper">
+										<div class="card-header">
+											<div class="card-title">
+												<label class="size-12 bold">Destination details</label>
+											</div>
+										</div>
 
-													<div class="card-row">
-														<div class="data-header">State</div>
-														<div class="data" id="data-to-state"></div>
-													</div>
+										<div class="card-wrapper">
 
-													<div class="card-row">
-														<div class="data-header">L.G.A.</div>
-														<div class="data" id="data-to-lga"></div>
-													</div>
+											<div class="card-row">
+												<div class="data-header">State</div>
+												<div class="data" id="data-to-state"></div>
+											</div>
 
-													<div class="card-row">
-														<div class="data-header">Address</div>
-														<div class="data" id="data-to-address"></div>
-													</div>
-													<div class="card-row">
-														<div class="data-header">Receiver name</div>
-														<div class="data" id="data-receiver-name"></div>
-													</div>
+											<div class="card-row">
+												<div class="data-header">L.G.A.</div>
+												<div class="data" id="data-to-lga"></div>
+											</div>
 
-													<div class="card-row">
-														<div class="data-header">Receiver phone number</div>
-														<div class="data" id="data-receiver-phone"></div>
-													</div>
-												</div>
+											<div class="card-row">
+												<div class="data-header">Address</div>
+												<div class="data" id="data-to-address"></div>
+											</div>
+											<div class="card-row">
+												<div class="data-header">Receiver name</div>
+												<div class="data" id="data-receiver-name"></div>
+											</div>
+
+											<div class="card-row">
+												<div class="data-header">Receiver phone number</div>
+												<div class="data" id="data-receiver-phone"></div>
 											</div>
 										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-						<div id="message"></div>
-					</div>
-
-					<div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-						<div class="panel">
-							<div class="notification-header">Notifications</div>
-
-							<div class="alert alert-info">No active orders at the moment</div>
-						</div>
 					</div>
 				</div>
+				<div id="message"></div>
 			</div>
-
-			<footer class="footer mt-lg">
-				<div class="footer-content align-center">
-					&copy; Andela bootcamp,
-					<script>document.write(new Date().getFullYear())</script>. All right reserved
-				</div>
-			</footer>
 		</div>
 	</div>
-
+	<footer class="footer mt-lg">
+		<div class="footer-content align-center">
+			&copy; Andela bootcamp,
+			<script>document.write(new Date().getFullYear())</script>. All right reserved
+		</div>
+	</footer>
 	<script src="../js/jquery-3.2.1.min.js"></script>
 	<script src="../js/script.js"></script>
 	<script src="../js/modals.js"></script>
@@ -260,8 +232,8 @@
 		const appendMenu = async (userId, deliveryStatus) => {
 			if (deliveryStatus === 'Cancelled') return;
 			const open = `<button onclick="dropdown('order-menu')" class="btn btn-link btn-sm dropbtn">
-                      <i class="fa fa-bars bold"></i></button>
-                    <div id="order-menu" class="dropdown-content size-10 dropdown-content-mini">`;;
+							<i class="fa fa-bars bold"></i></button>
+							<div id="order-menu" class="dropdown-content size-10 dropdown-content-mini"></div>`;
 			const editBtns = `<button class="menu-btn" onclick="editDestinationModal(event, parcel)">Edit destination</button>
 							  <button class="menu-btn" onclick="editParcelModal(event, parcel)">Edit parcel details</button>
 							  <button class="menu-btn" onclick="editPickupModal(event, parcel)">Edit pickup details</button>
@@ -296,7 +268,7 @@
 								</div>`;
 			showModal({
 				content,
-				title: type,
+				title: `Confirm ${type}`,
 				type: 'confirm',
 				callback: () => {
 					document.getElementById('confirm-btn').addEventListener('click', callback);

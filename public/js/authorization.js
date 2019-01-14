@@ -15,8 +15,16 @@ const checkAuth = async () => {
     })).then(res => res.json()).then((res) => {
       if (res.data.user) {
         const { firstname, lastname, isAdmin } = res.data.user;
-        document.getElementById('name').innerHTML = `${firstname} ${lastname}`;
-        document.getElementById('role').innerHTML = isAdmin ? `(Administrator)` : '';
+        const elem = document.getElementById('name');
+        const photo = document.getElementById('image');
+        if (elem) {
+          elem.innerHTML = `${firstname} ${lastname}`;
+        }
+        if (photo) {
+          photo.src = photo && res.data.user.photoURL 
+          ? res.data.user.photoURL 
+          : '../images/avatar.png';
+        }
         return res.data.user;
       }
     });

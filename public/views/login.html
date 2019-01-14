@@ -12,64 +12,67 @@
 </head>
 
 <body>
-	<header class="header align-bottom">
-		<div class="header-content">
-			<a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-			<div class="menu-div">
-				<ul class="navbar">
-					<li><a href="/" class="btn btn-link btn-sm">Home</a></li>
-					<li><a href="/signup" class="btn btn-link btn-sm">Sign up</a></li>
-				</ul>
+	<div class="main">
+		<header class="header align-bottom">
+			<div class="header-content">
+				<a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+				<div class="menu-div">
+					<ul class="navbar">
+						<li><a href="/" class="btn btn-link btn-sm">Home</a></li>
+						<li><a href="/signup" class="btn btn-link btn-sm">Sign up</a></li>
+					</ul>
+				</div>
 			</div>
-		</div>
-	</header>
-	<div class="row no-gutters">
-		<div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-			<div class="auth-container">
-				<div class="row no-gutters">
-					<div class="col-12">
-						<div class="wrapper auth-padding">
-							<div class="row">
-								<div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-									<div class="align-center bold mt-lg">
-										<h2>Sign in</h2>
+		</header>
+		<div class="row no-gutters">
+			<div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+				<div class="flex justify-content-center">
+					<div class="auth-container">
+						<div class="auth-title">
+							<h2>Sign in</h2>
+						</div>
+						<div class="panel-auth">
+							<form class="form" action="" method="POST">
+								<div class="section">
+									<div class="control-group">
+										<label for="email">E-mail address</label>
+										<input type="email" class="control col-12" name="email" id="email" placeholder="E-mail address"
+											autocomplete="off">
 									</div>
-									<form class="form" action="" method="POST">
-										<div class="section">
-											<div class="control-group">
-												<label for="email">E-mail address</label>
-												<input type="email" class="control col-12" name="email" id="email" placeholder="E-mail address"
-												 autocomplete="off">
-											</div>
 
-											<div class="control-group">
-												<label for="password">Password</label>
-												<input type="password" class="control col-12" name="password" id="password" placeholder="Password">
-											</div>
-											<div id="message"></div>
-											<div class="control-group mb-sm">
-												<button class="btn btn-primary btn-block btn-lg" onclick="login(event)">Sign in</button>
-											</div>
-											<div class="align-right mx-sm">
-												<a href="/password" class="btn btn-link size-11 btn-sm forgot-password">Forgot password?</a>
-											</div>
+									<div class="control-group">
+										<label for="password">Password</label>
+										<input type="password" class="control col-12" name="password" id="password" placeholder="Password">
+									</div>
+									<div class="control-group">
+										<div class="form-check">
+											<input class="form-check-input" type="checkbox" id="remember-me" name="rememberMe" value="true">
+											<label class="form-check-label" for="remember-me">Remember me</label>
 										</div>
-									</form>
+									</div>
+									<div id="message"></div>
+									<div class="control-group mb-sm">
+										<button class="btn btn-primary btn-block btn-lg" onclick="login(event)">Sign in</button>
+									</div>
+									<div class="control-group">
+										<div class="align-right mt-md">
+											<a href="/password" class="btn btn-link size-11 btn-sm forgot-password">Forgot password?</a>
+										</div>
+									</div>
 								</div>
-							</div>
+							</form>
 						</div>
 					</div>
 				</div>
 			</div>
-			<footer class="footer">
-				<div class="footer-content align-center">
-					&copy; Andela bootcamp,
-					<script>document.write(new Date().getFullYear())</script>. All right reserved
-				</div>
-			</footer>
-		</div>
+		</div>		
 	</div>
-
+	<footer class="footer mt-lg">
+		<div class="footer-content align-center">
+			&copy; Andela bootcamp,
+			<script> document.write(new Date().getFullYear());</script>. All right reserved
+		</div>
+	</footer>
 	<script src="../js/jquery-3.2.1.min.js"></script>
 	<script src="../js/script.js"></script>
 	<script>

@@ -47,4 +47,20 @@ export default class Controller extends UtilityService {
         : `Sorry, internal error occured, try again later!`
     });
   }
+
+  /**
+   * Return error to client
+   *
+   * @static
+   * @returns {object} HTTP response object
+   * @method errorHandler
+   * @memberof Controller
+   */
+  static errorHandler() {
+    return (error, req, res, next) => {
+      return error 
+        ? this.response(res, { statusCode: 400, message: error.message || error }) 
+        : next();
+    };
+  }
 }

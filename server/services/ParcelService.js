@@ -2,9 +2,9 @@
 /* eslint-disable no-fallthrough */
 import moment from 'moment';
 import db from '../database';
-import UtilityService from '../services/UtilityService';
-import ParcelSQLService from '../services/ParcelSQLService';
-import NotificationService from '../services/NotificationService';
+import UtilityService from "./UtilityService";
+import ParcelQuery from '../database/queries/parcelQuery';
+import NotificationService from "./NotificationService";
 
 /**
  *
@@ -71,7 +71,7 @@ export default class ParcelService extends UtilityService {
    * @memberof ParcelService
    */
   static countOrders(userId) {
-    return db.sqlQuery(ParcelSQLService.selectCounts(userId))
+    return db.sqlQuery(ParcelQuery.selectCounts(userId))
       .then((result) => {
         return (!result.rows[0])
           ? { statusCode: 404, message: 'No delivery order found' }
@@ -105,7 +105,7 @@ export default class ParcelService extends UtilityService {
       destinationStateId, trackingNo, this.computePrice(weight), decoded.userId,
       this.ucFirstStr(receiverName, { bool: true }), receiverPhone, date, date
     ];
-    return db.sqlQuery(ParcelSQLService.insertParcel(values))
+    return db.sqlQuery(ParcelQuery.insertParcel(values))
       .then((result) => {
         const parcel = result.rows[0];
         const { email, firstname, lastname } = decoded;
@@ -140,7 +140,7 @@ export default class ParcelService extends UtilityService {
  * @memberof ParcelService
  */
 static getPresentLocation(stateId, lgaId) {
-    db.sqlQuery(ParcelSQLService.fetchPlace({ stateId, lgaId }))
+    db.sqlQuery(ParcelQuery.fetchPlace({ stateId, lgaId }))
     .then(result => result.rows[0]);
   }
 
@@ -153,7 +153,7 @@ static getPresentLocation(stateId, lgaId) {
    * @memberof ParcelService
    */
   static fetchParcels(options) {
-    return db.sqlQuery(ParcelSQLService.selectParcels(options)).then((result) => {
+    return db.sqlQuery(ParcelQuery.selectParcels(options)).then((result) => {
       const parcels = result.rows;
       const { filter } = options;
       return (!parcels[0])
@@ -204,7 +204,7 @@ static getPresentLocation(stateId, lgaId) {
    * @memberof ParcelService
    */
   static findParcel(options) {
-    return db.sqlQuery(ParcelSQLService.selectParcel(options))
+    return db.sqlQuery(ParcelQuery.selectParcel(options))
       .then((result) => {
         const parcel = result.rows[0];
         if (parcel) {
@@ -493,7 +493,7 @@ static getPresentLocation(stateId, lgaId) {
    */
   static getAreas(options) {
     const { stateId, lgaId } = options;
-    return db.sqlQuery(ParcelSQLService.fetchPlace({ stateId, lgaId }))
+    return db.sqlQuery(ParcelQuery.fetchPlace({ stateId, lgaId }))
       .then((result) => {
         const area = result.rows[0];
         return area
@@ -599,7 +599,7 @@ static getPresentLocation(stateId, lgaId) {
       // Notice we get the id of the user who creatd the found parcel 
       // The goal is to optimize database operation by updating with user and parcel id
       options = { update, fields, values: { userId: data.userId, parcelId, isAdmin } };
-      return db.sqlQuery(ParcelSQLService.updateParcel(this.getUpdates(options, data)))
+      return db.sqlQuery(ParcelQuery.updateParcel(this.getUpdates(options, data)))
         .then((result) => {
           const parcel = result.rows[0], sender = data.sender;
           if (update === 'delivery-status') {
@@ -664,7 +664,7 @@ static getPresentLocation(stateId, lgaId) {
    * @memberof PlacesService
    */
 	static fetchPlaces(options) {
-		return db.sqlQuery(ParcelSQLService.fetchPlaces(options))
+		return db.sqlQuery(ParcelQuery.fetchPlaces(options))
 			.then((result) => {
         const states = result.rows;
         return states[0]
@@ -686,7 +686,7 @@ static getPresentLocation(stateId, lgaId) {
 	 * @memberof ParcelService
 	 */
 	static fetchPlace(options) {
-		return db.sqlQuery(ParcelSQLService.fetchPlace(options))
+		return db.sqlQuery(ParcelQuery.fetchPlace(options))
 			.then(result => result.rows[0]);
 	}
 	

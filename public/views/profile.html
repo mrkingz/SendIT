@@ -14,75 +14,83 @@
 </head>
 
 <body onload="getProfileDetails()">
-  <header class="header align-bottom">
-    <div class="header-content">
-      <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-      <div class="menu-div">
-        <ul class="navbar">
-          <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-          <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-        </ul>
+  <div class="main">
+    <header class="header align-bottom">
+      <div class="header-content">
+        <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+        <div class="menu-div">
+          <ul class="navbar">
+            <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
+            <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </header>
-  <div class="row no-gutters">
-    <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-      <div class="wrapper mx-0 mb-0">
-        <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-            <div class="align-center panel">
-              <div class="image-div mb-lg avatar-wrapper">
-                <img src="../images/avatar.png" alt="" class="side-image avatar">
-              </div>
-              <div class="size-12 more-details">
-                <div id="name" class="bold my-lg" style="font-size: 20px;"></div>
-                <div id="role"></div>
+    </header>
+    <div class="row no-gutters">
+      <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
+        <div class="wrapper section">
+          <div class="content-header">Profile info</div>
+          <div class="panel">
+          <div class="row no-gutters">
+            <div class="col-12">
+              <div class="dropdown">
+                <button onclick="dropdown('menu')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-bars"></i></button>
+                <div id="menu" class="dropdown-content size-11 dropdown-content-mini">
+                  <button class="menu-btn" onclick="editNameModal(event, user)">Update name</button>
+                  <button class="menu-btn" id="phone-btn" onclick="updatePhoneModal(event, user)">Update phone number</button>
+                  <button class="menu-btn" onclick="changePasswordModal(event, user)">Change password</button>
+                </div>
               </div>
             </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <div style="padding-bottom: 30px">
-              <div class="content-header">Profile info</div>
-              <div class="panel">
-                <div class="dropdown">
-                  <button onclick="dropdown('menu')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-bars"></i></button>
-                  <div id="menu" class="dropdown-content size-11 dropdown-content-mini">
-                    <button class="menu-btn" onclick="editNameModal(event, user)">Update name</button>
-                    <button class="menu-btn" id="phone-btn" onclick="updatePhoneModal(event, user)">Update phone number</button>
-                    <button class="menu-btn" onclick="changePasswordModal(event, user)">Change password</button>
+          <div class="row mt-md">
+            <div class="col-12">
+              <div class="row">
+                <div class="col-lg-4 col-md-4 col-m-12">
+                  <div class="align-center avatar-div">
+                    <img  id="image" src="../images/avatar.png" alt="" class="avatar">                
                   </div>
                 </div>
-              </div>
-              <div class="panel">
-                <div class="profile-div">
-                  <div class="row no-gutters">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                      <div class="data-wrapper">
-                        <div class="data-row">
-                          <label for="firstname" class="data-label">Firstname</label>
-                          <div class="data-value" id="data-firstname"></div>
-                        </div>
-                        <div class="data-row">
-                          <label for="firstname" class="data-label">Lastname</label>
-                          <div class="data-value" id="data-lastname"></div>
-                        </div>
-                        <div class="data-row">
-                          <label for="firstname" class="data-label">E-mail address</label>
-                          <div class="data-value" id="data-email"></div>
-                        </div>
-                        <div class="data-row">
-                          <label for="firstname" class="data-label">Phone number</label>
-                          <div class="data-value" id="data-phonenumber">--</div>
-                        </div>
-                      </div>
+                <div class="col-lg-8 col-md-8 col-m-12">
+                  <div class="mt-md">
+                    <div class="data-row">
+                      <label for="firstname" class="data-label">Firstname</label>
+                      <div class="data-value" id="data-firstname"></div>
                     </div>
-                  </div>
+                    <div class="data-row">
+                      <label for="firstname" class="data-label">Lastname</label>
+                      <div class="data-value" id="data-lastname"></div>
+                    </div>
+                    <div class="data-row">
+                      <label for="firstname" class="data-label">E-mail address</label>
+                      <div class="data-value" id="data-email"></div>
+                    </div>
+                    <div class="data-row">
+                      <label for="firstname" class="data-label">Phone number</label>
+                      <div class="data-value" id="data-phonenumber">--</div>
+                    </div>
+                    <div id="photo-widget">
+                      <form id="upload" enctype="multipart/form-data">
+                        <label class="input-label skyblue-color">
+                            <input id="photo" type="file" name="photo" onchange="browsePhoto(event)" required/>
+                            <span>Upload photo</span>
+                        </label>
+                      </form>
+                        <div class="hide">
+                          <button id="save" class="btn btn-sm btn-link skyblue-color" onclick="uploadPhoto(event)">Save</button>
+                          <button id="cancel" class="btn btn-sm btn-link skyblue-color mx-md" onclick="uploadPhoto(event, false)">Cancel</button>
+                        </div>
+                    </div>
+                  </div>               
                 </div>
-                <div class="mt-lg height-transition" id="orders"></div>
+              </div>
               </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
+            <div class="row">
+              <div class="col-12">
+                  <div class="mt-lg height-transition" id="orders"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -115,6 +123,59 @@
             }
           });
         })
+    }
+
+    const getImageExtension = (file) => file.name.split('.').pop();
+    const getImageOrininalName = (file) => {
+      const arr = file.name.split('.');
+      arr.pop();
+      return arr.join('.');
+    }
+
+    const validatePhoto = (file) => {
+      const size = file.size / 1024 / 1024; // in MB
+      const ext = getImageExtension(file);
+      const formats = ['jpg', 'png', 'jpeg'];
+      let msg = null;
+      if (!formats.includes(ext)) {
+          msg = `Photo format must be one of <b>${formats.join(', ')}</b>`;
+      } else if (size > 2) {
+        msg = 'File size exceeds 2 MB';
+      }
+      if (msg) {
+        showModal({ 
+          type: 'alert', title: 'Error', content: `<div class="alert alert-danger">${msg}</div>`
+        });
+      }
+      return msg === null;
+    }
+
+    const browsePhoto = (e) => {
+      const input = e.target;
+
+      if (validatePhoto(input.files[0])) {
+        const photo = document.getElementById('image');
+        document.getElementById('cancel').value = user.photoURL || photo.src;
+        const container = document.getElementById('photo-widget');
+        container.firstElementChild.classList.add('hide')
+        container.lastElementChild.classList.remove('hide');
+        photo.src = URL.createObjectURL(input.files[0]);
+      }
+    }
+
+    const uploadPhoto = (e, upload = true) => {
+      e.preventDefault();
+      if (!upload) {
+        document.getElementById('image').src = e.target.value;
+      } else { 
+        showSpinner();
+        authUser.then((user) => {
+          const file = document.getElementById('photo').files[0];
+          const data = new FormData();
+          data.append('photo', file);
+          updateRequest({ path: `/auth/uploadPhoto`, data });         
+        });
+     }
     }
 
     const updateName = (e) => {
@@ -179,7 +240,7 @@
 
     const orderBreakdown = (data, userId) => {
       let content = `<div class="alert alert-info size-13 my-lg">You currently have no delivery orders. <br> Click below to create<br/>
-                      <a href="/create" class="btn btn-link bold fine-btn mt-lg">Create Order</a>
+                      <a href="/create" class="btn btn-link bold fine-btn btn-lg mt-lg">Create Order</a>
                       </div>`;
       if (data.total > 0) {
         content = `<div class="more-details mb-md">
@@ -212,7 +273,7 @@
                         </div>
                       </div>
                       <div class="more-detail mt-lg align-right">
-                        <a href="/users/orders" class="btn btn-primary btn-block btn-lg">View orders</a>
+                        <a href="/users/orders" class="btn btn-link skyblue-color">See orders</a>
                       </div>
                     </div>
                 </div>`;

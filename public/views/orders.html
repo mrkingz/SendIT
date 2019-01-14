@@ -11,78 +11,48 @@
         <script src="../js/authorization.js"></script>
     </head>
     <body onload="getOrders()">
-        <header class="header align-bottom">
-            <div class="header-content">
-                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-                <div class="menu-div">
-                    <ul class="navbar">
-                        <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-                        <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-                    </ul>
+        <div class="main">
+            <header class="header align-bottom">
+                <div class="header-content">
+                    <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+                    <div class="menu-div">
+                        <ul class="navbar">
+                            <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
+                            <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </header>  
-        <div class="row no-gutters">
-            <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-                
-                <div class="wrapper mx-0 mb-0">
-                    <div class="row">
-                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-                            <div class="align-center panel">
-                                <div class="image-div mb-lg avatar-wrapper">
-                                    <img src="../images/avatar.png" alt="" class="side-image avatar">
-                                </div>
-                                <div class="size-12 more-details">
-                                    <div id="name" class="bold my-lg" style="font-size: 20px;"></div>
-                                    <div id="role"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 col-md-6 col-sm-12">
-                            <div style="padding-bottom: 30px">
-                                <div>
-                                    <div class="content-header">
-                                        Delivery orders
-                                    </div>                                                  
-                                    <div class="panel">
-                                        <div class="filter-div hide" id="filter-div">
-                                            <div class="dropdown">
-                                                <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-filter"></i> Filter orders</button>
-                                                <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
-                                                    <button class="menu-btn" onclick="getOrders()">All orders</button>
-                                                    <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
-                                                    <button class="menu-btn" onclick="getOrders('delivered')">Delivered orders</button>
-                                                    <button class="menu-btn" onclick="getOrders('placed')">Pending orders</button>
-                                                    <button class="menu-btn" onclick="getOrders('transiting')">Transiting orders</button>
-                                                </div>
-                                            </div>
-                                        </div> 
-                                        <div id="orders"></div>
-                                        <div id="message"></div>
+            </header>  
+            <div class="row no-gutters">
+                <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
+                    <div class="wrapper section">
+                        <div class="content-header">Delivery orders</div>  
+                        <div class="panel">                                            
+                            <div class="filter-div hide" id="filter-div">
+                                <div class="dropdown">
+                                    <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-filter"></i> Filter orders</button>
+                                    <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
+                                        <button class="menu-btn" onclick="getOrders()">All orders</button>
+                                        <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
+                                        <button class="menu-btn" onclick="getOrders('delivered')">Delivered orders</button>
+                                        <button class="menu-btn" onclick="getOrders('placed')">Pending orders</button>
+                                        <button class="menu-btn" onclick="getOrders('transiting')">Transiting orders</button>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                            
-                        <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-                            <div class="panel">
-                                <div class="notification-header">Notifications</div>
-                                
-                                <div class="alert alert-info">No active orders at the moment</div>
-                            </div>
+                            </div> 
+                            <div id="orders"></div>
+                             <div id="message"></div>
                         </div>
                     </div>
                 </div>
-                
-                <footer class="footer mt-lg">
-                    <div class="footer-content align-center">
-                        &copy; Andela bootcamp,
-                        <script>document.write(new Date().getFullYear())</script>. All right reserved
-                    </div>
-                </footer>
             </div>
-        </div> 
-        
+        </div>
+        <footer class="footer mt-lg">
+            <div class="footer-content align-center">
+                &copy; Andela bootcamp,
+                <script>document.write(new Date().getFullYear())</script>. All right reserved
+            </div>
+        </footer>        
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
@@ -91,7 +61,9 @@
                     showSpinner()
                 }
                 authUser.then((user) => {
-                    const path  = user.isAdmin ? `/parcels` : `/users/${user.userId}/parcels`;
+                    const path  = (location.href.indexOf('users/orders') === -1) 
+                        ? `/parcels` 
+                        : `/users/${user.userId}/parcels`;
                     fetch(request({ 
                         path: filter ? path.concat(`?filter=${filter}`) : path, 
                         method: 'GET' 

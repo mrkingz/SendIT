@@ -15,7 +15,6 @@ const request = (obj) => {
   const headers = new Headers({
     token: localStorage.getItem('token'),
     Accept: 'application/json',
-    'Content-Type': 'application/json',
   });
   // We don't body in a GET request
   // So we'll just create the request object with the method and headers 
@@ -45,7 +44,7 @@ const getFormData = (fields, callback) => {
     : JSON.stringify(data);
 };
 
-const updateRequest = async (obj) => {
+const updateRequest = async (obj, callback) => {
   await hideModal('');
   await showSpinner();
   fetch(request({
@@ -56,7 +55,7 @@ const updateRequest = async (obj) => {
     .then((res) => {
       if (res.status === 'Success') {
         pageReload = true;
-        toggleSpinner(res.message, res.status);
+        toggleSpinner(res.message, res.status); 
       } else {
         toggleSpinner(res.message, res.status);
       }
@@ -268,6 +267,14 @@ window.onclick = (event) => {
   }
 };
 
+const alertModal = (options) => {
+  showModal({ 
+    type: 'alert', 
+    title: options.title || 'Successfull!', 
+    content: `<div class="alert alert-${options.type || 'success'}">${options.message}</div>`
+  });
+};
+
 // // When the user clicks the button, open the modal 
 const showModal = (obj) => {
   const { 
@@ -281,13 +288,16 @@ const showModal = (obj) => {
                   ${type ? '' : '<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>'}
                 </div>`;
   switch (type) {
+    case 'alert':
     case 'confirm':
         html += `<div class="modal-body">
                     <div class="modal-title" id="confirm-title">${title}</div>
-                    ${content}
-                    <div class="confirm-btns">
-                      <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
-                      <button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
+                      ${content}
+                    <div class="confirm-btns mt-md">
+                      ${type === 'alert' ? '' : '<button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>'} 
+                      <button class="btn btn-primary btn-sm" onclick="hideModal()">
+                        ${type === 'alert' ? 'Close' : 'Cancel'}
+                      </button>
                     </div>
                   </div>`;
         break;
@@ -458,14 +468,15 @@ const resendCode = async (user) => {
 const isValideCode = () => {
   const min = new Date().getMinutes();
   const elem = document.getElementById('verification-code');
+  let isValid = true;
   if (vCode['digit'].toString() !== elem.value) {
     displayError(elem, 'Invalid verification code');
-    return false;
+    isValid = false;
   } else if (min > vCode['time']) {
     displayError(elem, 'Code has expired. Resend below');
-    return false;
+    isValid = false;
   }
-  return true;
+  return isValid;
 };
 
 const loadStates = async (array) => {

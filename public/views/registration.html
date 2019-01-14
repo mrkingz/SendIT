@@ -11,73 +11,65 @@
         <link rel="stylesheet" type="text/css" media="screen" href="../css/animate.css" />   
     </head>
     <body>
-        <header class="header align-bottom">
-            <div class="header-content">
-                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-                <div class="menu-div">
-                    <ul class="navbar">
-                        <li><a href="/" class="btn btn-link btn-sm">Home</a></li>
-                        <li><a href="/signin" class="btn btn-link btn-sm">Sign in</a></li>
-                    </ul>
+        <div class="main">
+            <header class="header align-bottom">
+                <div class="header-content">
+                    <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
+                    <div class="menu-div">
+                        <ul class="navbar">
+                            <li><a href="/" class="btn btn-link btn-sm">Home</a></li>
+                            <li><a href="/signin" class="btn btn-link btn-sm">Sign in</a></li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-        </header>
-        <div class="row no-gutters">
-            <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-                
-                <div class="auth-container">
-                    <div class="row no-gutters">
-                        <div class="col-12">                        
-                            <div class="wrapper auth-padding">
-                                <div class="row">
-                                    <div class="col-lg-8 offset-lg-2 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-                                        <div class="align-center bold mt-lg"> <h2>Sign up</h2></div>
-                                        <form class="form" action="" method="POST">               
-                                            <div class="section mt-lg">
-                                                <div class="control-group">
-                                                    <label class="required" for="firstname">Firstname</label>
-                                                    <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" autocomplete="off" autofocus>
-                                                </div>
-                                                <div class="control-group">
-                                                    <label class="required" for="lastname">Lastname</label>
-                                                    <input type="text" class="control" name="lastname" id="lastname" placeholder="Lastname" autocomplete="off">
-                                                </div>
-                                                <div class="control-group">
-                                                    <label class="required" for="email">E-mail address</label>
-                                                    <input type="email" class="control" name="email" id="email" placeholder="E-mail address" autocomplete="off">
-                                                </div>
+            </header>
 
-                                                <div class="control-group">
-                                                    <label class="required" for="phone-number">Phone number</label>
-                                                    <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" autocomplete="off">
-                                                </div>
-                                            
-                                                <div class="control-group mb-lg">
-                                                    <label class="required" for="password">Password</label>
-                                                    <input type="password" class="control" name="password" id="password" placeholder="Password">
-                                                </div>
-                                                <div id="message"></div>
-                                                <div class="control-group align-center">
-                                                    <p class="required-text mb-sm">All fields marked with<strong class="required"></strong> are required!</p>
-                                                    <button id="submit" class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
-                                                </div>
-                                            </div>
-                                        </form>
+            <div class="row no-gutters">
+                <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
+                    <div class="flex justify-content-center">
+                        <div class="auth-container">
+                            <div class="auth-title">
+                                <h2>Sign in</h2>
+                            </div>
+                            <div class="panel-auth">
+                                <form class="form" action="" method="POST">               
+                                    <div class="section mt-lg">
+                                        <div class="control-group">
+                                            <label class="required" for="firstname">Firstname</label>
+                                            <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" autocomplete="off" autofocus>
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="required" for="lastname">Lastname</label>
+                                            <input type="text" class="control" name="lastname" id="lastname" placeholder="Lastname" autocomplete="off">
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="required" for="email">E-mail address</label>
+                                            <input type="email" class="control" name="email" id="email" placeholder="E-mail address" autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="control-group mb-lg">
+                                            <label class="required" for="password">Password</label>
+                                            <input type="password" class="control" name="password" id="password" placeholder="Password">
+                                        </div>
+                                        <div id="message"></div>
+                                        <div class="control-group align-center">
+                                            <p class="required-text mb-sm">All fields marked with<strong class="required"></strong> are required!</p>
+                                            <button id="submit" class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
+                                        </div>
                                     </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-                <footer class="footer">
-                    <div class="footer-content align-center">
-                        &copy; Andela bootcamp,
-                        <script>document.write(new Date().getFullYear())</script>. All right reserved
-                    </div>
-                </footer>
+            </div>	
+        </div>
+        <footer class="footer mt-lg">
+            <div class="footer-content align-center">
+                &copy; Andela bootcamp,
+                <script> document.write(new Date().getFullYear());</script>. All right reserved
             </div>
-        </div> 
+        </footer>
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
@@ -95,11 +87,10 @@
             const signup = async (e) => {
                 e.preventDefault();
                 processing({ start: true })
-                const fields = ['firstname', 'lastname', 'email', 'phone-number', 'password'];
+                const fields = ['firstname', 'lastname', 'email', 'password'];
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
-                const phone = document.getElementById('phone-number');
-                if (!hasEmpty(fields) && isEmail(email) && isValidPhone(phone) && await isUniqueEmail(email)
+                if (!hasEmpty(fields) && isEmail(email) && await isUniqueEmail(email)
                     && isValidPassword(password)) {
                     await fetch(request({path: '/auth/signup', fields })).then(res => {
                         if (res.status === 201){

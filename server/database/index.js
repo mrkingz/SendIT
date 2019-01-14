@@ -1,7 +1,7 @@
 import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import Places from '../database/Places';
+import Places from "./Places";
 
 import { 
   devConfig, 
@@ -253,6 +253,7 @@ class Database {
               "phoneNumber" VARCHAR (50) DEFAULT NULL,
               "password" VARCHAR (100) NOT NULL,
               "isAdmin" BOOLEAN NOT NULL DEFAULT false,
+              "photoURL" varchar (250) DEFAULT NULL,
               "createdAt" TIMESTAMP WITH TIME ZONE NOT NULL,
               "updatedAt" TIMESTAMP WITH TIME ZONE NOT NULL,
               CONSTRAINT users_pkey PRIMARY KEY ("userId"),
@@ -274,7 +275,7 @@ class Database {
     const query = {
       text: `INSERT INTO users (firstname, lastname, "isAdmin", email, password, "createdAt", "updatedAt")
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
-      values: [`Gabriel`, `Owvigho`, true, 'sendit.contactus@gmail.com', password, moment, moment]
+      values: [`Gabriel`, `Owvigho`, true, email, password, moment, moment]
     };
     return this.sqlQuery(query).then(() => { 
       if (env === `development`) console.log(`Admin successfully seeded`);

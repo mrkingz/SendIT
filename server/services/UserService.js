@@ -4,8 +4,8 @@ import jwt from 'jsonwebtoken';
 import decode from 'jwt-decode';
 import db from '../database';
 import UtilityService from "./UtilityService";
-import UserSQLService from "./UserSQLService";
 import NotificationService from "./NotificationService";
+import UserQuery from '../database/queries/userQuery';
 
 /**
  *
@@ -28,7 +28,7 @@ export default class UserService extends UtilityService {
 		const moment = new Date();
 		const { email, firstname, lastname } = data;
 		const pass = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
-		const query = UserSQLService.insertUser([
+		const query = UserQuery.insertUser([
 			email, this.ucFirstStr(firstname), this.ucFirstStr(lastname), pass, moment, moment
 		]);
 		return db.sqlQuery(query).then((result) => {
@@ -47,7 +47,7 @@ export default class UserService extends UtilityService {
 	 * @memberof UserService
 	 */
 	static signinUser(data) {
-		return db.sqlQuery(UserSQLService.findUserBy({ email: data.email }))
+		return db.sqlQuery(UserQuery.findUserBy({ email: data.email }))
 			.then((result) => {
 				if (result.rows[0] && bcrypt.compareSync(data.password, result.rows[0]['password'])) {
 					const {
@@ -75,7 +75,7 @@ export default class UserService extends UtilityService {
 	 * @memberof UserService
 	 */
 	static editUserProfile(options) {
-		return db.sqlQuery(UserSQLService.editUser({
+		return db.sqlQuery(UserQuery.editUser({
 			key: options.key.replace(/[-]+/g, ''), values: options.values
 		})).then((result) => {
 			const { password, ...user } = result.rows[0];
@@ -94,7 +94,7 @@ export default class UserService extends UtilityService {
 	 * @memberof UserService
 	 */
 	static fetchUserProfile(userId) {
-		return db.sqlQuery(UserSQLService.getProfile(userId)).then((result) => {
+		return db.sqlQuery(UserQuery.getProfile(userId)).then((result) => {
 			if (result.rows[0]) {
 				const {
 					password, cancelled, delivered, placed, transiting, total, ...user
@@ -120,7 +120,7 @@ export default class UserService extends UtilityService {
 	 */
 	static findUser(decoded) {
 		const { email, userId, isAdmin } = decoded;
-		return db.sqlQuery(UserSQLService.findUser({ email, userId, isAdmin }))
+		return db.sqlQuery(UserQuery.findUser({ email, userId, isAdmin }))
 			.then(result => result.rows[0]);
 	}
 
@@ -136,7 +136,7 @@ export default class UserService extends UtilityService {
  */
 	static findBy(option, label) {
 		const field = Object.keys(option);
-		return db.sqlQuery(UserSQLService.findUserBy(option))
+		return db.sqlQuery(UserQuery.findUserBy(option))
 			.then((result) => {
 				if (result.rows[0]) {
 					const message = `A user with ${label || field} was found`;
@@ -217,6 +217,28 @@ export default class UserService extends UtilityService {
 	}
 
 	/**
+	 * Save the cloudinary photo url in database
+	 *
+	 * @static
+	 * @param {object} options
+	 * @returns {Promise} a promise
+	 * @method savePhotoURL
+	 * @memberof UserService
+	 */
+	static savePhotoURL(options) {
+		return db.sqlQuery(UserQuery.editUser({ values: options, key: 'photo' }))
+		.then((result) => { 
+			if (result.rows[0]) {
+				const { password, ...user } = result.rows[0];
+				return {
+					statusCode: 200, message: 'Photo uploaded successfully', data: { user }
+				};
+			}
+			//return { statusCode: 400, message: 'Something went wrong, could not upload photo' };
+		});
+	}
+
+	/**
 	 * Verify a user password
 	 *
 	 * @static
@@ -247,7 +269,7 @@ export default class UserService extends UtilityService {
 	static resetPassword(data, auth) {
 		const { email, userId } = auth ? data.decoded : data;
 		const pass = bcrypt.hashSync(data.password, bcrypt.genSaltSync(10));
-		return db.sqlQuery(UserSQLService.updatePassword({
+		return db.sqlQuery(UserQuery.updatePassword({
 			isAuthenticated: auth,
 			values: { password: pass, email, userId }
 		})).then((result) => {
