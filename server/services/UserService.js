@@ -225,13 +225,16 @@ export default class UserService extends UtilityService {
 	 * @method savePhotoURL
 	 * @memberof UserService
 	 */
-	static savePhotoURL(options) {
+	static updatePhotoURL(options) {
 		return db.sqlQuery(UserQuery.editUser({ values: options, key: 'photo' }))
 		.then((result) => { 
 			if (result.rows[0]) {
 				const { password, ...user } = result.rows[0];
+				const msg = { upload: 'uploaded', remove: 'removed' };
 				return {
-					statusCode: 200, message: 'Photo uploaded successfully', data: { user }
+					statusCode: 200, 
+					message: `Profile photo ${msg[options.option]} successfully`, 
+					data: { user }
 				};
 			}
 			//return { statusCode: 400, message: 'Something went wrong, could not upload photo' };

@@ -242,7 +242,7 @@
 				let str = "";
 				if (deliveryStatus !== 'Cancelled' && deliveryStatus !== 'Delivered') {
 					if (user.isAdmin) {
-						const cancelBtn = `<button class="menu-btn" onclick="showConfirmModal('cancel', cancelOrder)">Cancel order</button>`;
+						const cancelBtn = `<button class="menu-btn" onclick="confirmModal('cancel', cancelOrder)">Cancel order</button>`;
 						str = `${user.userId === userId ? cancelBtn.concat(editBtns) : ""}
                       			<button class="menu-btn" onclick="updateLocationModal(event)">Update location</button>
                      			<button class="menu-btn" onclick="updateStatusModal(event)">Update status</button>`;
@@ -261,19 +261,12 @@
 			document.getElementById('dropdown').innerHTML = menu ? open.concat(`${menu}</div>`) : '';
 		}
 
-		const showConfirmModal = (type, callback) => {
+		const confirmCancel = () => {
 			const content = `<div class="warning">
-									<b>Are you sure you want to ${type} this order?</b><br>
+									<b>Are you sure you want to cancel this order?</b><br>
 									Click proceed to confirm this operation
 								</div>`;
-			showModal({
-				content,
-				title: `Confirm ${type}`,
-				type: 'confirm',
-				callback: () => {
-					document.getElementById('confirm-btn').addEventListener('click', callback);
-				}
-			});
+			confirmModal(content, 'cancel', cancelOrder);	
 		}
 
 		const cancelOrder = async () => {

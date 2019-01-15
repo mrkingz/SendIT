@@ -99,14 +99,12 @@ export default class ParcelService extends UtilityService {
     } = data;
     const trackingNo = date.getTime();
     const values = [
-      weight, description === '' ? null : description, deliveryMethod,
-      this.ucFirstStr(pickUpAddress, { bool: true }), pickUpLGAId, pickUpStateId,
-      this.ucFirstStr(destinationAddress, { bool: true }), destinationLGAId,
-      destinationStateId, trackingNo, this.computePrice(weight), decoded.userId,
-      this.ucFirstStr(receiverName, { bool: true }), receiverPhone, date, date
+      weight, description, deliveryMethod, this.ucFirstStr(pickUpAddress, { bool: true }), 
+      pickUpLGAId, pickUpStateId, this.ucFirstStr(destinationAddress, { bool: true }), 
+      destinationLGAId, destinationStateId, trackingNo, this.computePrice(weight), 
+      decoded.userId, this.ucFirstStr(receiverName, { bool: true }), receiverPhone, date, date
     ];
-    return db.sqlQuery(ParcelQuery.insertParcel(values))
-      .then((result) => {
+    return db.sqlQuery(ParcelQuery.insertParcel(values)).then((result) => {
         const parcel = result.rows[0];
         const { email, firstname, lastname } = decoded;
         const sender = { name: `${firstname} ${lastname}`, email };

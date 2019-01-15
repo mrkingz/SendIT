@@ -157,7 +157,7 @@ export default class UserController extends Controller {
   }
 
   /**
-   * Extrack user token from request object
+   * Extract user token from request object
    *
    * @static
    * @param {Object} req HTTP request object
@@ -240,14 +240,15 @@ export default class UserController extends Controller {
    * @method uploadPhoto
    * @memberof UserController
    */
-  static savePhotoURL() {
-    return (req, res) => { 
+  static updatePhotoURL() {
+    return (req, res) => {
       if (!req.file) {
         return this.response(res, { statusCode: 400, message: 'No photo was uploaded' });
       }
-      UserService.savePhotoURL({
-        photoURL: req.file.secure_url,
-        decoded: req.body.decoded
+      UserService.updatePhotoURL({
+        photoURL: decodeURIComponent(req.file.secure_url),
+        decoded: req.body.decoded,
+        option: 'upload'
       })
         .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
@@ -263,10 +264,28 @@ export default class UserController extends Controller {
    */
   static uploadPhoto() {
     return (req, res, next) => {
-      const uploader = UploadService.cloudinaryUpload(req.body.decoded);
+      const uploader = UploadService.uploadTocloudinary(req.body.decoded);
       uploader(req, res, (err) => {
         return next(err || null);
       });
+    };
+  }
+
+  /**
+   *
+   *
+   * @static
+   * @returns {function} an express middleware function that handles the request
+   * @memberof UserController
+   */
+  static removePhoto() {
+    return async (req, res) => {
+      await UploadService.deleteCloudinaryImage(req.body.decoded);
+      UserService.updatePhotoURL({
+        photoURL: null, decoded: req.body.decoded, option: 'remove'
+      })
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 }

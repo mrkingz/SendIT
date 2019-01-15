@@ -69,18 +69,7 @@
                       <label for="firstname" class="data-label">Phone number</label>
                       <div class="data-value" id="data-phonenumber">--</div>
                     </div>
-                    <div id="photo-widget">
-                      <form id="upload" enctype="multipart/form-data">
-                        <label class="input-label skyblue-color">
-                            <input id="photo" type="file" name="photo" onchange="browsePhoto(event)" required/>
-                            <span>Upload photo</span>
-                        </label>
-                      </form>
-                        <div class="hide">
-                          <button id="save" class="btn btn-sm btn-link skyblue-color" onclick="uploadPhoto(event)">Save</button>
-                          <button id="cancel" class="btn btn-sm btn-link skyblue-color mx-md" onclick="uploadPhoto(event, false)">Cancel</button>
-                        </div>
-                    </div>
+                    <div id="photo-widget"></div>
                   </div>               
                 </div>
               </div>
@@ -107,7 +96,7 @@
   <script src="../js/script.js"></script>
   <script src="../js/modals.js"></script>
   <script>
-    let user;
+    let user, file;
     const getProfileDetails = async () => {
       await fetch(request({
         path: `/auth/profileDetails`,
@@ -122,7 +111,25 @@
               elem.innerText = user[key];
             }
           });
-        })
+          showPhotoControl(user.photoURL ? 'remove' : 'browse');
+        });
+    }
+
+    const showPhotoControl = (status) => {
+      const elements = {
+        browse: `<form id="upload" enctype="multipart/form-data">
+                  <label class="input-label skyblue-color">
+                      <input id="photo" type="file" name="photo" onchange="browsePhoto(event)" required/>
+                      <span>Upload photo</span>
+                  </label>
+                </form>`,
+        upload: `<div id="group-btn">
+                    <button id="save" class="btn btn-sm btn-link skyblue-color" onclick="uploadPhoto(event)">Save</button>
+                    <button id="cancel" class="btn btn-sm btn-link skyblue-color mx-md" onclick="cancelUpload(event)">Cancel</button>
+                  </div>`,
+        remove: `<div><button class="btn btn-sm btn-link skyblue-color" onclick="removePhoto()">Remove photo</button></div>`
+      }
+      document.getElementById('photo-widget').innerHTML = elements[status];
     }
 
     const getImageExtension = (file) => file.name.split('.').pop();
@@ -154,28 +161,41 @@
       const input = e.target;
 
       if (validatePhoto(input.files[0])) {
+        file = document.getElementById('photo').files[0];
         const photo = document.getElementById('image');
-        document.getElementById('cancel').value = user.photoURL || photo.src;
-        const container = document.getElementById('photo-widget');
-        container.firstElementChild.classList.add('hide')
-        container.lastElementChild.classList.remove('hide');
         photo.src = URL.createObjectURL(input.files[0]);
+        showPhotoControl('upload');
+        document.getElementById('cancel').value = user.photoURL || photo.src;
       }
     }
 
-    const uploadPhoto = (e, upload = true) => {
-      e.preventDefault();
-      if (!upload) {
-        document.getElementById('image').src = e.target.value;
-      } else { 
-        showSpinner();
-        authUser.then((user) => {
-          const file = document.getElementById('photo').files[0];
-          const data = new FormData();
-          data.append('photo', file);
-          updateRequest({ path: `/auth/uploadPhoto`, data });         
-        });
-     }
+    const removePhoto = (e) => {
+			const content = `<div class="warning">
+                        <b>Are you sure you want to remove profile photo?</b><br>
+                        Click proceed to confirm this operation
+                      </div>`;
+      confirmModal(content, '', async () => {
+        updateRequest({ path: `/auth/removePhoto`, callback: () => {
+          document.getElementById('image').src = '../images/avatar.png';
+          showPhotoControl('browse') 
+        }});
+      })
+    }
+
+    const uploadPhoto = (e) => {
+      showSpinner();
+      authUser.then((user) => {
+        const data = new FormData();
+        data.append('photo', file);
+        updateRequest({ 
+          path: `/auth/uploadPhoto`, data, setContentType: false, callback: () => showPhotoControl('remove')
+        });         
+      });
+    }
+
+    const cancelUpload = (e) => {
+      document.getElementById('image').src = e.target.value;
+      showPhotoControl('browse');
     }
 
     const updateName = (e) => {
@@ -237,6 +257,71 @@
       }
       return true;
     }
+
+    const verifyPhone = async (e, user) => {
+      e.preventDefault();
+      const btn = e.target.parentNode;
+      const phone = document.getElementById('phone-number');
+      processing({ start: true });
+      if (!hasEmpty(['phone-number']) && isValidPhone(phone)) {
+        const phoneDiv = document.getElementById('phone-div');
+        await addClass(phoneDiv, ['zoomOut', 'animated', 'hide']);
+        addClass(document.querySelector('.modal'), ['static']);
+        document.getElementById('code-div').classList.add('show');
+        document.getElementById('resend-div').classList.add('show');
+        document.querySelector('.modal-body div').innerText = 'Verify phone number';
+        btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user, updatePhone)">Confirm</button>`;
+        generateCode();
+        codeInfo('Enter the code sent to', phone.value);
+      } else {
+        processing({ start: false, message: 'Continue' });
+      }
+    };
+
+    const codeInfo = (msg, phone) => {
+      const info = document.getElementById('code-info');
+      const num = phone.split('');
+      num[5] = '*'; num[6] = '*';
+      info.innerHTML = `<div class="alert alert-info bounceIn animated">
+                          <div>${msg} <b>${num.join('')}</b></div>
+                          <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
+                        </div>`;
+    };
+
+    const generateCode = (phone) => {
+      vCode = {
+        digit: Math.floor(Math.random() * 900000) + 99999,
+        time: new Date().getMinutes() + 3
+      };
+      console.log(vCode.digit);
+    };
+
+    const verifyCode = (e, user, callback) => {
+      e.preventDefault();
+      if (!hasEmpty(['verification-code'], 'Enter verification code') && isValideCode()) {
+        callback();
+      }
+    };
+
+    const resendCode = async (user) => {
+      generateCode();
+      codeInfo('A new code was sent to', user.phonenumber);
+      document.getElementById('verification-code').focus();
+    };
+
+    const isValideCode = () => {
+      const min = new Date().getMinutes();
+      const elem = document.getElementById('verification-code');
+      let isValid = true;
+      if (vCode['digit'].toString() !== elem.value) {
+        displayError(elem, 'Invalid verification code');
+        isValid = false;
+      } else if (min > vCode['time']) {
+        displayError(elem, 'Code has expired. Resend below');
+        isValid = false;
+      }
+      return isValid;
+    };
 
     const orderBreakdown = (data, userId) => {
       let content = `<div class="alert alert-info size-13 my-lg">You currently have no delivery orders. <br> Click below to create<br/>

@@ -15,7 +15,7 @@ export default class Controller extends UtilityService {
    * @static
    * @param {object} res HTTP response object
    * @param {object} dataObj - the object containing the response detail
-   * @return {object} Returns the response
+   * @return {object} the response object
    * @memberof Controller
    */
   static response(res, dataObj) {
@@ -35,7 +35,7 @@ export default class Controller extends UtilityService {
    * @static
    * @param {object} res HTTP response object
    * @param {object} error error object
-   * @returns {string} Returns the error message
+   * @returns {string} the error message
    * @method serverError
    * @memberof Controller
    */

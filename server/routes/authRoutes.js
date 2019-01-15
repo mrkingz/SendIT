@@ -19,7 +19,11 @@ authRouter.put('/api/v1/auth/uploadPhoto',
   UserController.authenticateUser(),
   UserController.uploadPhoto(),
   UserController.errorHandler(),
-  UserController.savePhotoURL());
+  UserController.updatePhotoURL());
+
+authRouter.put('/api/v1/auth/removePhoto',
+  UserController.authenticateUser(),
+  UserController.removePhoto());
 
 authRouter.post('/api/v1/auth/email', 
   UserValidator.validateEmail(),
