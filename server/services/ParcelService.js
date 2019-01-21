@@ -239,8 +239,8 @@ static getPresentLocation(stateId, lgaId) {
       presentLocation: this.getLocationFormat(details),
       from: this.getPickUpFormat(details),
       to: this.getDestinationFormat(details),
-      createdAt,
-      updatedAt
+      createdAt: moment(createdAt).format("MMM Do, YYYY h:s A"),
+      updatedAt: moment(updatedAt).format("MMM Do, YYYY h:s A"),
     };
   }
 

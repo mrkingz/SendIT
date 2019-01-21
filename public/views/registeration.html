@@ -3,37 +3,34 @@
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>SendIT | Registration</title>
+        <title>SendIT | Create order</title>
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" media="screen" href="../css/font-awesome.min.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/scarfold.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="../css/styles.css" />
-        <link rel="stylesheet" type="text/css" media="screen" href="../css/animate.css" />   
-    </head>
+    </head> 
     <body>
         <div class="main">
-            <header class="header align-bottom">
-                <div class="header-content">
-                    <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-                    <div class="menu-div">
-                        <ul class="navbar">
-                            <li><a href="/" class="btn btn-link btn-sm">Home</a></li>
-                            <li><a href="/signin" class="btn btn-link btn-sm">Sign in</a></li>
-                        </ul>
+            <header>
+                <nav class="container navbar">
+                    <div class="brand">
+                        <a href="/" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
                     </div>
-                </div>
+                    <div class="links"><a href="/" class="nav-link">Back</a></div>
+                </nav>
             </header>
-
-            <div class="row no-gutters">
-                <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-                    <div class="flex justify-content-center">
-                        <div class="auth-container">
-                            <div class="auth-title">
-                                <h2>Sign in</h2>
-                            </div>
-                            <div class="panel-auth">
-                                <form class="form" action="" method="POST">               
-                                    <div class="section mt-lg">
+            <div class="bg-image bg-image-auth">
+                <div class="overlay-auth">
+                    <div class="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-sm-12">
+                        <div class="welcome welcome-auth">
+                            <p>Welcome to <span>SendIT<sup class="size-12">&trade;</sup></span></p>
+                            <p class="size-12">Join our parcel delivery portal to enjoy our services</p>
+                        </div>
+                        <div class="form-wrapper">
+                            <div class="transparent">
+                                <form class="form auth-form" action="" method="POST">
+                                    <div class="form-title">Sign up</div>
+                                    <div class="section">
                                         <div class="control-group">
                                             <label class="required" for="firstname">Firstname</label>
                                             <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" autocomplete="off" autofocus>
@@ -53,21 +50,24 @@
                                         </div>
                                         <div id="message"></div>
                                         <div class="control-group align-center">
-                                            <p class="required-text mb-sm">All fields marked with<strong class="required"></strong> are required!</p>
+                                            <p class="required-text overlay-text text-shadow mt-md" >All fields marked with<strong class="required"></strong> are required!</p>
                                             <button id="submit" class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
                                         </div>
+                                    </div>
+                                    <div class="auth-redirect">
+                                        <span>Already have an account? <a href="/signin" class="bold auth-link">Sign in</a></span> 
                                     </div>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>	
+            </div>
         </div>
         <footer class="footer mt-lg">
             <div class="footer-content align-center">
                 &copy; Andela bootcamp,
-                <script> document.write(new Date().getFullYear());</script>. All right reserved
+                <script>document.write(new Date().getFullYear())</script>. All right reserved
             </div>
         </footer>
         <script src="../js/jquery-3.2.1.min.js"></script>
@@ -104,5 +104,5 @@
                 processing({message: 'Sign up', start: false});
             }
         </script>
-    </body>
+    </body>   
 </html>

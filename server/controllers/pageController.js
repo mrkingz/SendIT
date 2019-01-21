@@ -31,7 +31,7 @@ export default class PageController {
 	 */
 	static getSignup() {
 		return (req, res) => {
-			return res.sendFile(this.getHTMLPath('registration'));
+			return res.sendFile(this.getHTMLPath('registeration'));
 		};
 	}
 

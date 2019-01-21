@@ -15,22 +15,46 @@
 
 <body onload="loadStates(['pick-up-state', 'destination-state'])">
 	<div class="main">
-		<header class="header align-bottom">
-			<div class="header-content">
-				<a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-				<div class="menu-div">
-					<ul class="navbar">
-						<li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-						<li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-					</ul>
+		<header>
+			<nav class="container navbar fixed-top">
+				<div class="brand"><a href="" class="brand-name" style="color: #555;">SendIT<sup class="size-12">&trade;</sup></a></div>
+				<div class="search-container">
+					<div class="search-wrapper">
+						<div class="search-control-container">
+							<input type="text" class="track-input" placeholder="Track your parcel">
+							<button class="btn btn-primary btn-sm search-btn">Track </button>
+						</div>
+					</div> 
 				</div>
-			</div>
+				<div class="links">
+					<div class="dropdown">
+						<button onclick="dropdown('menu-dropdown')" class="btn btn-transparent dropbtn"><i class="fa fa-bars"></i></button>
+						<div id="menu-dropdown" class="dropdown-content size-11 align-left">
+								<a href="/dashboard" class="menu-btn"><i class="fa fa-dashboard"></i> Dashboard</a>
+							<a href="/create" class="menu-btn"><i class="fa fa-edit"></i> New order</a>
+							<a href="/orders" class="menu-btn"><i class="fa fa-list-ol"></i> Delivery orders</a>
+						</div>
+					</div>
+					<div class="dropdown">
+						<button id="avatar" onclick="dropdown('user-dropdown');" class="btn btn-transparent dropbtn">
+							<i class="fa fa-user-circle"></i> <i class="fa fa-caret-down size-18 normal ml-md"></i>
+						</button>
+						<div id="user-dropdown" class="dropdown-content size-11 align-left">
+							<div class="panel px-md user-name">
+								<div class="size-14 bold">Kingsley Frank-Demesi</div>
+							</div>
+							<a href="/profile" class="menu-btn"><i class="fa fa-user-o"></i> My profile</a>
+							<button class="menu-btn" onclick="signout()"><i class="fa fa-sign-out"></i> Sign out</button>
+						</div>
+					</div>
+				</div>
+			</nav>
 		</header>
 		<div class="row no-gutters">
 			<div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
-				<div class="wrapper">
+				<div class="page">
 					<div id="new-order">
-						<div class="content-header"> New delivery order </div>
+						<div class="page-header"><span class="page-title">New delivery order</span></div>
 						<form class="form mx-0" action="" method="POST">
 							<div class="section">
 								<div class="control-group">
@@ -41,7 +65,6 @@
 											<input type="text" id="weight" class="control col-lg-5 col-md-5 col-sm-12" name="weight" placeholder="Parcel weight"
 												autocomplete="off" autofocus>
 										</div>
-
 										<div class="control-group">
 											<label class="required" for="description">Description</label>
 											<input type="text" class="control col-lg-12 col-md-12 col-sm-12" name="description" id="description"
@@ -49,59 +72,48 @@
 										</div>
 									</div>
 								</div>
-								<br>
 								<div class="control-group">
-
-									<div class="control-group">
-										<label for="delivery-method">Choose your delivery method</label>
-										<div id="delivery-method" class="panel">
-											<div class="form-check">
-												<input class="form-check-input" type="radio" id="fast" name="deliveryMethod" value="Fast">
-												<label class="form-check-label" for="fast">Fast delivery</label>
-											</div>
-											<div class="form-check m-0">
-												<input class="form-check-input" type="radio" id="normal" name="deliveryMethod" value="Normal" checked>
-												<label class="form-check-label" for="normal">Normal delivery</label>
-											</div>
+									<label for="delivery-method">Choose your delivery method</label>
+									<div id="delivery-method" class="panel">
+										<div class="form-check">
+											<input class="form-check-input" type="radio" id="fast" name="deliveryMethod" value="Fast">
+											<label class="form-check-label" for="fast">Fast delivery</label>
+										</div>
+										<div class="form-check m-0">
+											<input class="form-check-input" type="radio" id="normal" name="deliveryMethod" value="Normal" checked>
+											<label class="form-check-label" for="normal">Normal delivery</label>
 										</div>
 									</div>
-									<br>
-									<div class="control-group">
-										<label for="delivery-method">Your pick up location</label>
-										<div class="panel">
-
-											<div class="details size-12">
-												Fill in where you want us to pick up your parcel and date
-											</div>
-
-											<div class="control-group">
-												<label class="required" for="pick-up-address">Address</label>
-												<input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address"
-													autocomplete="off">
-											</div>
-
-											<div class="row">
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="control-group">
-														<label class="required" for="pick-up-state">State</label>
-														<select id="pick-up-state" name="pickUpStateId" class="control" onchange="loadLGAs(event)">
-															<option value="">Select state</option>
-														</select>
-													</div>
+								</div>
+								<div class="control-group">
+									<label for="delivery-method">Your pick up location</label>
+									<div class="panel">
+										<div class="details size-12">Fill in where you want us to pick up your parcel and date</div>
+										<div class="control-group">
+											<label class="required" for="pick-up-address">Address</label>
+											<input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address"
+												autocomplete="off">
+										</div>
+										<div class="row">
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="control-group">
+													<label class="required" for="pick-up-state">State</label>
+													<select id="pick-up-state" name="pickUpStateId" class="control" onchange="loadLGAs(event)">
+														<option value="">Select state</option>
+													</select>
 												</div>
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="control-group">
-														<label class="required" for="pick-up-lga">L.G. Area</label>
-														<select id="pick-up-lga" name="pickUpLGAId" class="control">
-															<option value="">Select L.G. Area</option>
-														</select>
-													</div>
+											</div>
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="control-group">
+													<label class="required" for="pick-up-lga">L.G. Area</label>
+													<select id="pick-up-lga" name="pickUpLGAId" class="control">
+														<option value="">Select L.G. Area</option>
+													</select>
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
-
 								<div class="control-group">
 									<label for="parcel-destination">Parcel destination</label>
 									<div id="parcel-destination" class="panel">
@@ -114,7 +126,6 @@
 											<input type="text" class="control" name="destinationAddress" id="destination-address" placeholder="Address"
 												autocomplete="off">
 										</div>
-
 										<div class="row">
 											<div class="col-lg-6 col-md-6 col-sm-12">
 												<div class="control-group">
@@ -135,31 +146,22 @@
 										</div>
 									</div>
 								</div>
-								<br>
 								<div class="control-group">
 									<label for="parce-destination">Receiver's details</label>
 									<div id="parcl-destination" class="panel">
-
-
-										<div class="details size-12">
-											Fill in receiver's details
-										</div>
-
+										<div class="details size-12">Fill in receiver's details</div>
 										<div class="control-group">
 											<label class="required" for="receiver-name">Receicver's full name</label>
 											<input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name"
 												autocomplete="off">
 										</div>
-
 										<div class="control-group">
 											<label class="required" for="receiver-phone">Receicver's phone</label>
 											<input type="text" class="control col-lg-8 col-md-8 col-sm-12" name="receiverPhone" id="receiver-phone"
 												placeholder="Phone" autocomplete="off">
 										</div>
-
 									</div>
 								</div>
-
 								<div class="mx-lg">
 									<p class="required-text">All fields marked with<strong class="required"></strong>
 										are required!</p>
@@ -169,80 +171,58 @@
 						</form>
 					</div>
 					<div id="order-quotation">
-						<div class="content-header">Confirm your order </div>
+						<div class="page-title">Confirm your order </div>
 						<div class="section">
-							<div class="panel">
+							<div class="panel" style="margin: 0 1rem">
+								<div class="field">
+									<div class="field-name">Weight</div>
+									<div class="field-value" id="data-weight"></div>
+								</div>
 
-								<div class="more-details">
-									<div class="nexted">
-										<div class="card-header">
-											<div class="card-title">
-												<label class="size-12 bold">Order details</label>
-											</div>
+								<div class="field">
+									<div class="field-name">Parcel description</div>
+									<div class="field-value" id="data-description"></div>
+								</div>
+
+								<div class="field">
+									<div class="field-name">Delivery method</div>
+									<div class="field-value" id="data-deliveryMethod"></div>
+								</div>
+
+								<div class="field">
+									<div class="field-name">Pick up location</div>
+									<div class="field-value" id="data-pickUp"></div>
+								</div>
+
+								<div class="field">
+									<div class="field-name">Parcel destination</div>
+									<div class="field-value" id="data-destination"></div>
+								</div>
+
+								<div class="field">
+									<div class="field-name">Estimated date of arrival</div>
+									<div class="field-value red-color" id="data-estimated"></div>
+								</div>
+								<div class="field">
+									<div class="field-name">Receiver name</div>
+									<div class="field-value" id="data-receiverName"></div>
+								</div>
+
+								<div class="field">
+									<div class="field-name">Receiver phone number</div>
+									<div class="field-value" id="data-receiverPhone"></div>
+								</div><br><br>
+								<div class="div-wrapper">
+									<div class="cost-wrapper">
+										<div class="nexted">
+											<div class="alert alert-info cost">Delivery cost: &#8358; <span id="cost"></span></div>
 										</div>
-										<div class="card-wrapper">
-
-											<div class="card-row">
-												<div class="data-header">Weight</div>
-												<div class="data" id="data-weight"></div>
-											</div>
-
-											<div class="card-row">
-												<div class="data-header">Parcel description</div>
-												<div class="data" id="data-description"></div>
-											</div>
-
-											<div class="card-row">
-												<div class="data-header">Delivery method</div>
-												<div class="data" id="data-deliveryMethod"></div>
-											</div>
-
-											<div class="card-row">
-												<div class="data-header">Pick up location</div>
-												<div class="data" id="data-pickUp"></div>
-											</div>
-
-											<div class="card-row">
-												<div class="data-header">Parcel destination</div>
-												<div class="data" id="data-destination"></div>
-											</div>
-
-											<div class="card-row">
-												<div class="data-header">Estimated date of arrival</div>
-												<div class="data red-color" id="data-estimated"></div>
-											</div>
-										</div>
-									</div>
-
-									<div class="nexted">
-										<div class="card-header">
-											<div class="card-title">
-												<label class="size-12 bold">Receiver details</label>
-											</div>
-										</div>
-										<div class="card-wrapper">
-
-											<div class="card-row">
-												<div class="data-header">Full name</div>
-												<div class="data" id="data-receiverName"></div>
-											</div>
-
-											<div class="card-row">
-												<div class="data-header">Phone number</div>
-												<div class="data" id="data-receiverPhone"></div>
-											</div>
-										</div>
-									</div>
-								</div> <br>
-								<div class="more-details">
-									<div class="nexted">
-										<div class="alert alert-info cost">Delivery cost: &#8358; <span id="cost"></span></div>
-									</div>
-								</div> <br>
+									</div> 
+								</div><br>
 								<div id="message"></div>
 								<div class="align-center">
 									<button class="btn btn-primary" id="submit" onclick="submitOrder(event)">Submit</button>
-									<button class="btn btn-link mx-sm fine-btn" onclick="editOrder(event)">Edit
+									<button class="btn btn-primary-inverse" onclick="editOrder(event)">Edit
 										order</button>
 								</div>
 							</div>
@@ -266,7 +246,7 @@
 									</div>
 								</div>
 								<div class="mt-lg">
-									<a href="/create" class="btn btn-primary" style="padding: .4rem 2rem">Done</a>
+									<a href="/create" class="btn btn-primary">Done</a>
 								</div>
 							</div>
 						</div>
@@ -375,11 +355,11 @@
 							toggleOrderSteps(orderSuccess, true, ['bounceIn', 'animated'])
 						})
 					} else {
-						message(res.message, res.status);
+						message(res.message, res.status, null, true, 'shake');
 					}
 				})
 				.catch(error => {
-					message(error.message, error.status)
+					message(error.message, error.status, null, true, 'shake')
 				})
 			processing({ message: 'Submit', start: false });
 		};

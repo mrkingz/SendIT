@@ -13,13 +13,14 @@ $('body').on('change', 'select', (e) => {
 
 const request = (options) => {
   const { 
-    method, path, data, fields, setContentType 
+    method, path, data, fields, setContentType
   } = options;
-  const headers = new Headers({
-    token: localStorage.getItem('token'),
-    Accept: 'application/json',
-    [!setContentType ? null : 'Content-type']: 'application/json'
-  });
+  const token = localStorage.getItem('token');
+  const bool = typeof setContentType === 'undefined' ? true : setContentType;
+  const headersOptions = bool
+    ? { token, Accept: 'application/json', 'Content-type': 'application/json' } 
+    : { token, Accept: 'application/json' };
+  const headers = new Headers(headersOptions);
   return new Request(`${baseUrl.concat(path)}`, 
     // Remember, we don't need body in a GET request
     (method === 'GET') 
@@ -47,9 +48,7 @@ const getFormData = (fields, callback) => {
 const updateRequest = async (options, callback) => {
   await hideModal('');
   await showSpinner(options.callback);
-  fetch(request({
-    path: options.path, data: options.data, method: 'PUT'
-  })).then(res => res.json())
+  fetch(request({ ...options, method: 'PUT' })).then(res => res.json())
     .then((res) => {
       if (res.status === 'Success') {
         pageReload = typeof options.reload === 'undefined' ? true : options.reload;
@@ -61,7 +60,7 @@ const updateRequest = async (options, callback) => {
 
 const addClass = (element, classes) => {
   classes.forEach((value) => {
-    if (!element.classList.contains(value)) {
+    if (element && !element.classList.contains(value)) {
       element.classList.add(value);
     }
   });
@@ -69,7 +68,7 @@ const addClass = (element, classes) => {
 
 const removeClass = (element, classes) => {
   classes.forEach((value) => {
-    if (element.classList.contains(value)) {
+    if (element && element.classList.contains(value)) {
       element.classList.remove(value);
     }
   });
@@ -86,7 +85,7 @@ const processing = (obj) => {
   }
 };
 
-const message = (msg, status, elem, animate) => {
+const message = (msg, status, elem, animate, cls) => {
   const type = {
     success: 'alert-success',
     fail: 'alert-danger',
@@ -99,20 +98,13 @@ const message = (msg, status, elem, animate) => {
   parent.classList.add('control-group');
   const div = document.createElement('div');
   if (animate) { 
-    addClass(div, ['alert', type[status], 'zoomIn', 'animated']);
+    addClass(div, ['alert', type[status], (cls || 'zoomIn'), 'animated']);
   } else {
     addClass(div, ['alert', type[status]]);
   }
   div.innerHTML = msg;
   parent.appendChild(div);
   messageElem.appendChild(parent);
-};
-
-/* When the user clicks on the button, 
-toggle between hiding and showing the dropdown content */
-const dropdown = function (id) {
-  oDropdown = document.getElementById(id);
-  oDropdown.classList.toggle('show');
 };
 
 const isUnique = (field, msg) => {
@@ -248,17 +240,27 @@ const removeListeners = (element) => {
   }
 };
 
-// Close the dropdown menu if the user clicks outside of it
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+const dropdown = (id) => {
+  if (oDropdown && oDropdown.id !== id) {
+    oDropdown.classList.remove('show');
+  }
+  oDropdown = document.getElementById(id);
+  oDropdown.classList.toggle('show');
+};
+
+//Close the dropdown menu if the user clicks outside of it
 window.onclick = (event) => {
   if (event.target === modal && !modal.classList.contains('static')) {
     hideModal();
   }
-
-  if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn i')) {
+  if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn *')) {
     let dropdowns = document.querySelectorAll('.dropdown-content');
     dropdowns.forEach((d) => {
       if (d.classList.contains('show')) {
         d.classList.remove('show');
+        oDropdown = null;
       }
     });
   }
@@ -302,8 +304,8 @@ const showModal = (obj) => {
                     <div class="modal-title" id="confirm-title">${title}</div>
                       ${content}
                     <div class="confirm-btns mt-md">
-                      ${type === 'alert' ? '' : '<button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>'} 
-                      <button class="btn btn-primary btn-sm" onclick="hideModal()">
+                      ${type === 'alert' ? '' : '<button class="btn btn-primary" id="confirm-btn">Proceed</button>'} 
+                      <button class="btn btn-primary" onclick="hideModal()">
                         ${type === 'alert' ? 'Close' : 'Cancel'}
                       </button>
                     </div>
@@ -439,28 +441,29 @@ const loadStates = async (array) => {
   });
 };
 
-  const loadLGAs = async (e) => {
-    const stateId = e.target.value;
-    const lgaNode = document.getElementById(`${e.target.id.replace('state', 'lga')}`);
-    let options = `<option value="">Select L.G.Area</option>`;
-    if (stateId) {
-      await fetch(request({
-        path: `/states/${stateId}/lgas`, method: 'GET'
-      })).then(res => res.json()).then((result) => {
-        result.data.lgas.forEach((item) => {
-          options += `<option value="${item.lgaId}">${item.lga}</option>`;
-        });
-        return options;
-      }).then((ops) => {
-        lgaNode.innerHTML = '';
-        lgaNode.insertAdjacentHTML('beforeend', ops);
+const loadLGAs = async (e) => {
+  const stateId = e.target.value;
+  const lgaNode = document.getElementById(`${e.target.id.replace('state', 'lga')}`);
+  let options = `<option value="">Select L.G.Area</option>`;
+  if (stateId) {
+    await fetch(request({
+      path: `/states/${stateId}/lgas`, method: 'GET'
+    })).then(res => res.json()).then((result) => {
+      result.data.lgas.forEach((item) => {
+        options += `<option value="${item.lgaId}">${item.lga}</option>`;
       });
-    } else {
-      lgaNode.innerHTML = options;
-    }
-    lgaNode.style.color = '#636c72';
-  };
+      return options;
+    }).then((ops) => {
+      lgaNode.innerHTML = '';
+      lgaNode.insertAdjacentHTML('beforeend', ops);
+    });
+  } else {
+    lgaNode.innerHTML = options;
+  }
+  lgaNode.style.color = '#636c72';
+};
 
 const signout = () => { 
   localStorage.removeItem('token');
+  window.location.href = '/';
 };

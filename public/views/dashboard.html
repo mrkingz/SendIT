@@ -22,31 +22,50 @@
   </head>
   <body>
     <div class="main">
-        <header class="header align-bottom">
-            <div class="header-content">
-                <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-                <div class="menu-div">
-                <ul class="navbar">
-                    <li>
-                    <a onclick="signout()" href="/" class="btn btn-link btn-sm red-color" >Sign out</a>
-                    </li>
-                </ul>
+        <header>
+            <nav class="container navbar fixed-top">
+                <div class="brand"><a href="" class="brand-name" style="color: #555;">SendIT<sup class="size-12">&trade;</sup></a></div>
+                <div class="search-container">
+                    <div class="search-wrapper">
+                        <div class="search-control-container">
+                            <input type="text" class="track-input" placeholder="Track your parcel">
+                            <button class="btn btn-primary btn-sm search-btn">Track </button>
+                        </div>
+                    </div> 
                 </div>
-            </div>
+                <div class="links">
+                    <div class="dropdown">
+                        <button id="avatar" onclick="dropdown('user-dropdown');" class="btn btn-transparent dropbtn">
+                            <i class="fa fa-user-circle"></i> <i class="fa fa-caret-down size-18 normal ml-md"></i>
+                        </button>
+                        <div id="user-dropdown" class="dropdown-content size-11 align-left">
+                            <div class="panel px-md user-name">
+                                <div class="size-14 bold">Kingsley Frank-Demesi</div>
+                            </div>
+                            <a href="/profile" class="menu-btn"><i class="fa fa-user-o"></i> My profile</a>
+                            <button class="menu-btn" onclick="signout()"><i class="fa fa-sign-out"></i> Sign out</button>
+                        </div>
+                    </div>
+                </div>
+            </nav>
         </header>
         <div class="row no-gutters">
             <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
-                <div class="wrapper section"> 
-                    <div class="content-header">Dashboard</div>
-                    <div class="panel">
-                        <div class="welcome-user">Welcome, 
-                            <span class="size-16 normal" id="name"></span>
-                        </div>
-                    </div>
-                    <div class="section">
-                        <div class="dashboard" id="dashboard">
-                            <a href="/create" class="btn btn-primary">Create Order</a>
-                            <a href="/profile" class="btn btn-primary">My Profile</a>
+                <div class="page">
+                    <div class="page-header"><span class="page-title">Dashboard</span></div>
+                    <div class="page-content">
+                        <div class="dash-welcome">Welcome, 
+                            <span class="size-16 normal" id="name"></span> 
+                            <div class="dash-wrapper">                    
+                                <div class="dashboard" id="dashboard">
+                                    <a href="/create" class="btn btn-primary">
+                                        <p><i class="fa fa-edit"></i></p>Create Order
+                                    </a>
+                                    <a href="/profile" class="btn btn-primary">
+                                        <p><i class="fa fa-user"></i></p>My Profile
+                                    </a>
+                                </div>
+                            </div>  
                         </div>
                     </div>
                 </div>
@@ -66,7 +85,7 @@
         if (user.isAdmin) {
           const orderBtn = document.createElement("a");
           orderBtn.href = "/orders";
-          orderBtn.innerText = "Delivery orders";
+          orderBtn.innerHTML = `<p><i class="fa fa-list-ol"></i></p>Delivery orders`;
           addClass(orderBtn, ["btn", "btn-primary"]);
           const dashboard = document.getElementById("dashboard");
           dashboard.insertBefore(orderBtn, dashboard.lastElementChild);

@@ -15,69 +15,95 @@
 
 <body onload="getProfileDetails()">
   <div class="main">
-    <header class="header align-bottom">
-      <div class="header-content">
-        <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-        <div class="menu-div">
-          <ul class="navbar">
-            <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-            <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-          </ul>
+    <header>
+      <nav class="container navbar fixed-top">
+        <div class="brand"><a href="" class="brand-name" style="color: #555;">SendIT<sup class="size-12">&trade;</sup></a></div>
+        <div class="search-container">
+          <div class="search-wrapper">
+            <div class="search-control-container">
+              <input type="text" class="track-input" placeholder="Track your parcel">
+              <button class="btn btn-primary btn-sm search-btn">Track </button>
+            </div>
+          </div> 
         </div>
-      </div>
+        <div class="links">
+          <div class="dropdown">
+              <button onclick="dropdown('menu-dropdown')" class="btn btn-transparent dropbtn"><i class="fa fa-bars"></i></button>
+              <div id="menu-dropdown" class="dropdown-content size-11 align-left">
+                      <a href="/dashboard" class="menu-btn"><i class="fa fa-dashboard"></i> Dashboard</a>
+                  <a href="/create" class="menu-btn"><i class="fa fa-edit"></i> New order</a>
+                  <a href="/orders" class="menu-btn"><i class="fa fa-list-ol"></i> Delivery orders</a>
+              </div>
+          </div>
+          <div class="dropdown">
+              <button id="avatar" onclick="dropdown('user-dropdown');" class="btn btn-transparent dropbtn">
+                <i class="fa fa-user-circle"></i> <i class="fa fa-caret-down size-18 normal ml-md"></i>
+              </button>
+              <div id="user-dropdown" class="dropdown-content size-11 align-left">
+                  <div class="panel px-md user-name">
+                      <div class="size-14 bold">Kingsley Frank-Demesi</div>
+                  </div>
+                  <a href="/profile" class="menu-btn"><i class="fa fa-user-o"></i> My profile</a>
+                  <button class="menu-btn" onclick="signout()"><i class="fa fa-sign-out"></i> Sign out</button>
+              </div>
+          </div>
+        </div>
+      </nav>
     </header>
     <div class="row no-gutters">
       <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
-        <div class="wrapper section">
-          <div class="content-header">Profile info</div>
-          <div class="panel">
-          <div class="row no-gutters">
-            <div class="col-12">
-              <div class="dropdown">
-                <button onclick="dropdown('menu')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-bars"></i></button>
-                <div id="menu" class="dropdown-content size-11 dropdown-content-mini">
-                  <button class="menu-btn" onclick="editNameModal(event, user)">Update name</button>
-                  <button class="menu-btn" id="phone-btn" onclick="updatePhoneModal(event, user)">Update phone number</button>
-                  <button class="menu-btn" onclick="changePasswordModal(event, user)">Change password</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row mt-md">
-            <div class="col-12">
-              <div class="row">
-                <div class="col-lg-4 col-md-4 col-m-12">
-                  <div class="align-center avatar-div">
-                    <img  id="image" src="../images/avatar.png" alt="" class="avatar">                
+        <div class="page">
+          <div class="page-header"><span class="page-title">My profile</span></div>
+          <div class="panel mt-lg">
+            <div class="section-x">
+              <div class="row no-gutters">
+                <div class="col-12">
+                  <div class="dropdown">
+                    <button onclick="dropdown('menu')" class="btn btn-link dropbtn btn-sm size-13 fine-btn"><i class="fa fa-bars"></i> Menu</button>
+                    <div id="menu" class="dropdown-content size-11 dropdown-content-mini">
+                      <button class="menu-btn" onclick="editNameModal(event, user)">Update name</button>
+                      <button class="menu-btn" id="phone-btn" onclick="updatePhoneModal(event, user)">Update phone number</button>
+                      <button class="menu-btn" onclick="changePasswordModal(event, user)">Change password</button>
+                    </div>
                   </div>
                 </div>
-                <div class="col-lg-8 col-md-8 col-m-12">
-                  <div class="mt-md">
-                    <div class="data-row">
-                      <label for="firstname" class="data-label">Firstname</label>
-                      <div class="data-value" id="data-firstname"></div>
+              </div>
+              <div class="row mt-lg">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-lg-4 col-md-4 col-m-12">
+                      <div class="align-center avatar-div">
+                        <img  id="image" src="../images/avatar.png" alt="" class="avatar">                
+                      </div>
                     </div>
-                    <div class="data-row">
-                      <label for="firstname" class="data-label">Lastname</label>
-                      <div class="data-value" id="data-lastname"></div>
+                    <div class="col-lg-8 col-md-8 col-m-12">
+                      <div class="mt-md">
+                        <div class="data-row">
+                          <label for="firstname" class="data-label">Firstname</label>
+                          <div class="data-value" id="data-firstname"></div>
+                        </div>
+                        <div class="data-row">
+                          <label for="firstname" class="data-label">Lastname</label>
+                          <div class="data-value" id="data-lastname"></div>
+                        </div>
+                        <div class="data-row">
+                          <label for="firstname" class="data-label">E-mail address</label>
+                          <div class="data-value" id="data-email"></div>
+                        </div>
+                        <div class="data-row">
+                          <label for="firstname" class="data-label">Phone number</label>
+                          <div class="data-value" id="data-phonenumber">--</div>
+                        </div>
+                        <div id="photo-widget"></div>
+                      </div>               
                     </div>
-                    <div class="data-row">
-                      <label for="firstname" class="data-label">E-mail address</label>
-                      <div class="data-value" id="data-email"></div>
-                    </div>
-                    <div class="data-row">
-                      <label for="firstname" class="data-label">Phone number</label>
-                      <div class="data-value" id="data-phonenumber">--</div>
-                    </div>
-                    <div id="photo-widget"></div>
-                  </div>               
+                  </div>
                 </div>
               </div>
-              </div>
-            </div>
-            <div class="row">
-              <div class="col-12">
-                  <div class="mt-lg height-transition" id="orders"></div>
+              <div class="row">
+                <div class="col-12">
+                    <div class="mt-lg height-transition" id="orders"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -118,16 +144,16 @@
     const showPhotoControl = (status) => {
       const elements = {
         browse: `<form id="upload" enctype="multipart/form-data">
-                  <label class="input-label skyblue-color">
+                  <label class="input-label fine-btn">
                       <input id="photo" type="file" name="photo" onchange="browsePhoto(event)" required/>
                       <span>Upload photo</span>
                   </label>
                 </form>`,
         upload: `<div id="group-btn">
-                    <button id="save" class="btn btn-sm btn-link skyblue-color" onclick="uploadPhoto(event)">Save</button>
-                    <button id="cancel" class="btn btn-sm btn-link skyblue-color mx-md" onclick="cancelUpload(event)">Cancel</button>
+                    <button id="save" class="btn btn-sm btn-link fine-btn" onclick="uploadPhoto(event)">Save</button>
+                    <button id="cancel" class="btn btn-sm btn-link fine-btn mx-md" onclick="cancelUpload(event)">Cancel</button>
                   </div>`,
-        remove: `<div><button class="btn btn-sm btn-link skyblue-color" onclick="removePhoto()">Remove photo</button></div>`
+        remove: `<div><button class="btn btn-sm btn-link fine-btn" onclick="removePhoto()">Remove photo</button></div>`
       }
       document.getElementById('photo-widget').innerHTML = elements[status];
     }
@@ -165,6 +191,15 @@
         const photo = document.getElementById('image');
         photo.src = URL.createObjectURL(input.files[0]);
         showPhotoControl('upload');
+        const avatar = document.getElementById('avatar');
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);;
+        img.id = "avatar-img";
+        img.addEventListener("click", (e) => {
+          e.stopPropagation();
+          e.target.parentNode.dispatchEvent(new Event('click'));
+        });
+        avatar.firstElementChild.replaceWith(img);
         document.getElementById('cancel').value = user.photoURL || photo.src;
       }
     }
@@ -177,6 +212,10 @@
       confirmModal(content, '', async () => {
         updateRequest({ path: `/auth/removePhoto`, callback: () => {
           document.getElementById('image').src = '../images/avatar.png';
+          const avatar = document.getElementById("avatar");
+          const img = document.createElement('i');
+          addClass(img, ['fa', 'fa-user-circle']);
+          avatar.firstElementChild.replaceWith(img);
           showPhotoControl('browse') 
         }});
       })
@@ -328,8 +367,7 @@
                       <a href="/create" class="btn btn-link bold fine-btn btn-lg mt-lg">Create Order</a>
                       </div>`;
       if (data.total > 0) {
-        content = `<div class="more-details mb-md">
-                    <div class="nexted">
+        content = `<div class="nexted">
                       <div class="card-header flex justify-content-between">
                         <div class="card-title">
                           <label class="size-12 bold">Delivery orders</label>
@@ -353,15 +391,14 @@
                           <div class="data" id="data-placed">${data.placed}</div>
                         </div>
                         <div class="card-row">
-                          <div class="data-header red-colo" style="font-size: 1.5rem">Total</div>
+                          <div class="data-header red-colo" style="font-size: 1.5rem">Total orders</div>
                           <div class="data red-color bold" id="data-total" style="font-size: 1.5rem">${data.total}</div>
                         </div>
                       </div>
-                      <div class="more-detail mt-lg align-right">
-                        <a href="/users/orders" class="btn btn-link skyblue-color">See orders</a>
+                      <div class="card-footer">
+                        <a href="/users/orders" class="btn btn-primary btn-lg"><i class='fa fa-list-ol'></i> See orders</a>
                       </div>
-                    </div>
-                </div>`;
+                    </div>`;
       }
       const orders = document.getElementById('orders');
       orders.innerHTML = content;

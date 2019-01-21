@@ -12,25 +12,49 @@
     </head>
     <body onload="getOrders()">
         <div class="main">
-            <header class="header align-bottom">
-                <div class="header-content">
-                    <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-                    <div class="menu-div">
-                        <ul class="navbar">
-                            <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-                            <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-                        </ul>
+            <header>
+                <nav class="container navbar fixed-top">
+                    <div class="brand"><a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a></div>
+                    <div class="search-container">
+                        <div class="search-wrapper">
+                            <div class="search-control-container">
+                                <input type="text" class="track-input" placeholder="Track your parcel">
+                                <button class="btn btn-primary btn-sm search-btn">Track </button>
+                            </div>
+                        </div> 
                     </div>
-                </div>
+                    <div class="links">
+                        <div class="dropdown">
+                            <button onclick="dropdown('menu-dropdown')" class="btn btn-transparent dropbtn"><i class="fa fa-bars"></i></button>
+                            <div id="menu-dropdown" class="dropdown-content size-11 align-left">
+                                    <a href="/dashboard" class="menu-btn"><i class="fa fa-dashboard"></i> Dashboard</a>
+                                <a href="/create" class="menu-btn"><i class="fa fa-edit"></i> New order</a>
+                                <a href="/orders" class="menu-btn"><i class="fa fa-list-ol"></i> Delivery orders</a>
+                            </div>
+                        </div>
+                        <div class="dropdown">
+                            <button id="avatar" onclick="dropdown('user-dropdown');" class="btn btn-transparent dropbtn">
+                                <i class="fa fa-user-circle"></i> <i class="fa fa-caret-down size-18 normal ml-md"></i>
+                            </button>
+                            <div id="user-dropdown" class="dropdown-content size-11 align-left">
+                                <div class="panel px-md user-name">
+                                    <div class="size-14 bold">Kingsley Frank-Demesi</div>
+                                </div>
+                                <a href="/profile" class="menu-btn"><i class="fa fa-user-o"></i> My profile</a>
+                                <button class="menu-btn" onclick="signout()"><i class="fa fa-sign-out"></i> Sign out</button>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
             </header>  
             <div class="row no-gutters">
                 <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
-                    <div class="wrapper section">
-                        <div class="content-header">Delivery orders</div>  
-                        <div class="panel">                                            
-                            <div class="filter-div hide" id="filter-div">
+                    <div class="page">
+                        <div class="page-header"><span class="page-title">Delivery orders</span></div>
+                        <div class="panel mt-lg">                                            
+                            <div class="filter-div section-x">
                                 <div class="dropdown">
-                                    <button onclick="dropdown('filter')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-filter"></i> Filter orders</button>
+                                    <button onclick="dropdown('filter')" class="btn btn-link fine-btn size-13 btn-sm dropbtn"><i class="fa fa-filter"></i> Filter orders</button>
                                     <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
                                         <button class="menu-btn" onclick="getOrders()">All orders</button>
                                         <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
@@ -39,7 +63,7 @@
                                         <button class="menu-btn" onclick="getOrders('transiting')">Transiting orders</button>
                                     </div>
                                 </div>
-                            </div> 
+                            </div>
                             <div id="orders"></div>
                              <div id="message"></div>
                         </div>
@@ -60,6 +84,7 @@
                 if (filter) {
                     showSpinner()
                 }
+    
                 authUser.then((user) => {
                     const path  = (location.href.indexOf('users/orders') === -1) 
                         ? `/parcels` 
@@ -77,8 +102,7 @@
                             res.data.parcels.forEach((order) => {
                                 orders.appendChild(orderCard(order));
                             })
-                            document.getElementById('filter-div').classList.remove('hide');
-                            document.querySelector('.content-header').innerHTML = `${filter ? filter : 'Delivery'} orders`;
+                            document.querySelector('.page-title').innerHTML = `${filter ? filter : 'Delivery'} orders`;
                             hideSpinner();
                         } else if (filter) {
                             toggleSpinner(res.message, res.status);
@@ -99,37 +123,35 @@
             const orderCard = (order) => {
                 const card = document.createElement('div');
                 card.classList.add('card');
-                card.innerHTML = `<div class="more-details">
-                        <div class="nexted">
-                            <div class="card-header">
-                                <div class="card-title">
-                                    <label class="bold">Tracking #: ${order.trackingNo}</label>
-                                </div>
-                            </div>
-                            <div class="card-wrapper">
-                                <div class="card-row">
-                                    <div class="data-header">Weight</div>
-                                    <div class="data weight">${order.weight}</div>
-                                </div>
-                                <div class="card-row">
-                                    <div class="data-header">Parcel description</div>
-                                    <div class="data">${order.description || 'Not available'}</div>
-                                </div>                                                                                                                                           
-                                <div class="card-row">
-                                    <div class="data-header">Delivery method</div>
-                                    <div class="data">${order.deliveryMethod}</div>
-                                </div>
-                                <div class="card-row">
-                                    <div class="data-header">Status</div>
-                                    <div class="data red-color">${order.deliveryStatus}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>                                                          
-                    <div class="details-link-div">
-                        <a href="/orders/${order.parcelId}" class="btn btn-link btn-sm skyblue-color">Details</a>
-                    </div>`;
+                card.innerHTML = `<div class="nexted">
+                                    <div class="card-header">
+                                        <div class="card-title"><label class="bold">Tracking #: ${order.trackingNo}</label></div>
+                                    </div>
+                                    <div class="card-wrapper">
+                                        <div class="card-row">
+                                            <div class="data-header">Weight</div>
+                                            <div class="data weight">${order.weight}</div>
+                                        </div>
+                                        <div class="card-row">
+                                            <div class="data-header">Parcel description</div>
+                                            <div class="data">${order.description || 'Not available'}</div>
+                                        </div>                                                                                                                                           
+                                        <div class="card-row">
+                                            <div class="data-header">Delivery method</div>
+                                            <div class="data">${order.deliveryMethod}</div>
+                                        </div>
+                                        <div class="card-row">
+                                            <div class="data-header">Status</div>
+                                            <div class="data red-color">${order.deliveryStatus}</div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <span><span class='bold'>Date: </span>${order.createdAt}</span>
+                                        <a href="/orders/${order.parcelId}" class="btn btn-link btn-sm fine-btn">Details</a>
+                                    </div>
+                                </div>`;
                 return card;
+
             }
         </script>
     </body>
