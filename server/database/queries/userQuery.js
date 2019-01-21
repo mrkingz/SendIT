@@ -7,14 +7,14 @@
  * @export
  * @class SQLService
  */
-export default class UserSQLService {
+export default class UserQuery {
 	/**
 	 * Create insert user sql query object 
 	 *
 	 * @static
 	 * @param {array} values
 	 * @returns {object} the query object
-	 * @memberof SQLService
+	 * @memberof UserQuery
 	 */
 	static insertUser(values) {
 		return {
@@ -30,7 +30,7 @@ export default class UserSQLService {
 	 * @static
 	 * @param {object} data
 	 * @returns {object} the query object
-	 * @memberof SQLService
+	 * @memberof UserQuery
 	 */
 	static findUserBy(data) {
 		const key = Object.keys(data)[0];
@@ -46,7 +46,7 @@ export default class UserSQLService {
 	 * @static
 	 * @param {object} options
 	 * @returns {object} the query object 
-	 * @memberof SQLService
+	 * @memberof UserQuery
 	 */
 	static editUser(options) {
 		switch (options.key) {
@@ -60,9 +60,13 @@ export default class UserSQLService {
 				]
 			};
 			case 'phone': return {
-				text: `UPDATE users SET "phoneNumber" = $1, "updatedA"t = $2
+				text: `UPDATE users SET "phoneNumber" = $1, "updatedAt" = $2
 							 WHERE userId = $3 RETURNING *`,
 				values: [options.values.phoneNumber, new Date(), options.values.decoded.userId]
+			};
+			case 'photo': return {
+				text: `UPDATE users SET "photoURL" = $1, "updatedAt" = $2 WHERE "userId" = $3 RETURNING *`,
+				values: [options.values.photoURL, new Date(), 1]
 			};
 		}
 	}
@@ -74,7 +78,7 @@ export default class UserSQLService {
 	 * @param {object} credentials
 	 * @returns {object} the query object
 	 * @method findUser
-	 * @memberof SQLService
+	 * @memberof UserQuery
 	 */
 	static findUser(credentials) {
 		const { userId, email, isAdmin } = credentials;
@@ -91,7 +95,7 @@ export default class UserSQLService {
 	 * @static
 	 * @param {int} userId user id
 	 * @returns {object} the query object
-	 * @memberof SQLService
+	 * @memberof UserQuery
 	 */
 	static getProfile(userId) {
 		const count = 'SELECT COUNT("parcelId") AS';
@@ -124,7 +128,7 @@ export default class UserSQLService {
 	 * @param {object} options
 	 * @returns {object} the query object
 	 * @method updatePassword
-	 * @memberof SQLService
+	 * @memberof UserQuery
 	 */
 	static updatePassword(options) {
 		const { password, userId, email } = options.values;

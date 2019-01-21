@@ -31,7 +31,7 @@ export default class PageController {
 	 */
 	static getSignup() {
 		return (req, res) => {
-			return res.sendFile(this.getHTMLPath('registration'));
+			return res.sendFile(this.getHTMLPath('registeration'));
 		};
 	}
 
@@ -88,20 +88,6 @@ export default class PageController {
 	static getOrders() {
 		return (req, res) => {
 			return res.sendFile(this.getHTMLPath('orders'));
-		};
-	}
-
-	/**
-	 * Get user orders page
-	 *
-	 * @static
-	 * @returns {function} An express middleware that handles the GET request
-	 * @method getUserOrders
-	 * @memberof PageController
-	 */
-	static getUserOrders() {
-		return (req, res) => {
-			return res.sendFile(this.getHTMLPath('user-orders'));
 		};
 	}
 

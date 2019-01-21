@@ -19,9 +19,4 @@ const devConfig = {
 };
 
 const prodConfig = process.env.DATABASE_URL;
-
-export {
-  devConfig,
-  prodConfig,
-  testConfig
-};
+export { devConfig, prodConfig, testConfig };

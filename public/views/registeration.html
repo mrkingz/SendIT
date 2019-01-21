@@ -29,36 +29,33 @@
                         <div class="form-wrapper">
                             <div class="transparent">
                                 <form class="form auth-form" action="" method="POST">
-                                    <div class="form-title">Sign in</div>
+                                    <div class="form-title">Sign up</div>
                                     <div class="section">
                                         <div class="control-group">
-                                            <label for="email">E-mail address</label>
-                                            <input type="email" class="control col-12" name="email" id="email" placeholder="E-mail address"
-                                                autocomplete="off">
-                                        </div>
-    
-                                        <div class="control-group">
-                                            <label for="password">Password</label>
-                                            <input type="password" class="control col-12" name="password" id="password" placeholder="Password">
+                                            <label class="required" for="firstname">Firstname</label>
+                                            <input type="text" class="control" name="firstname" id="firstname" placeholder="Firstname" autocomplete="off" autofocus>
                                         </div>
                                         <div class="control-group">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" id="remember-me" name="rememberMe" value="true">
-                                                <label class="form-check-label text-shadow" for="remember-me">Remember me</label>
-                                            </div>
+                                            <label class="required" for="lastname">Lastname</label>
+                                            <input type="text" class="control" name="lastname" id="lastname" placeholder="Lastname" autocomplete="off">
+                                        </div>
+                                        <div class="control-group">
+                                            <label class="required" for="email">E-mail address</label>
+                                            <input type="email" class="control" name="email" id="email" placeholder="E-mail address" autocomplete="off">
+                                        </div>
+                                    
+                                        <div class="control-group mb-lg">
+                                            <label class="required" for="password">Password</label>
+                                            <input type="password" class="control" name="password" id="password" placeholder="Password">
                                         </div>
                                         <div id="message"></div>
-                                        <div class="control-group align-right mb-sm">
-                                            <button class="btn btn-primary btn-lg" onclick="login(event)">Sign in</button>
-                                        </div>
-                                        <div class="control-group">
-                                            <div class="align-right mt-md">
-                                                <a href="/password" class="forgot-password bold size-14">Forgot password?</a>
-                                            </div>
+                                        <div class="control-group align-center">
+                                            <p class="required-text overlay-text text-shadow mt-md" >All fields marked with<strong class="required"></strong> are required!</p>
+                                            <button id="submit" class="btn btn-primary btn-lg" onclick="signup(event)">Sign up</button>
                                         </div>
                                     </div>
                                     <div class="auth-redirect">
-                                        <span>Don't have an account? <a href="/signup" class="bold auth-link">Sign up</a></span> 
+                                        <span>Already have an account? <a href="/signin" class="bold auth-link">Sign in</a></span> 
                                     </div>
                                 </form>
                             </div>
@@ -76,23 +73,35 @@
         <script src="../js/jquery-3.2.1.min.js"></script>
         <script src="../js/script.js"></script>
         <script>
-            let login = async (e) => {
+            const isUniqueEmail = (elem) => {
+                return fetch(request({path: '/auth/email', fields: ['email'] })).then(res => res.json())
+                .then(res => {
+                    if (res['data'] && res.data.email === elem.value) {
+                        isUnique(elem, res.message)
+                        return false
+                    } 
+                    return true;
+                });
+            }
+
+            const signup = async (e) => {
                 e.preventDefault();
-                const fields = ['email', 'password'];
+                processing({ start: true })
+                const fields = ['firstname', 'lastname', 'email', 'password'];
                 const email = document.getElementById('email');
                 const password = document.getElementById('password');
-                if (!hasEmpty(fields)) {
-                    await fetch(request({ path: '/auth/login', fields })).then(res => res.json())
-                        .then(res => {
-                            if (res.status === 'Success') {
-                                localStorage.setItem('token', res.data.token);
-                                location.href = '/dashboard';
-                            } else {
-                                message(res.message, res.status);
-                                password.value = '';
-                            }
-                        }).catch(error => message(error.message, error.status))
+                if (!hasEmpty(fields) && isEmail(email) && await isUniqueEmail(email)
+                    && isValidPassword(password)) {
+                    await fetch(request({path: '/auth/signup', fields })).then(res => {
+                        if (res.status === 201){
+                            $('input').val('');
+                        }
+                        return res.json()
+                    })
+                    .then(res => message(res.message, res.status))
+                    .catch(error => message(error.message, error.status))
                 }
+                processing({message: 'Sign up', start: false});
             }
         </script>
     </body>   

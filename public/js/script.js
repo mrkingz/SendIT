@@ -11,25 +11,25 @@ $('body').on('change', 'select', (e) => {
   elem.css({ color: elem.val().trim() === '' ? '#636c72' : 'initial' });
 });
 
-const request = (obj) => {
-  const headers = new Headers({
-    token: localStorage.getItem('token'),
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  });
-  // We don't body in a GET request
-  // So we'll just create the request object with the method and headers 
-  if (obj['method'] === 'GET') {
-    return new Request(`${baseUrl.concat(obj.path)}`, {
-      method: obj['method'],
-      headers
-    }); 
-  }
-  return new Request(`${baseUrl.concat(obj.path)}`, {
-    method: obj.method || 'POST',
-    body: (obj.data || obj.fields) ? obj.data || getFormData(obj.fields) : null,
-    headers
-  });
+const request = (options) => {
+  const { 
+    method, path, data, fields, setContentType
+  } = options;
+  const token = localStorage.getItem('token');
+  const bool = typeof setContentType === 'undefined' ? true : setContentType;
+  const headersOptions = bool
+    ? { token, Accept: 'application/json', 'Content-type': 'application/json' } 
+    : { token, Accept: 'application/json' };
+  const headers = new Headers(headersOptions);
+  return new Request(`${baseUrl.concat(path)}`, 
+    // Remember, we don't need body in a GET request
+    (method === 'GET') 
+    ? { method, headers } 
+    : {
+        method: method || 'POST',
+        body: (data || fields) ? (data || getFormData(fields)) : null,
+        headers
+      });
 };
 
 const getFormData = (fields, callback) => {
@@ -45,27 +45,22 @@ const getFormData = (fields, callback) => {
     : JSON.stringify(data);
 };
 
-const updateRequest = async (obj) => {
+const updateRequest = async (options, callback) => {
   await hideModal('');
-  await showSpinner();
-  fetch(request({
-    path: obj.path,
-    data: obj['data'],
-    method: 'PUT'
-  })).then(res => res.json())
+  await showSpinner(options.callback);
+  fetch(request({ ...options, method: 'PUT' })).then(res => res.json())
     .then((res) => {
       if (res.status === 'Success') {
-        pageReload = true;
-        toggleSpinner(res.message, res.status);
-      } else {
-        toggleSpinner(res.message, res.status);
-      }
+        pageReload = typeof options.reload === 'undefined' ? true : options.reload;
+        toggleSpinner(res.message, res.status); 
+      } else toggleSpinner(res.message, res.status);
+      if (typeof callback === 'function') callback();
     }).catch(error => toggleSpinner(error.message, error.status));
 };
 
 const addClass = (element, classes) => {
   classes.forEach((value) => {
-    if (!element.classList.contains(value)) {
+    if (element && !element.classList.contains(value)) {
       element.classList.add(value);
     }
   });
@@ -73,7 +68,7 @@ const addClass = (element, classes) => {
 
 const removeClass = (element, classes) => {
   classes.forEach((value) => {
-    if (element.classList.contains(value)) {
+    if (element && element.classList.contains(value)) {
       element.classList.remove(value);
     }
   });
@@ -90,7 +85,7 @@ const processing = (obj) => {
   }
 };
 
-const message = (msg, status, elem, animate) => {
+const message = (msg, status, elem, animate, cls) => {
   const type = {
     success: 'alert-success',
     fail: 'alert-danger',
@@ -103,20 +98,13 @@ const message = (msg, status, elem, animate) => {
   parent.classList.add('control-group');
   const div = document.createElement('div');
   if (animate) { 
-    addClass(div, ['alert', type[status], 'zoomIn', 'animated']);
+    addClass(div, ['alert', type[status], (cls || 'zoomIn'), 'animated']);
   } else {
     addClass(div, ['alert', type[status]]);
   }
   div.innerHTML = msg;
   parent.appendChild(div);
   messageElem.appendChild(parent);
-};
-
-/* When the user clicks on the button, 
-toggle between hiding and showing the dropdown content */
-const dropdown = function (id) {
-  oDropdown = document.getElementById(id);
-  oDropdown.classList.toggle('show');
 };
 
 const isUnique = (field, msg) => {
@@ -252,20 +240,49 @@ const removeListeners = (element) => {
   }
 };
 
-// Close the dropdown menu if the user clicks outside of it
+/* When the user clicks on the button, 
+toggle between hiding and showing the dropdown content */
+const dropdown = (id) => {
+  if (oDropdown && oDropdown.id !== id) {
+    oDropdown.classList.remove('show');
+  }
+  oDropdown = document.getElementById(id);
+  oDropdown.classList.toggle('show');
+};
+
+//Close the dropdown menu if the user clicks outside of it
 window.onclick = (event) => {
   if (event.target === modal && !modal.classList.contains('static')) {
     hideModal();
   }
-
-  if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn i')) {
+  if (!event.target.matches('.dropbtn') && !event.target.matches('.dropbtn *')) {
     let dropdowns = document.querySelectorAll('.dropdown-content');
     dropdowns.forEach((d) => {
       if (d.classList.contains('show')) {
         d.classList.remove('show');
+        oDropdown = null;
       }
     });
   }
+};
+
+const confirmModal = (content, type, callback) => {
+  showModal({
+    content,
+    title: `Confirm ${type}`,
+    type: 'confirm',
+    callback: () => {
+      document.getElementById('confirm-btn').addEventListener('click', callback);
+    }
+  });
+};
+
+const alertModal = (options) => {
+  showModal({ 
+    type: 'alert', 
+    title: options.title || 'Successfull!', 
+    content: `<div class="alert alert-${options.type || 'success'}">${options.message}</div>`
+  });
 };
 
 // // When the user clicks the button, open the modal 
@@ -281,13 +298,16 @@ const showModal = (obj) => {
                   ${type ? '' : '<span class="close" onclick="hideModal()" tabindex="-1">&times;</span>'}
                 </div>`;
   switch (type) {
+    case 'alert':
     case 'confirm':
         html += `<div class="modal-body">
                     <div class="modal-title" id="confirm-title">${title}</div>
-                    ${content}
-                    <div class="confirm-btns">
-                      <button class="btn btn-primary btn-sm" id="confirm-btn">Proceed</button>
-                      <button class="btn btn-primary btn-sm" onclick="hideModal()">Cancel</button>
+                      ${content}
+                    <div class="confirm-btns mt-md">
+                      ${type === 'alert' ? '' : '<button class="btn btn-primary" id="confirm-btn">Proceed</button>'} 
+                      <button class="btn btn-primary" onclick="hideModal()">
+                        ${type === 'alert' ? 'Close' : 'Cancel'}
+                      </button>
                     </div>
                   </div>`;
         break;
@@ -311,28 +331,30 @@ const hideModal = () => {
     document.querySelector('body').removeChild(modal);
   }
 };
-
-const showSpinner = () => {
+const showSpinner = (callback) => {
   modal = document.createElement('div');
   modal.id = "spinner";
   addClass(modal, ['modal', 'static']);
   modal.innerHTML = `<div class="modal-content modal-sm spinner">
                         <div class="bold" id="spinner-img">
                           <div>
-                            <img style="height: 120px;" src="../images/processing.gif" alt="">
+                            <img style="height: 110px;" src="../images/processing.gif" alt="">
                           </div>
                           <div>Please wait...</div>
                         </div>
                         <div class="hide" id="spinner-message">
                           <div class="mb-md" id="success-img"></div>
                           <div id='message'></div>
-                          <div class='mb-sm'>
-                            <button class='btn btn-primary' onclick="hideSpinner()">Close</button>
+                          <div class='mb-sm spinner-btn'>
+                            <button class='btn btn-primary' id="close">Close</button>
                           </div>
                         </div>
                       </div>`;
   document.querySelector('body').appendChild(modal);
   modal.style.display = 'block';
+  document.querySelector('.spinner-btn #close').addEventListener('click', () => {
+    hideSpinner(callback);
+  });
 };
 
 const toggleSpinner = (msg, status) => {
@@ -355,15 +377,14 @@ const toggleSpinner = (msg, status) => {
   message(msg, status, document.querySelector('#spinner-message #message'), false);
 };
 
-const hideSpinner = async () => {
+const hideSpinner = async (callback) => {
   const spinner = document.getElementById('spinner');
   if (spinner) {
     spinner.style.display = 'none';
     await document.querySelector('body').removeChild(spinner);
   }
-  if (pageReload) {
-    window.location.reload();
-  }
+  if (typeof callback === 'function') return callback();
+  if (pageReload) window.location.reload();
 };
 
 const toggleEnquiryForm = (event, isShow) => {
@@ -404,70 +425,6 @@ const toggleOrderSteps = async (elem, isShow, animation) => {
   return Promise.resolve(elem);
 };
 
-const verifyPhone = async (e, user) => {
-  e.preventDefault();
-  const btn = e.target.parentNode;
-  const phone = document.getElementById('phone-number');
-  processing({ start: true });
-  if (!hasEmpty(['phone-number']) && isValidPhone(phone)) {
-    const phoneDiv = document.getElementById('phone-div');
-    await addClass(phoneDiv, ['zoomOut', 'animated', 'hide']);
-    addClass(document.querySelector('.modal'), ['static']);
-    document.getElementById('code-div').classList.add('show');
-    document.getElementById('resend-div').classList.add('show');
-    document.querySelector('.modal-body div').innerText = 'Verify phone number';
-    btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user, updatePhone)">Confirm</button>`;
-    generateCode();
-    codeInfo('Enter the code sent to', phone.value);
-  } else {
-    processing({ start: false, message: 'Continue' });
-  }
-};
-
-const codeInfo = (msg, phone) => {
-  const info = document.getElementById('code-info');
-  const num = phone.split('');
-  num[5] = '*'; num[6] = '*';
-  info.innerHTML = `<div class="alert alert-info bounceIn animated">
-                      <div>${msg} <b>${num.join('')}</b></div>
-                      <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
-                    </div>`;
-};
-
-const generateCode = (phone) => {
-  vCode = {
-    digit: Math.floor(Math.random() * 900000) + 99999,
-    time: new Date().getMinutes() + 3
-  };
-  console.log(vCode.digit);
-};
-
-const verifyCode = (e, user, callback) => {
-  e.preventDefault();
-  if (!hasEmpty(['verification-code'], 'Enter verification code') && isValideCode()) {
-    callback();
-  }
-};
-
-const resendCode = async (user) => {
-  generateCode();
-  codeInfo('A new code was sent to', user.phonenumber);
-  document.getElementById('verification-code').focus();
-};
-
-const isValideCode = () => {
-  const min = new Date().getMinutes();
-  const elem = document.getElementById('verification-code');
-  if (vCode['digit'].toString() !== elem.value) {
-    displayError(elem, 'Invalid verification code');
-    return false;
-  } else if (min > vCode['time']) {
-    displayError(elem, 'Code has expired. Resend below');
-    return false;
-  }
-  return true;
-};
-
 const loadStates = async (array) => {
   await fetch(request({
     path: '/states', method: 'GET'
@@ -484,28 +441,29 @@ const loadStates = async (array) => {
   });
 };
 
-  const loadLGAs = async (e) => {
-    const stateId = e.target.value;
-    const lgaNode = document.getElementById(`${e.target.id.replace('state', 'lga')}`);
-    let options = `<option value="">Select L.G.Area</option>`;
-    if (stateId) {
-      await fetch(request({
-        path: `/states/${stateId}/lgas`, method: 'GET'
-      })).then(res => res.json()).then((result) => {
-        result.data.lgas.forEach((item) => {
-          options += `<option value="${item.lgaId}">${item.lga}</option>`;
-        });
-        return options;
-      }).then((ops) => {
-        lgaNode.innerHTML = '';
-        lgaNode.insertAdjacentHTML('beforeend', ops);
+const loadLGAs = async (e) => {
+  const stateId = e.target.value;
+  const lgaNode = document.getElementById(`${e.target.id.replace('state', 'lga')}`);
+  let options = `<option value="">Select L.G.Area</option>`;
+  if (stateId) {
+    await fetch(request({
+      path: `/states/${stateId}/lgas`, method: 'GET'
+    })).then(res => res.json()).then((result) => {
+      result.data.lgas.forEach((item) => {
+        options += `<option value="${item.lgaId}">${item.lga}</option>`;
       });
-    } else {
-      lgaNode.innerHTML = options;
-    }
-    lgaNode.style.color = '#636c72';
-  };
+      return options;
+    }).then((ops) => {
+      lgaNode.innerHTML = '';
+      lgaNode.insertAdjacentHTML('beforeend', ops);
+    });
+  } else {
+    lgaNode.innerHTML = options;
+  }
+  lgaNode.style.color = '#636c72';
+};
 
 const signout = () => { 
   localStorage.removeItem('token');
+  window.location.href = '/';
 };

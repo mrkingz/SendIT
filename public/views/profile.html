@@ -14,50 +14,70 @@
 </head>
 
 <body onload="getProfileDetails()">
-  <header class="header align-bottom">
-    <div class="header-content">
-      <a href="" class="brand-name">SendIT<sup class="size-12">&trade;</sup></a>
-      <div class="menu-div">
-        <ul class="navbar">
-          <li><a href="/dashboard" class="btn btn-link btn-sm red-color">Dashboard</a></li>
-          <li><a href="/" class="btn btn-link btn-sm red-color">Sign out</a></li>
-        </ul>
-      </div>
-    </div>
-  </header>
-  <div class="row no-gutters">
-    <div class="col-lg-10 offset-lg-1 col-md-10 offset-md-1 col-sm-12 offset-sm-0">
-      <div class="wrapper mx-0 mb-0">
-        <div class="row">
-          <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
-            <div class="align-center panel">
-              <div class="image-div mb-lg avatar-wrapper">
-                <img src="../images/avatar.png" alt="" class="side-image avatar">
-              </div>
-              <div class="size-12 more-details">
-                <div id="name" class="bold my-lg" style="font-size: 20px;"></div>
-                <div id="role"></div>
-              </div>
+  <div class="main">
+    <header>
+      <nav class="container navbar fixed-top">
+        <div class="brand"><a href="" class="brand-name" style="color: #555;">SendIT<sup class="size-12">&trade;</sup></a></div>
+        <div class="search-container">
+          <div class="search-wrapper">
+            <div class="search-control-container">
+              <input type="text" class="track-input" placeholder="Track your parcel">
+              <button class="btn btn-primary btn-sm search-btn">Track </button>
             </div>
+          </div> 
+        </div>
+        <div class="links">
+          <div class="dropdown">
+              <button onclick="dropdown('menu-dropdown')" class="btn btn-transparent dropbtn"><i class="fa fa-bars"></i></button>
+              <div id="menu-dropdown" class="dropdown-content size-11 align-left">
+                      <a href="/dashboard" class="menu-btn"><i class="fa fa-dashboard"></i> Dashboard</a>
+                  <a href="/create" class="menu-btn"><i class="fa fa-edit"></i> New order</a>
+                  <a href="/orders" class="menu-btn"><i class="fa fa-list-ol"></i> Delivery orders</a>
+              </div>
           </div>
-          <div class="col-lg-6 col-md-6 col-sm-12">
-            <div style="padding-bottom: 30px">
-              <div class="content-header">Profile info</div>
-              <div class="panel">
-                <div class="dropdown">
-                  <button onclick="dropdown('menu')" class="btn btn-link dropbtn btn-sm"><i class="fa fa-bars"></i></button>
-                  <div id="menu" class="dropdown-content size-11 dropdown-content-mini">
-                    <button class="menu-btn" onclick="editNameModal(event, user)">Update name</button>
-                    <button class="menu-btn" id="phone-btn" onclick="updatePhoneModal(event, user)">Update phone number</button>
-                    <button class="menu-btn" onclick="changePasswordModal(event, user)">Change password</button>
+          <div class="dropdown">
+              <button id="avatar" onclick="dropdown('user-dropdown');" class="btn btn-transparent dropbtn">
+                <i class="fa fa-user-circle"></i> <i class="fa fa-caret-down size-18 normal ml-md"></i>
+              </button>
+              <div id="user-dropdown" class="dropdown-content size-11 align-left">
+                  <div class="panel px-md user-name">
+                      <div class="size-14 bold">Kingsley Frank-Demesi</div>
+                  </div>
+                  <a href="/profile" class="menu-btn"><i class="fa fa-user-o"></i> My profile</a>
+                  <button class="menu-btn" onclick="signout()"><i class="fa fa-sign-out"></i> Sign out</button>
+              </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+    <div class="row no-gutters">
+      <div class="col-lg-6 offset-lg-3 col-md-6 offset-md-3 col-sm-12">
+        <div class="page">
+          <div class="page-header"><span class="page-title">My profile</span></div>
+          <div class="panel mt-lg">
+            <div class="section-x">
+              <div class="row no-gutters">
+                <div class="col-12">
+                  <div class="dropdown">
+                    <button onclick="dropdown('menu')" class="btn btn-link dropbtn btn-sm size-13 fine-btn"><i class="fa fa-bars"></i> Menu</button>
+                    <div id="menu" class="dropdown-content size-11 dropdown-content-mini">
+                      <button class="menu-btn" onclick="editNameModal(event, user)">Update name</button>
+                      <button class="menu-btn" id="phone-btn" onclick="updatePhoneModal(event, user)">Update phone number</button>
+                      <button class="menu-btn" onclick="changePasswordModal(event, user)">Change password</button>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="panel">
-                <div class="profile-div">
-                  <div class="row no-gutters">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                      <div class="data-wrapper">
+              <div class="row mt-lg">
+                <div class="col-12">
+                  <div class="row">
+                    <div class="col-lg-4 col-md-4 col-m-12">
+                      <div class="align-center avatar-div">
+                        <img  id="image" src="../images/avatar.png" alt="" class="avatar">                
+                      </div>
+                    </div>
+                    <div class="col-lg-8 col-md-8 col-m-12">
+                      <div class="mt-md">
                         <div class="data-row">
                           <label for="firstname" class="data-label">Firstname</label>
                           <div class="data-value" id="data-firstname"></div>
@@ -74,15 +94,18 @@
                           <label for="firstname" class="data-label">Phone number</label>
                           <div class="data-value" id="data-phonenumber">--</div>
                         </div>
-                      </div>
+                        <div id="photo-widget"></div>
+                      </div>               
                     </div>
                   </div>
                 </div>
-                <div class="mt-lg height-transition" id="orders"></div>
+              </div>
+              <div class="row">
+                <div class="col-12">
+                    <div class="mt-lg height-transition" id="orders"></div>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="col-lg-3 col-md-3 col-sm-12 bg-white">
           </div>
         </div>
       </div>
@@ -99,7 +122,7 @@
   <script src="../js/script.js"></script>
   <script src="../js/modals.js"></script>
   <script>
-    let user;
+    let user, file;
     const getProfileDetails = async () => {
       await fetch(request({
         path: `/auth/profileDetails`,
@@ -114,7 +137,104 @@
               elem.innerText = user[key];
             }
           });
-        })
+          showPhotoControl(user.photoURL ? 'remove' : 'browse');
+        });
+    }
+
+    const showPhotoControl = (status) => {
+      const elements = {
+        browse: `<form id="upload" enctype="multipart/form-data">
+                  <label class="input-label fine-btn">
+                      <input id="photo" type="file" name="photo" onchange="browsePhoto(event)" required/>
+                      <span>Upload photo</span>
+                  </label>
+                </form>`,
+        upload: `<div id="group-btn">
+                    <button id="save" class="btn btn-sm btn-link fine-btn" onclick="uploadPhoto(event)">Save</button>
+                    <button id="cancel" class="btn btn-sm btn-link fine-btn mx-md" onclick="cancelUpload(event)">Cancel</button>
+                  </div>`,
+        remove: `<div><button class="btn btn-sm btn-link fine-btn" onclick="removePhoto()">Remove photo</button></div>`
+      }
+      document.getElementById('photo-widget').innerHTML = elements[status];
+    }
+
+    const getImageExtension = (file) => file.name.split('.').pop();
+    const getImageOrininalName = (file) => {
+      const arr = file.name.split('.');
+      arr.pop();
+      return arr.join('.');
+    }
+
+    const validatePhoto = (file) => {
+      const size = file.size / 1024 / 1024; // in MB
+      const ext = getImageExtension(file);
+      const formats = ['jpg', 'png', 'jpeg'];
+      let msg = null;
+      if (!formats.includes(ext)) {
+          msg = `Photo format must be one of <b>${formats.join(', ')}</b>`;
+      } else if (size > 2) {
+        msg = 'File size exceeds 2 MB';
+      }
+      if (msg) {
+        showModal({ 
+          type: 'alert', title: 'Error', content: `<div class="alert alert-danger">${msg}</div>`
+        });
+      }
+      return msg === null;
+    }
+
+    const browsePhoto = (e) => {
+      const input = e.target;
+
+      if (validatePhoto(input.files[0])) {
+        file = document.getElementById('photo').files[0];
+        const photo = document.getElementById('image');
+        photo.src = URL.createObjectURL(input.files[0]);
+        showPhotoControl('upload');
+        const avatar = document.getElementById('avatar');
+        const img = document.createElement("img");
+        img.src = URL.createObjectURL(file);;
+        img.id = "avatar-img";
+        img.addEventListener("click", (e) => {
+          e.stopPropagation();
+          e.target.parentNode.dispatchEvent(new Event('click'));
+        });
+        avatar.firstElementChild.replaceWith(img);
+        document.getElementById('cancel').value = user.photoURL || photo.src;
+      }
+    }
+
+    const removePhoto = (e) => {
+			const content = `<div class="warning">
+                        <b>Are you sure you want to remove profile photo?</b><br>
+                        Click proceed to confirm this operation
+                      </div>`;
+      confirmModal(content, '', async () => {
+        updateRequest({ path: `/auth/removePhoto`, callback: () => {
+          document.getElementById('image').src = '../images/avatar.png';
+          const avatar = document.getElementById("avatar");
+          const img = document.createElement('i');
+          addClass(img, ['fa', 'fa-user-circle']);
+          avatar.firstElementChild.replaceWith(img);
+          showPhotoControl('browse') 
+        }});
+      })
+    }
+
+    const uploadPhoto = (e) => {
+      showSpinner();
+      authUser.then((user) => {
+        const data = new FormData();
+        data.append('photo', file);
+        updateRequest({ 
+          path: `/auth/uploadPhoto`, data, setContentType: false, callback: () => showPhotoControl('remove')
+        });         
+      });
+    }
+
+    const cancelUpload = (e) => {
+      document.getElementById('image').src = e.target.value;
+      showPhotoControl('browse');
     }
 
     const updateName = (e) => {
@@ -177,13 +297,77 @@
       return true;
     }
 
+    const verifyPhone = async (e, user) => {
+      e.preventDefault();
+      const btn = e.target.parentNode;
+      const phone = document.getElementById('phone-number');
+      processing({ start: true });
+      if (!hasEmpty(['phone-number']) && isValidPhone(phone)) {
+        const phoneDiv = document.getElementById('phone-div');
+        await addClass(phoneDiv, ['zoomOut', 'animated', 'hide']);
+        addClass(document.querySelector('.modal'), ['static']);
+        document.getElementById('code-div').classList.add('show');
+        document.getElementById('resend-div').classList.add('show');
+        document.querySelector('.modal-body div').innerText = 'Verify phone number';
+        btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user, updatePhone)">Confirm</button>`;
+        generateCode();
+        codeInfo('Enter the code sent to', phone.value);
+      } else {
+        processing({ start: false, message: 'Continue' });
+      }
+    };
+
+    const codeInfo = (msg, phone) => {
+      const info = document.getElementById('code-info');
+      const num = phone.split('');
+      num[5] = '*'; num[6] = '*';
+      info.innerHTML = `<div class="alert alert-info bounceIn animated">
+                          <div>${msg} <b>${num.join('')}</b></div>
+                          <div class="bold"><b class="red-color">Note: </b>Code expires after 3mins</div>
+                        </div>`;
+    };
+
+    const generateCode = (phone) => {
+      vCode = {
+        digit: Math.floor(Math.random() * 900000) + 99999,
+        time: new Date().getMinutes() + 3
+      };
+      console.log(vCode.digit);
+    };
+
+    const verifyCode = (e, user, callback) => {
+      e.preventDefault();
+      if (!hasEmpty(['verification-code'], 'Enter verification code') && isValideCode()) {
+        callback();
+      }
+    };
+
+    const resendCode = async (user) => {
+      generateCode();
+      codeInfo('A new code was sent to', user.phonenumber);
+      document.getElementById('verification-code').focus();
+    };
+
+    const isValideCode = () => {
+      const min = new Date().getMinutes();
+      const elem = document.getElementById('verification-code');
+      let isValid = true;
+      if (vCode['digit'].toString() !== elem.value) {
+        displayError(elem, 'Invalid verification code');
+        isValid = false;
+      } else if (min > vCode['time']) {
+        displayError(elem, 'Code has expired. Resend below');
+        isValid = false;
+      }
+      return isValid;
+    };
+
     const orderBreakdown = (data, userId) => {
       let content = `<div class="alert alert-info size-13 my-lg">You currently have no delivery orders. <br> Click below to create<br/>
-                      <a href="/create" class="btn btn-link bold fine-btn mt-lg">Create Order</a>
+                      <a href="/create" class="btn btn-link bold fine-btn btn-lg mt-lg">Create Order</a>
                       </div>`;
       if (data.total > 0) {
-        content = `<div class="more-details mb-md">
-                    <div class="nexted">
+        content = `<div class="nexted">
                       <div class="card-header flex justify-content-between">
                         <div class="card-title">
                           <label class="size-12 bold">Delivery orders</label>
@@ -207,15 +391,14 @@
                           <div class="data" id="data-placed">${data.placed}</div>
                         </div>
                         <div class="card-row">
-                          <div class="data-header red-colo" style="font-size: 1.5rem">Total</div>
+                          <div class="data-header red-colo" style="font-size: 1.5rem">Total orders</div>
                           <div class="data red-color bold" id="data-total" style="font-size: 1.5rem">${data.total}</div>
                         </div>
                       </div>
-                      <div class="more-detail mt-lg align-right">
-                        <a href="/users/orders" class="btn btn-primary btn-block btn-lg">View orders</a>
+                      <div class="card-footer">
+                        <a href="/users/orders" class="btn btn-primary btn-lg"><i class='fa fa-list-ol'></i> See orders</a>
                       </div>
-                    </div>
-                </div>`;
+                    </div>`;
       }
       const orders = document.getElementById('orders');
       orders.innerHTML = content;

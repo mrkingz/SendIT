@@ -81,8 +81,8 @@ const editParcelModal = (e, parcel) => {
 const editPickupModal = (e, parcel) => {
   const content = `<form class="form">
                     <div class="control-group">
-                      <label class="required" for="pick-up-address">Address</label>
-                      <input type="text" class="control" name="pickUpAddress" id="pick-up-address" placeholder="Address" value="${parcel.from.address}" autofocus>
+                      <label class="required" for="address">Address</label>
+                      <input type="text" class="control" name="pickUpAddress" id="address" placeholder="Address" value="${parcel.from.address}" autofocus>
                     </div>
                     ${places({ 
                       state: { stateId: parcel.from.stateId, name: 'pickUpStateId' },

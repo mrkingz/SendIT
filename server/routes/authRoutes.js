@@ -15,6 +15,16 @@ authRouter.post('/api/v1/auth/login',
   UserValidator.validateSignin(), 
   UserController.signin());
 
+authRouter.put('/api/v1/auth/uploadPhoto',
+  UserController.authenticateUser(),
+  UserController.uploadPhoto(),
+  UserController.errorHandler(),
+  UserController.updatePhotoURL());
+
+authRouter.put('/api/v1/auth/removePhoto',
+  UserController.authenticateUser(),
+  UserController.removePhoto());
+
 authRouter.post('/api/v1/auth/email', 
   UserValidator.validateEmail(),
   UserController.checkIfExist('email', 'email address'));
