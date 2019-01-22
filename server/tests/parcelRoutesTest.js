@@ -38,6 +38,21 @@ describe('Test parcel routes', () => {
 
 	before((done) => {
 		server
+			.post('/api/v1/parcels')
+			.set('Connection', 'keep alive')
+			.set('Accept', 'application/json')
+			.set('Content-Type', 'application/json')
+			.type('form')
+			.set('token', token)
+			.send(parcel)
+			.end((err, res) => {
+				parcel2 = res.body.data.parcel;
+				done();
+			});
+	});
+
+	before((done) => {
+		server
 			.post('/api/v1/auth/login')
 			.send({
 				email: 'sendit.contactus@gmail.com',
@@ -999,35 +1014,6 @@ describe('Test parcel routes', () => {
 					.to.equal('Delivery status successfully updated to Transiting');
 				expect(response.data.parcel).to.have.own.property('deliveryStatus')
 					.to.be.a('string').that.is.equal('Transiting');
-				done();
-			});
-	});
-
-	before((done) => {
-		server
-			.post('/api/v1/parcels')
-			.set('Connection', 'keep alive')
-			.set('Accept', 'application/json')
-			.set('Content-Type', 'application/json')
-			.type('form')
-			.set('token', token)
-			.send(parcel)
-			.end((err, res) => {
-				parcel2 = res.body.data.parcel;
-				done();
-			});
-	});
-	before((done) => {
-		server
-			.post('/api/v1/parcels')
-			.set('Connection', 'keep alive')
-			.set('Accept', 'application/json')
-			.set('Content-Type', 'application/json')
-			.type('form')
-			.set('token', token)
-			.send(parcel)
-			.end((err, res) => {
-				parcel2 = res.body.data.parcel;
 				done();
 			});
 	});
