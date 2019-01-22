@@ -52,17 +52,7 @@
                     <div class="page">
                         <div class="page-header"><span class="page-title">Delivery orders</span></div>
                         <div class="panel mt-lg">                                            
-                            <div class="filter-div section-x">
-                                <div class="dropdown">
-                                    <button onclick="dropdown('filter')" class="btn btn-link fine-btn size-13 btn-sm dropbtn"><i class="fa fa-filter"></i> Filter orders</button>
-                                    <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
-                                        <button class="menu-btn" onclick="getOrders()">All orders</button>
-                                        <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
-                                        <button class="menu-btn" onclick="getOrders('delivered')">Delivered orders</button>
-                                        <button class="menu-btn" onclick="getOrders('placed')">Pending orders</button>
-                                        <button class="menu-btn" onclick="getOrders('transiting')">Transiting orders</button>
-                                    </div>
-                                </div>
+                            <div id="filter-div " class="filter-div section-x">
                             </div>
                             <div id="orders"></div>
                              <div id="message"></div>
@@ -95,10 +85,11 @@
                     }))
                     .then(res => res.json())
                     .then((res) => {
-                        if (res.status === 'Success') {
+                        if (res.status === 'Success' && res.data.parcels.length > 0) {
                             const orders = document.getElementById('orders');
                             document.getElementById('message').innerHTML = '';
                             orders.innerHTML = '';
+                            document.getElementById('filter-div ').innerHTML = filters();
                             res.data.parcels.forEach((order) => {
                                 orders.appendChild(orderCard(order));
                             })
@@ -118,6 +109,19 @@
                         }
                     });
                 });
+            }
+
+            const filters = () => {
+                return `<div class="dropdown">
+                    <button onclick="dropdown('filter')" class="btn btn-link fine-btn size-13 btn-sm dropbtn"><i class="fa fa-filter"></i> Filter orders</button>
+                    <div id="filter" class="dropdown-content size-11 dropdown-content-mini">
+                        <button class="menu-btn" onclick="getOrders()">All orders</button>
+                        <button class="menu-btn" onclick="getOrders('cancelled')">Cancelled orders</button>
+                        <button class="menu-btn" onclick="getOrders('delivered')">Delivered orders</button>
+                        <button class="menu-btn" onclick="getOrders('placed')">Pending orders</button>
+                        <button class="menu-btn" onclick="getOrders('transiting')">Transiting orders</button>
+                    </div>
+                </div>`
             }
 
             const orderCard = (order) => {
