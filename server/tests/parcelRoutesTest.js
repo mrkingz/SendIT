@@ -42,7 +42,6 @@ describe('Test parcel routes', () => {
 			.set('token', token)
 			.send(parcel)
 			.end((err, res) => {
-			console.log(token)
 				parcel2 = res.body.data.parcel;
 				done();
 			});
