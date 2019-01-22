@@ -695,7 +695,7 @@ div.nexted ~ div.nexted {
     content: "\00a0 delivery";
 }
 
-.details {
+.index-card-wrapper .details {
     text-align: center;
     line-height: 1.5rem;
     display: flex;
