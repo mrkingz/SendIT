@@ -363,8 +363,13 @@
     };
 
     const orderBreakdown = (data, userId) => {
-      let content = `<div class="alert alert-info size-13 my-lg">You currently have no delivery orders. <br> Click below to create<br/>
-                      <a href="/create" class="btn btn-link bold fine-btn btn-lg mt-lg">Create Order</a>
+      let content = `<div class='panel px-0'>
+                        <div class="alert alert-info size-13 my-lg">
+                          You currently have no delivery orders. <br> Click below to create<br/>
+                        </div><br>
+                        <div class='align-center'>
+                          <a href="/create" class="btn btn-primary btn-lg"><i class='fa fa-edit'></i> Create Order</a>
+                        </div>
                       </div>`;
       if (data.total > 0) {
         content = `<div class="nexted">

@@ -9,8 +9,8 @@
   "scripts": {
     "start": "babel-node ./server/app.js",
     "start:dev": "cross-env NODE_ENV=development nodemon --watch server --exec babel-node ./server/app",
-    "tests": "cross-env NODE_ENV=test mocha --require babel-core/register --require babel-polyfill server/tests/**/*.js --timeout 100000 --exit",
-    "test": "cross-env NODE_ENV=test nyc mocha --require babel-polyfill server/tests/**/*.js --timeout 100000 --exit",
+    "tests": "cross-env NODE_ENV=test mocha --require babel-core/register server/tests/**/*.js --timeout 100000 --exit",
+    "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 100000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate:test": "cross-env NODE_ENV=test babel-node ./server/database/migrate.js --exit",
     "migrate:dev": "cross-env NODE_ENV=development babel-node ./server/database/migrate.js",

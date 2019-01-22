@@ -16,7 +16,7 @@ export default class ParcelController extends Controller {
 	 * @memberof ParcelController
 	 */
   static createParcel() {
-    return  (req, res) => {
+    return (req, res) => {
       return ParcelService.createParcel(req.body)
         .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
