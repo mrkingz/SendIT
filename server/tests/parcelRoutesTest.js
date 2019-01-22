@@ -39,7 +39,6 @@ describe('Test parcel routes', () => {
 	before((done) => {
 		server
 			.post('/api/v1/parcels')
-
 			.set('token', token)
 			.send(parcel)
 			.end((err, res) => {
