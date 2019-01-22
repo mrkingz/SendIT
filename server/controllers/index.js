@@ -1,7 +1,7 @@
 import UserController from './userController';
 import ParcelController from './parcelController';
 import PageController from './pageController';
-import Controller from './controller';
+import Controller from './Controller';
 
 const controllers = {
   Controller,
