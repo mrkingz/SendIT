@@ -1,5 +1,5 @@
 import decode from "jwt-decode";
-import Controller from "./controller";
+import Controller from "./Controller";
 import UserService from "../services/UserService";
 import UploadService from '../services/UploadService';
 
