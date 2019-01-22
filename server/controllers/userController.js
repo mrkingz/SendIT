@@ -279,12 +279,14 @@ export default class UserController extends Controller {
    * @memberof UserController
    */
   static removePhoto() {
-    return async (req, res) => {
-      await UploadService.deleteCloudinaryImage(req.body.decoded);
+    return (req, res) => {
       UserService.updatePhotoURL({
         photoURL: null, decoded: req.body.decoded, option: 'remove'
       })
-        .then(result => this.response(res, result))
+        .then((result) => {
+          UploadService.deleteCloudinaryImage(req.body.decoded);
+          return this.response(res, result);
+        })
         .catch(error => this.serverError(res, error));
     };
   }
