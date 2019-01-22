@@ -1,7 +1,7 @@
 import chai from 'chai';
 import supertest from 'supertest';
 import db from '../database/index';
-import app from '../../server/app';
+import app from "../app";
 
 const expect = chai.expect;
 const server = supertest.agent(app);
