@@ -1002,21 +1002,6 @@ describe('Test parcel routes', () => {
 				done();
 			});
 	});
-
-	before((done) => {
-		server
-			.post('/api/v1/parcels')
-			.set('Connection', 'keep alive')
-			.set('Accept', 'application/json')
-			.set('Content-Type', 'application/json')
-			.type('form')
-			.set('token', token)
-			.send(parcel)
-			.end((err, res) => {
-				parcel2 = res.body.data.parcel;
-				done();
-			});
-	});
 	before((done) => {
 		server
 			.post('/api/v1/parcels')
