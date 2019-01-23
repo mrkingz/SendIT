@@ -484,7 +484,7 @@ button.menu-btn {
     font-size: 20px !important;
 }
 
-.cost-wrapper {
+.inner-alert-wrapper {
     background-color: #fefefe;
     border: 1px solid rgb(153, 152, 152);
     background: #fefefe;
@@ -493,7 +493,7 @@ button.menu-btn {
             border-radius: .2rem;
 }
 
-.div-wrapper {
+.outter-alert-wrapper {
     border: 4px solid rgb(224, 224, 224);
     background-color: rgb(224, 224, 224);
     -webkit-border-radius: .3rem;
