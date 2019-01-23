@@ -364,12 +364,17 @@
 
     const orderBreakdown = (data, userId) => {
       let content = `<div class='panel px-0'>
-                        <div class="alert alert-info size-13 my-lg">
-                          You currently have no delivery orders. <br> Click below to create<br/>
-                        </div><br>
-                        <div class='align-center'>
-                          <a href="/create" class="btn btn-primary btn-lg"><i class='fa fa-edit'></i> Create Order</a>
-                      </div>`;
+                      <div class='outter-alert-wrapper'>
+                        <div class='inner-alert-wrapper'>
+                          <div class="alert alert-info size-13">
+                            You currently have no delivery orders. <br> Click below to create<br/>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class='align-center my-lg'>
+                      <a href="/create" class="btn btn-primary btn-lg"><i class='fa fa-edit'></i> Create Order</a>
+                    </div>`;
       if (data.total > 0) {
         content = `<div class="nexted">
                       <div class="card-header flex justify-content-between">
@@ -377,26 +382,30 @@
                           <label class="size-12 bold">Delivery orders</label>
                         </div>
                       </div>
-                      <div class="card-wrapper">
-                        <div class="card-row">
-                          <div class="data-header">Cancelled orders</div>
-                          <div class="data" id="data-cancelled">${data.cancelled}</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header">Delivered orders</div>
-                          <div class="data" id="data-delivered">${data.delivered}</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header">Transiting orders</div>
-                          <div class="data" id="data-transiting">${data.transiting}</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header">Placed orders</div>
-                          <div class="data" id="data-placed">${data.placed}</div>
-                        </div>
-                        <div class="card-row">
-                          <div class="data-header red-colo" style="font-size: 1.5rem">Total orders</div>
-                          <div class="data red-color bold" id="data-total" style="font-size: 1.5rem">${data.total}</div>
+                      <div class='outter-alert-wrapper'>
+                        <div class='innert-alert-wrapper'>
+                          <div class="card-wrapper">
+                            <div class="card-row">
+                              <div class="data-header">Cancelled orders</div>
+                              <div class="data" id="data-cancelled">${data.cancelled}</div>
+                            </div>
+                            <div class="card-row">
+                              <div class="data-header">Delivered orders</div>
+                              <div class="data" id="data-delivered">${data.delivered}</div>
+                            </div>
+                            <div class="card-row">
+                              <div class="data-header">Transiting orders</div>
+                              <div class="data" id="data-transiting">${data.transiting}</div>
+                            </div>
+                            <div class="card-row">
+                              <div class="data-header">Placed orders</div>
+                              <div class="data" id="data-placed">${data.placed}</div>
+                            </div>
+                            <div class="card-row">
+                              <div class="data-header red-colo" style="font-size: 1.5rem">Total orders</div>
+                              <div class="data red-color bold" id="data-total" style="font-size: 1.5rem">${data.total}</div>
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div class="card-footer">
