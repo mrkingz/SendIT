@@ -88,12 +88,16 @@
 .avatar {
     height: 7rem; 
     border-radius: 50%; 
-    border: 1px solid #eeeeee
+    border: 1px solid #acabab
 }
 
 .avatar-div {
     padding: 2rem 0;
     background-color: rgb(224, 224, 230);
+    border: 1px solid rgb(204, 204, 204);
+    -webkit-border-radius: .3rem;
+       -moz-border-radius: .3rem;
+            border-radius: .3rem;
 }
 
 .avatar-wrapper {
