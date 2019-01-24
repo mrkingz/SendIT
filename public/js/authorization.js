@@ -26,7 +26,7 @@ const checkAuth = async () => {
             elem.innerHTML = `${firstname} ${lastname}`;
           }
           if (photo) {
-            photo.src = photo && photoURL ? photoURL : "../images/avatar.png";
+            photo.src = photo && photoURL ? photoURL : "../images/user-avatar.png";
           }
           if (avatar && photoURL) {
             const img = document.createElement("img");
