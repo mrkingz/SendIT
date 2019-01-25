@@ -2,14 +2,11 @@ import { Pool } from 'pg';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
 import Places from "./Places";
-
-import { 
-  devConfig, 
-  prodConfig,
-  testConfig 
-} from '../configs';
+import configs from '../configs';
 
 dotenv.config();
+
+const { devConfig, prodConfig, testConfig } = configs.databaseConfig;
 
 const env = typeof process.env.NODE_ENV !== `undefined`
              ? process.env.NODE_ENV.trim() 
