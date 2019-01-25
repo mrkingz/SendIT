@@ -333,7 +333,6 @@
         digit: Math.floor(Math.random() * 900000) + 99999,
         time: new Date().getMinutes() + 3
       };
-      console.log(vCode.digit);
     };
 
     const verifyCode = (e, user, callback) => {
@@ -345,7 +344,7 @@
 
     const resendCode = async (user) => {
       generateCode();
-      codeInfo('A new code was sent to', user.phonenumber);
+      codeInfo('A new code was sent to', document.getElementById('phone-number').value);
       document.getElementById('verification-code').focus();
     };
 
