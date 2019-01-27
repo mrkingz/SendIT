@@ -78,7 +78,7 @@
                       </div></div>
                     </div>
                     <div class="col-lg-8 col-md-8 col-m-12">
-                      <div class="mt-md">
+                      <div class="mt-sm">
                         <div class="data-row">
                           <label for="firstname" class="data-label">Firstname</label>
                           <div class="data-value" id="data-firstname"></div>
@@ -91,7 +91,7 @@
                           <label for="firstname" class="data-label">E-mail address</label>
                           <div class="data-value" id="data-email"></div>
                         </div>
-                        <div class="data-row">
+                        <div class="data-row mb-md">
                           <label for="firstname" class="data-label">Phone number</label>
                           <div class="data-value" id="data-phoneNumber">--</div>
                         </div>
@@ -135,7 +135,7 @@
           Object.keys(user).forEach((key) => {
             elem = document.getElementById(`data-${key}`);
             if (elem && user[key] !== '') {
-              elem.innerText = user[key];
+              elem.innerText = user[key] ? user[key] : '--';
             }
           });
           showPhotoControl(user.photoURL ? 'remove' : 'browse');
@@ -144,7 +144,7 @@
 
     const showPhotoControl = (status) => {
       const elements = {
-        browse: `<form id="upload" enctype="multipart/form-data">
+        browse: `<form class="mt-lg" id="upload" enctype="multipart/form-data">
                   <label class="input-label fine-btn">
                       <input id="photo" type="file" name="photo" onchange="browsePhoto(event)" required/>
                       <span>Upload photo</span>
