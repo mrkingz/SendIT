@@ -32,7 +32,7 @@ const request = (options) => {
       });
 };
 
-const getFormData = (fields, callback) => {
+const getFormData = (fields = [], callback) => {
   const length = fields.length;
   const data = {};
   let field;
@@ -135,7 +135,7 @@ const displayError = (field, msg) => {
     span = document.createElement('span');
     addClass(span, ['error']);
     span.id = `${field.id}-error`;
-    field.parentNode.appendChild(span);
+    field.closest('.control-group').appendChild(span);
   }
   const errorMessage = (field.nodeName.toLowerCase() === 'select')
                     ? `Please select ${field.id.replace(/[-]+/g, ' ')}`
@@ -148,7 +148,7 @@ const displayError = (field, msg) => {
 };
 
 const isValidPhone = (field) => {
-  const exp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
+  const exp = /(^(([\+]{0,1}|([0]{2}[9]{1}))[1-9]{1,3}|[0]{0,1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
   const isValid = field.value.match(exp);
   if (!isValid) {
     displayError(field, 'Enter a valid phone number');

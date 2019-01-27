@@ -75,7 +75,7 @@
 								</div>
 								<div class="field">
 										<div class="field-name">Price</div>
-										<div class="field-value" id="data-price"></div>
+										<div class="field-value naira" id="data-price"></div>
 									</div>
 								<div class="field">
 									<div class="field-name">Date sent</div>
@@ -108,7 +108,7 @@
 									</div>
 									<div class="field">
 										<div class="field-name">Sender's phone No.</div>
-										<div class="field-value" id="data-sender-phone">--</div>
+										<div class="field-value" id="data-sender-phoneNumber">--</div>
 									</div>
 								</div>
 								<div class="section-y">
@@ -316,7 +316,7 @@
 
 		const editReceiver = (e) => {
 			e.preventDefault();
-			const fields = ['receiver-name',  'receiver-phone'];
+			const fields = ['receiver-name',  'receiver-phone', 'country-code'];
 			if (!hasEmpty(fields) && isValidPhone(document.getElementById('receiver-phone'))) {
 				updateRequest({
 					path: `/parcels/${getParcelId()}/editReceiver`,

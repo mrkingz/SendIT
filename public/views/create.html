@@ -155,10 +155,17 @@
 											<input type="text" class="control" name="receiverName" id="receiver-name" placeholder="Full name"
 												autocomplete="off">
 										</div>
-										<div class="control-group">
-											<label class="required" for="receiver-phone">Receicver's phone</label>
-											<input type="text" class="control col-lg-8 col-md-8 col-sm-12" name="receiverPhone" id="receiver-phone"
-												placeholder="Phone" autocomplete="off">
+										<div class="row">
+											<div class="col-lg-7 col-md-8 col-sm-12">
+												<div class="control-group">
+													<label class="required" for="receiver-phone">Receicver's phone</label>
+													<div class="input-group">
+														<input class="group-member bold country-code" name="countryCode" id="country-code" value="+234">
+														<input type="text" class="control group-member" name="receiverPhone" id="receiver-phone"
+															placeholder="Phone" autocomplete="off">
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
 								</div>
@@ -278,13 +285,15 @@
 			const fields = [
 				'weight', 'description', 'pick-up-address', 'pick-up-lga', 'pick-up-state',
 				'destination-address', 'destination-lga', 'destination-state',
-				'receiver-name', 'receiver-phone'
+				'receiver-name', 'country-code', 'receiver-phone'
 			];
 			const phone = document.getElementById('receiver-phone');
 			const weigth = document.getElementById('weight')
 			if (!hasEmpty(fields) && isValidWeight(weigth) && isValidPhone(phone)) {
 				data = await getFormData(fields, (data) => {
-					data['deliveryMethod'] = document.querySelector(`input[type='radio']:checked`).value
+					const countryCode = document.getElementById('country-code').value;
+					data.deliveryMethod = document.querySelector(`input[type='radio']:checked`).value;
+					data.receiverPhone = countryCode.concat(data.receiverPhone.substr(-10));
 					return data;
 				});
 				let stateId = document.getElementById('pick-up-state').value;

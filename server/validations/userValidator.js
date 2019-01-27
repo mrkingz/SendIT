@@ -50,15 +50,36 @@ export default class UserValidator extends Validator {
       delete req.body.decoded;
       let schemas = {
         name: this.getNameSchema(),
-        phoneNumber: this.getPhoneSchema(),
+        phoneNumber: this.getPhoneSchema({ requestMethod: req.method }),
         password: this.getPasswordSchema(option),
         reset: this.getPasswordSchema(option),
       };
-      return this.validate(req, res, next, Joi.object().keys(schemas[option]), () => {
+      return this.validate(req, res, next, Joi.object().keys(schemas[option]), () => {    
+        if (req.body.phoneNumber && req.body.countryCode) {    
+          return { 
+            decoded, 
+            phoneNumber: this.formatPhoneNumber(req.body.phoneNumber, req.body.countryCode) 
+          };
+        }
         return { decoded };
       });
     };
   }
+
+/**
+ * Format phone to include country code
+ *
+ * @static
+ * @param {string} phoneNumber
+ * @param {string} countryCode
+ * @returns {string} the formated phone number
+ * @memberof UserValidator
+ */
+static formatPhoneNumber(phoneNumber, countryCode) {
+  countryCode = countryCode.replace('009', '').replace();
+  countryCode = !countryCode.startsWith('+') ? `+${countryCode}` : countryCode; 
+  return countryCode.concat(phoneNumber.substr(-10));
+}
 
 	/**
 	 * Create user validation schema
@@ -99,18 +120,22 @@ export default class UserValidator extends Validator {
    * @memberof UserValidator
    */
   static getPhoneSchema(obj = {}) {
-    const { str, key } = obj;
-    const phoneExp = /(^([\+]{1}[1-9]{1,3}|[0]{1})[7-9]{1}[0-1]{1}[0-9]{8})$/;
-    const label = `${str ? str.concat(' ') : ''}phone number`;
-    return {
-      [key || 'phoneNumber']: Joi.string().required().max(50).regex(phoneExp).label(label).error((errors) => {
-            const err = errors[0];
-            switch (err.type) {
-              case 'string.regex.base': return `${label} is inavlid`;
-              default: return err;
-            }
-          })
+    const { str, key, requestMethod } = obj,
+          label = `${str ? str.concat(' ') : ''}phone number`,
+          codeLabel = 'Country code';
+    const schema = {
+      countryCode: Joi.string().required().regex(/^(([0]{2}[9]{1}|[\+]{0,1})[0-9]{1,3})$/)
+        .label(codeLabel).error(errors => this.formatError(errors, codeLabel)),
+      [key || 'phoneNumber']: Joi.string().required().max(50)
+        .regex(/(^(([\+]{0,1}|([0]{2}[9]{1}))[1-9]{1,3}|[0]{0,1})[7-9]{1}[0-1]{1}[0-9]{8})$/)
+        .label(label).error(errors => this.formatError(errors, label))
     };
+    if (requestMethod === 'POST') {
+      const vCodeLabel = 'Verification code';
+      schema.code = Joi.string().min(6).max(6).required()
+      .label(vCodeLabel).error(errors => this.formatError(errors, vCodeLabel));
+    }
+    return schema;
   }
 
   /**
@@ -126,7 +151,7 @@ export default class UserValidator extends Validator {
     const obj = { password: Joi.string().required().min(8).max(60) };
     // Remember users are not authenticated when recovering forgotten password
     // So, we will indentify this user with email address;
-    // as such, we need to make sure we validate email address
+    // as such, we need to make sure we validate email address also
     if (option === 'reset') {
       obj.email = this.getEmailSchema().email;
     }
@@ -143,13 +168,8 @@ export default class UserValidator extends Validator {
    */
   static getNameSchema() {
     const exp = /^[\w'\-,.][^0-9_¡?÷?¿/\\+=@#$%ˆ&*(){}|~<>;:[\]]{2,}$/;
-    const name = Joi.string().required().max(100).regex(exp).lowercase().error((errors) => {
-      const err = errors[0];
-      switch (err.type) {
-        case 'string.regex.base': return `${err.path} is inavlid`;
-        default: return err;
-      }
-    });
+    const name = Joi.string().required().max(100).regex(exp)
+      .lowercase().error(errors => this.formatError(errors));
     return { firstname: name, lastname: name };
   }
 

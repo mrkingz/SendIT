@@ -1,6 +1,8 @@
 /* eslint-disable no-empty */
-import nodemailer from 'nodemailer';
 import dotenv from 'dotenv';
+import Twilio from 'twilio';
+import nodemailer from 'nodemailer';
+import configs from '../configs';
 
 dotenv.load();
 
@@ -51,7 +53,30 @@ export default class NotificationService {
       secure: true,
       host: "smtp.gmail.com",
       type: "OAuth2",
-      auth: { user: process.env.EMAIL, pass: process.env.PASSWORD }
+      auth: configs.nodemailerConfig
     });
+  }
+
+  /**
+   * Send sms message
+   *
+   * @static
+   * @param {object} options
+   * @return {Promise} a promise 
+   * @method sendSMS
+   * @memberof NotificationService
+   */
+  static sendSMS(options) {
+    const { fromNumber, accountSid, authToken } = configs.twilioConfig;
+    const client = new Twilio(accountSid, authToken);
+    return client.messages.create({
+      body: options.message,
+      from: fromNumber,
+      to: options.phoneNumber 
+    }).then((message) => { 
+      if (process.env.NODE_ENV === 'development') console.log(message.body);
+      return Promise.resolve({ success: true, message });
+    })
+      .catch(error => Promise.resolve({ success: false, message: error.message }));
   }
 }

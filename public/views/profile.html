@@ -93,7 +93,7 @@
                         </div>
                         <div class="data-row">
                           <label for="firstname" class="data-label">Phone number</label>
-                          <div class="data-value" id="data-phonenumber">--</div>
+                          <div class="data-value" id="data-phoneNumber">--</div>
                         </div>
                         <div id="photo-widget"></div>
                       </div>               
@@ -311,7 +311,7 @@
         document.getElementById('resend-div').classList.add('show');
         document.querySelector('.modal-body div').innerText = 'Verify phone number';
         btn.innerHTML = `<button class="btn btn-primary" onclick="verifyCode(event, user, updatePhone)">Confirm</button>`;
-        generateCode();
+        generateCode(phone.value);
         codeInfo('Enter the code sent to', phone.value);
       } else {
         processing({ start: false, message: 'Continue' });
@@ -328,11 +328,20 @@
                         </div>`;
     };
 
-    const generateCode = (phone) => {
+    const generateCode = async (phone) => {
       vCode = {
         digit: Math.floor(Math.random() * 900000) + 99999,
         time: new Date().getMinutes() + 3
       };
+      // Send code to user phone number
+      fetch(request({
+        path: '/auth/sendCode', 
+        data: getFormData([], (data) => {
+          data.code = vCode.digit;
+          data.phoneNumber = phone;
+          data.countryCode = document.getElementById('country-code').value
+          return data;
+      })}));
     };
 
     const verifyCode = (e, user, callback) => {
@@ -343,8 +352,9 @@
     };
 
     const resendCode = async (user) => {
-      generateCode();
-      codeInfo('A new code was sent to', document.getElementById('phone-number').value);
+      const phoneNumber = document.getElementById('phone-number').value;
+      generateCode(phoneNumber);
+      codeInfo('A new code was sent to', phoneNumber);
       document.getElementById('verification-code').focus();
     };
 

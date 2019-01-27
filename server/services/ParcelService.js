@@ -30,8 +30,8 @@ export default class ParcelService extends UtilityService {
     let msg = `Parcel already ${oldStatus.toLowerCase()}, `;
     const message = msg, str = ':text cannot be updated';
     const status = ['Cancelled', 'Delivered', 'Placed', 'Transiting'];
-    switch (update) {
-      case 'delivery-status':
+    switch (this.toCammelCase(update)) {
+      case 'deliveryStatus':
       case 'cancel': msg = this.getStatusErrorMessage({
         parcel, newStatus, update, msg, str
       });
@@ -287,7 +287,7 @@ static getPresentLocation(stateId, lgaId) {
         loc = `${parcel.locationLGA}, ${parcel.locationState}`;
         message = `<p>${string}<b>${parcel.trackingNo}</b>is currently at ${loc}</p>`;
         break;
-      case 'delivery-status': str = (parcel.deliveryStatus === 'Transiting')
+      case 'deliveryStatus': str = (parcel.deliveryStatus === 'Transiting')
         ? ' is now '.concat(parcel.deliveryStatus.toLowerCase())
         : ' was successfully '.concat(parcel.deliveryStatus.toLowerCase());
         message = `<p>Your parcel with tracking number:<b> ${parcel.trackingNo}</b>${str}</p>`;
@@ -341,9 +341,9 @@ static getPresentLocation(stateId, lgaId) {
       cancel: 'Parcel delivery order successfully cancelled',
       destination: 'Parcel destination successfully updated',
       location: 'Present location successfully updated',
-      deliverystatus: `Delivery status successfully updated to ${status}`,
+      deliveryStatus: `Delivery status successfully updated to ${status}`,
       parcel: 'Parcel details successfully updated',
-      pickup: 'Pick up details successfully updated',
+      pickUp: 'Pick up details successfully updated',
       receiver: 'Receiver details successfully updated'
     };
   }
@@ -539,8 +539,8 @@ static getPresentLocation(stateId, lgaId) {
     let values;
     const { fields, update } = options;
     // eslint-disable-next-line default-case
-    switch (update) {
-      case 'delivery-status':
+    switch (this.toCammelCase(update)) {
+      case 'deliveryStatus':
       case 'cancel': values = this.getStatusUpdates(fields, parcel, update);
         break;
       case 'location': values = this.getLocationUpdates(fields);
@@ -549,7 +549,7 @@ static getPresentLocation(stateId, lgaId) {
         break;
       case 'parcel': values = this.getParcelUpdates(fields);
         break;
-      case 'pick-up': values = this.getPickUpUpdates(fields);
+      case 'pickUp': values = this.getPickUpUpdates(fields);
         break;
       case 'receiver': values = this.getReceiverUpdates(fields);
     }
@@ -569,12 +569,12 @@ static getPresentLocation(stateId, lgaId) {
 	static mapFieldsToKeys(options) {
 		const { pickUpStateId, destinationStateId, locationStateId } = options;
 		return {
-			'pick-up-state': { stateId: pickUpStateId },
-			'destination-state': { stateId: destinationStateId },
-			'location-state': { stateId: locationStateId },
-			'pick-up-lga': { stateId: pickUpStateId, lgaId: options.pickUpLGAId },
-			'destination-lga': { stateId: destinationStateId, lgaId: options.destinationLGAId },
-			'location-lga': { stateId: locationStateId, lgaId: options.locationLGAId }
+			pickUpState: { stateId: pickUpStateId },
+			destinationState: { stateId: destinationStateId },
+			locationState: { stateId: locationStateId },
+			pickUpLga: { stateId: pickUpStateId, lgaId: options.pickUpLGAId },
+			destinationLga: { stateId: destinationStateId, lgaId: options.destinationLGAId },
+			locationLga: { stateId: locationStateId, lgaId: options.locationLGAId }
 		};
 	}
 
@@ -589,7 +589,7 @@ static getPresentLocation(stateId, lgaId) {
    */
   static updateParcel(options) {
     const { decoded, ...fields } = options.requestBody;
-    const { update, parcelId } = options, { userId, isAdmin } = decoded;
+    let { update, parcelId } = options, { userId, isAdmin } = decoded;
     return this.findParcel({ userId, isAdmin, parcelId }).then((data) => {
       if (!data) return { statusCode: 404, message: 'No delivery order found' };
       const error = this.checkStatus(data, fields.deliveryStatus, update);
@@ -600,7 +600,8 @@ static getPresentLocation(stateId, lgaId) {
       return db.sqlQuery(ParcelQuery.updateParcel(this.getUpdates(options, data)))
         .then((result) => {
           const parcel = result.rows[0], sender = data.sender;
-          if (update === 'delivery-status') {
+          update = this.toCammelCase(update);
+          if (update === 'deliveryStatus') {
             this.dispatchEmail(this.getEmailPayload(sender, parcel, update));
           } else if (update === 'location') {
             parcel.locationLGA = fields.location.lga;
@@ -609,7 +610,7 @@ static getPresentLocation(stateId, lgaId) {
           }
           return { 
             statusCode: 200, 
-            message: this.getMessages(parcel.deliveryStatus)[update.replace(/[-]+/g, '')],
+            message: this.getMessages(parcel.deliveryStatus)[update],
             data: { parcel: this.formatParcel({ ...parcel, sender }) } 
           };
         });
@@ -697,7 +698,7 @@ static getPresentLocation(stateId, lgaId) {
 	 * @memberof ParcelService
 	 */
 	static findPlace(options) {
-		return this.fetchPlace(this.mapFieldsToKeys(options)[options.text])
+		return this.fetchPlace(this.mapFieldsToKeys(options)[this.toCammelCase(options.text)])
 			.then((result) => {	
 				let text = this.ucFirstStr(options.text.replace(/[-]+/g, ' '));
 				const message = `${text.replace('lga', 'Local Government Area')} does not exist`;

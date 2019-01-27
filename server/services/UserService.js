@@ -76,10 +76,10 @@ export default class UserService extends UtilityService {
 	 */
 	static editUserProfile(options) {
 		return db.sqlQuery(UserQuery.editUser({
-			key: options.key.replace(/[-]+/g, ''), values: options.values
+			key: this.stripDashes(options.key), values: options.values
 		})).then((result) => {
 			const { password, ...user } = result.rows[0];
-			const msg = `${this.ucFirstStr(options.key.replace(/[-]+/g, ' '))} successfully updated`;
+			const msg = `${this.ucFirstStr(this.stripDashes(options.key))} successfully updated`;
 			return { statusCode: 200, message: msg, data: { user } };
 		});
 	}
@@ -125,15 +125,15 @@ export default class UserService extends UtilityService {
 	}
 
 	/**
- * Find a user. Usefull when finding an unauthenticate user
- *
- * @static
- * @param {object} option object containing the field name and value pair
- * @param {string} label optional text to use as field name in message
- * @method findUser
- * @returns {object} the response to send to client
- * @memberof UserService
- */
+	 * Find a user. Usefull when finding an unauthenticate user
+	 *
+	 * @static
+	 * @param {object} option object containing the field name and value pair
+	 * @param {string} label optional text to use as field name in message
+	 * @method findUser
+	 * @returns {object} the response to send to client
+	 * @memberof UserService
+	 */
 	static findBy(option, label) {
 		const field = Object.keys(option);
 		return db.sqlQuery(UserQuery.findUserBy(option))
@@ -330,5 +330,42 @@ export default class UserService extends UtilityService {
 				? { statusCode: 409, message: `${label || key} has been used` }
 				: Promise.resolve({ statusCode: 200 });
 		});
+	}
+
+	/**
+	 * Dispatch sms to user
+	 *
+	 * @static
+	 * @param {object} options
+	 * @param {String} message
+	 * @returns {Promise} a promise
+	 * @method dispatchSMS
+	 * @memberof UserService
+	 */
+	static dispatchSMS(options) {
+		return NotificationService.sendSMS({ 
+			phoneNumber: options.phoneNumber, 
+			message: this.getSmsMessage(options) 
+		})
+		.then((result) => {
+			return result.success 
+				? { statusCode: 200, message: `SMS sent successfully` }
+				: { statusCode: 504, message: `Sorry, could not send SMS` };
+		});
+	}
+
+	/**
+	 * 
+	 *
+	 * @static
+	 * @param {object} options
+	 * @returns {object} object
+	 * @memberof UserService
+	 */
+	static getSmsMessage(options) {
+		const messages = {
+			verification: `SendIT verification code: ${options.code}`
+		};
+		return messages[options.option];
 	}
 }

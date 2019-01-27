@@ -29,6 +29,14 @@ export default class ParcelValidator extends Validator {
 				receiver: this.getReceiverDetailsSchema()
 			};
 			return this.validate(req, res, next, Joi.object().keys(schemas[option]), () => {
+				if (req.body.receiverPhone && req.body.countryCode) {    
+					return { 
+						decoded, 
+						receiverPhone: UserValidator.formatPhoneNumber(
+							req.body.receiverPhone, req.body.countryCode
+						) 
+					};
+					}
 				return { decoded };
 			});
 		};
@@ -131,11 +139,13 @@ export default class ParcelValidator extends Validator {
 	 * @memberof ParcelValidator
 	 */
 	static getReceiverDetailsSchema() {
+		const phoneSchema = UserValidator.getPhoneSchema({
+				key: 'receiverPhone', str: 'Receiver', label: 'phone number'
+			});
 		return {
 			receiverName: Joi.string().required().max(200).label(`Receiver name`),
-			receiverPhone: UserValidator.getPhoneSchema({
-				key: 'receiverPhone', str: 'Receiver', label: 'phone number'
-			}).receiverPhone
+			receiverPhone: phoneSchema.receiverPhone,
+			countryCode: phoneSchema.countryCode
 		};
 	}
 

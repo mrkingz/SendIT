@@ -42,7 +42,7 @@ export default class Controller extends UtilityService {
   static serverError(res, error) {
     return res.status(500).json({
       status: 'Fail',
-      message: error && process.env.NODE_ENV.trim() === 'development'
+      message: error && process.env.NODE_ENV.trim() !== 'development'
         ? error.message 
         : `Sorry, internal error occured, try again later!`
     });
