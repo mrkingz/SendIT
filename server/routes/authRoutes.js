@@ -11,6 +11,11 @@ authRouter.post('/api/v1/auth/signup',
   UserController.isUnique('Email', 'E-mail address'),
   UserController.register());
 
+authRouter.post('/api/v1/auth/sendCode', 
+  UserController.authenticateUser(),
+  UserValidator.validateUserUpdate('phoneNumber'),
+  UserController.sendSMS('verification'));  
+
 authRouter.post('/api/v1/auth/login',
   UserValidator.validateSignin(), 
   UserController.signin());

@@ -110,7 +110,10 @@ const editReceiverModal = (e, parcel) => {
                     </div>         
                     <div class="control-group">
                       <label class="required" for="receiver-phone">Receicver's phone</label>
-                      <input type="text" class="control" name="receiverPhone" id="receiver-phone" placeholder="Phone" value="${parcel.to.receiver.phone}">
+                      <div class="input-group">
+                        <input class="group-member bold country-code" name="countryCode" id="country-code" value="+234">
+                        <input type="text" class="control group-member" name="receiverPhone" id="receiver-phone" placeholder="Phone" value="${parcel.to.receiver.phone.substr(-10)}">
+                      </div>
                     </div>
                     <div class="control-group mb-0">
                       <button class="btn btn-primary" onclick="editReceiver(event)">Save</button>
@@ -161,7 +164,10 @@ const updatePhoneModal = (e, user) => {
                     <div id="phone-div">
                       <div class="control-group">
                         <label class="required" for="phone">Phone number</label>
-                        <input type="text" class="control" name="phoneNumber" id="phone-number" placeholder="Phone number" value="${user.phonenumber ? user.phonenumber : ''}">
+                        <div class="input-group">
+                          <input class="group-member bold country-code" name="countryCode" id="country-code" value="+234">
+                          <input type="text" class="control group-member" name="phoneNumber" id="phone-number" placeholder="Phone number" value="${user.phoneNumber ? user.phoneNumber.substr(-10) : ''}">
+                        </div>
                       </div>
                     </div>
                     <div class="hide" id="code-div">

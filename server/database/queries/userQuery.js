@@ -59,9 +59,9 @@ export default class UserQuery {
 					options.values.decoded.userId
 				]
 			};
-			case 'phone': return {
+			case 'phonenumber': return {
 				text: `UPDATE users SET "phoneNumber" = $1, "updatedAt" = $2
-							 WHERE userId = $3 RETURNING *`,
+							 WHERE "userId" = $3 RETURNING *`,
 				values: [options.values.phoneNumber, new Date(), options.values.decoded.userId]
 			};
 			case 'photo': return {

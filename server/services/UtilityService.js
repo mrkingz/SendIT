@@ -130,4 +130,30 @@ export default class UtilityService {
     let all = (!_.isUndefined(removeAll)) ? removeAll : true;
     return (all) ? string.trim().replace(/[ ]+/g, '') : string.trim().replace(/[ ]+/g, ' ');
   }
+
+  /**
+   * Strip dashes from a string
+   *
+   * @static
+   * @param {string} string
+   * @returns {string} a string with the dashes removed
+   * @memberof UtilityService
+   */
+  static stripDashes(string) {
+    return string.replace(/[-]+/g, '');
+  }
+
+  /**
+   * Convert string to camel case
+   *
+   * @static
+   * @param {string} string
+   * @returns {string} the converted string in camel case
+   * @memberof UtilityService
+   */
+  static toCammelCase(string) {
+    return string.split('-').map((str, index) => {
+      return index === 0 ? str : this.ucFirstStr(str);
+    }).join('');
+  }
 }

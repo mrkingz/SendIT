@@ -384,6 +384,10 @@ button.menu-btn {
 
 .control {
     width: 100%;
+}
+
+.country-code,
+.control {
     padding: .35rem .4rem;
     margin-top: .13rem;
     font-size: .8rem;
@@ -904,6 +908,41 @@ html {
     padding: .5rem .5rem 0;
 }
 
+.input-group {
+    display: flex;
+    align-items: center;
+}
+
+.group-member ~ .group-member {
+    border-left: none;
+    -webkit-border-top-left-radius: 0;
+       -moz-border-top-left-radius: 0;
+            border-top-left-radius: 0;
+
+    -webkit-border-bottom-left-radius: 0;
+       -moz-border-bottom-left-radius: 0;
+            border-bottom-left-radius: 0;
+} 
+
+.group-member:first-child {
+    -webkit-border-top-right-radius: 0;
+       -moz-border-top-right-radius: 0;
+            border-top-right-radius: 0;
+
+    -webkit-border-bottom-right-radius: 0;
+       -moz-border-bottom-right-radius: 0;
+            border-bottom-right-radius: 0;
+} 
+
+.country-code {
+    max-width: 26%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: rgb(240, 240, 240);
+}
+
 .justify-content {
     text-align: justify;
 }
@@ -1080,6 +1119,10 @@ html {
 .modal-body .check-wrapper {
     margin-top: .2rem;
 }
+
+.naira::before {
+    content: "\20A6 \00a0";
+} 
 
 .bg-image,
 #avatar {

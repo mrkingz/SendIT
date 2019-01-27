@@ -290,4 +290,21 @@ export default class UserController extends Controller {
         .catch(error => this.serverError(res, error));
     };
   }
+
+  /**
+   *
+   *
+   * @static
+   * @param {object} option
+   * @returns {object} an express middleware function that handles the POST request
+   * @memberof UserController
+   */
+  static sendSMS(option) {
+    return (req, res) => {
+      const { code, phoneNumber } = req.body;
+      return UserService.dispatchSMS({ code, phoneNumber, option })
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
+    };
+  }
 }

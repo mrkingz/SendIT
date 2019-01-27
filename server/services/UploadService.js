@@ -2,12 +2,9 @@ import path from 'path';
 import multer from "multer";
 import cloudinary from "cloudinary";
 import cloudinaryStorage from "multer-storage-cloudinary";
+import configs from '../configs';
 
-cloudinary.config({
-	api_key: process.env.API_KEY,
-	api_secret: process.env.API_SECRET,
-	cloud_name: process.env.CLOUD_NAME
-});
+cloudinary.config(configs.cloudinaryConfig);
 
 /**
  *
