@@ -1,6 +1,7 @@
 *,
 *::before,
 *::after {
+    *background-color: #be760f;
     padding: 0;
     margin: 0;
     overflow-wrap: break-word;
@@ -492,7 +493,7 @@ button.menu-btn {
     font-size: 20px !important;
 }
 
-.inner-alert-wrapper {
+.inner-div-wrapper {
     background-color: #fefefe;
     border: 1px solid rgb(153, 152, 152);
     background: #fefefe;
@@ -501,7 +502,7 @@ button.menu-btn {
             border-radius: .2rem;
 }
 
-.outter-alert-wrapper {
+.outter-div-wrapper {
     border: 4px solid rgb(224, 224, 224);
     background-color: rgb(224, 224, 224);
     -webkit-border-radius: .3rem;
@@ -1045,6 +1046,13 @@ html {
     color: #555;
     padding: 1rem .5rem;
     border: 1px solid rgb(194, 193, 193);
+}
+
+#map {
+    margin: .2rem;
+    width: calc(100% - .4rem);
+    height: calc(500px - .4rem);
+    background-color: rgba(0,0,0, .2);
 }
 
 .menu-div {

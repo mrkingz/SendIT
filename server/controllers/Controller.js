@@ -1,4 +1,4 @@
-import UtilityService from '../services/UtilityService';
+import UtilityService from "../services/UtilityService";
 
 /**
  *
@@ -9,8 +9,8 @@ import UtilityService from '../services/UtilityService';
  */
 export default class Controller extends UtilityService {
   /**
-   * 
-   * 
+   *
+   *
    * Return an error message from the server
    * @static
    * @param {object} res HTTP response object
@@ -19,11 +19,11 @@ export default class Controller extends UtilityService {
    * @memberof Controller
    */
   static response(res, dataObj) {
-    return Promise.resolve(dataObj).then((obj) => {
+    return Promise.resolve(dataObj).then(obj => {
       let { statusCode, message, data } = obj;
       statusCode = statusCode || 200;
       return res.status(statusCode).json({
-        status: statusCode >= 400 ? 'Fail' : 'Success',
+        status: statusCode >= 400 ? "Fail" : "Success",
         message,
         data
       });
@@ -31,7 +31,7 @@ export default class Controller extends UtilityService {
   }
 
   /**
-   * 
+   *
    * @static
    * @param {object} res HTTP response object
    * @param {object} error error object
@@ -41,10 +41,11 @@ export default class Controller extends UtilityService {
    */
   static serverError(res, error) {
     return res.status(500).json({
-      status: 'Fail',
-      message: error && process.env.NODE_ENV.trim() !== 'development'
-        ? error.message 
-        : `Sorry, internal error occured, try again later!`
+      status: "Fail",
+      message:
+        error && process.env.NODE_ENV.trim() !== "development"
+          ? error.message
+          : `Sorry, internal error occured, try again later!`
     });
   }
 
@@ -58,8 +59,11 @@ export default class Controller extends UtilityService {
    */
   static errorHandler() {
     return (error, req, res, next) => {
-      return error 
-        ? this.response(res, { statusCode: 400, message: error.message || error }) 
+      return error
+        ? this.response(res, {
+            statusCode: 400,
+            message: error.message || error
+          })
         : next();
     };
   }
