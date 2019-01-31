@@ -1,13 +1,13 @@
 /* eslint-disable no-empty */
-import dotenv from 'dotenv';
-import Twilio from 'twilio';
-import nodemailer from 'nodemailer';
-import configs from '../configs';
+import dotenv from "dotenv";
+import Twilio from "twilio";
+import nodemailer from "nodemailer";
+import configs from "../configs";
 
 dotenv.load();
 
 /**
- * 
+ *
  *
  * @export
  * @class NotificationService
@@ -33,7 +33,7 @@ export default class NotificationService {
               <p> Regards!</p>`
     };
     transporter.sendMail(mailOptions, (error, info) => {
-      if (process.env.NODE_ENV === 'development') {
+      if (process.env.NODE_ENV === "development") {
         if (error) console.log(error);
         if (info) console.log(info.response);
       }
@@ -62,21 +62,25 @@ export default class NotificationService {
    *
    * @static
    * @param {object} options
-   * @return {Promise} a promise 
+   * @return {Promise} a promise
    * @method sendSMS
    * @memberof NotificationService
    */
   static sendSMS(options) {
     const { fromNumber, accountSid, authToken } = configs.twilioConfig;
     const client = new Twilio(accountSid, authToken);
-    return client.messages.create({
-      body: options.message,
-      from: fromNumber,
-      to: options.phoneNumber 
-    }).then((message) => { 
-      if (process.env.NODE_ENV === 'development') console.log(message.body);
-      return Promise.resolve({ success: true, message });
-    })
-      .catch(error => Promise.resolve({ success: false, message: error.message }));
+    return client.messages
+      .create({
+        body: options.message,
+        from: fromNumber,
+        to: options.phoneNumber
+      })
+      .then(message => {
+        if (process.env.NODE_ENV === "development") console.log(message.body);
+        return Promise.resolve({ success: true, message });
+      })
+      .catch(error =>
+        Promise.resolve({ success: false, message: error.message })
+      );
   }
 }

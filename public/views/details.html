@@ -100,7 +100,7 @@
 								<div class="section-y">
 									<div class="field">
 										<div class="field-name">Pick up address</div>
-										<div class="field-value">
+										<div class="field-value" id="from">
 											<span id="data-from-address"></span>
 											<span id="data-from-lga"></span>
 											<span id="data-from-state"></span>
@@ -114,7 +114,7 @@
 								<div class="section-y">
 									<div class="field">
 										<div class="field-name">Destination address</div>
-										<div class="field-value">
+										<div class="field-value" id="to-address">
 											<span id="data-to-address"></span>
 											<span id="data-to-lga"></span>
 											<span id="data-to-state"> </span>
@@ -127,6 +127,13 @@
 									<div class="field">
 										<div class="field-name">Receiver phone number</div>
 										<div class="field-value" id="data-receiver-phone"></div>
+									</div>
+								</div>
+							</div>
+							<div class="sectio">
+								<div class="outter-div-wrapper">
+									<div class="inner-div-wrapper">
+										<div id="map"></div>
 									</div>
 								</div>
 							</div>
@@ -147,6 +154,7 @@
 	<script src="../js/script.js"></script>
 	<script src="../js/modals.js"></script>
 	<script>
+
 		const getParcelId = () => location.pathname.split('/')[2];
 		let parcel;
 		const getDetails = () => {
@@ -325,6 +333,7 @@
 			}
 		}
 	</script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4fuZVukoacZf3oVilqibcN9DXvi-84Tg"></script>
+	<script src="../js/map.js"></script>
 </body>
-
 </html>

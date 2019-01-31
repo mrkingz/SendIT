@@ -1,5 +1,5 @@
-import ParcelService from '../services/ParcelService';
-import Controller from './Controller';
+import ParcelService from "../services/ParcelService";
+import Controller from "./Controller";
 
 /**
  * @export
@@ -7,14 +7,14 @@ import Controller from './Controller';
  * @extends { Controller }
  */
 export default class ParcelController extends Controller {
-	/** 
-	 * Create a parcel
-   * 
-	 * @static
-	 * @returns {function} A middleware function that handles the POST request
+  /**
+   * Create a parcel
+   *
+   * @static
+   * @returns {function} A middleware function that handles the POST request
    * @method createParcel
-	 * @memberof ParcelController
-	 */
+   * @memberof ParcelController
+   */
   static createParcel() {
     return (req, res) => {
       return ParcelService.createParcel(req.body)
@@ -25,7 +25,7 @@ export default class ParcelController extends Controller {
 
   /**
    * Gets all parcels
-   * 
+   *
    * @static
    * @returns {function} Returns an express middleware function that handles the GET request
    * @method getParcels
@@ -39,21 +39,23 @@ export default class ParcelController extends Controller {
       const { userId } = req.body.decoded;
       // If URL contains user id
       // Then we know we are fetching a specific user parcels
-      const isUserParcels = typeof req.params.userId !== 'undefined';
+      const isUserParcels = typeof req.params.userId !== "undefined";
       if (isUserParcels && Number(userId) !== Number(req.params.userId)) {
-        const message = 'Sorry, not a valid logged in user';
-        return this.response( res, { statusCode: 401, message });
+        const message = "Sorry, not a valid logged in user";
+        return this.response(res, { statusCode: 401, message });
       }
       return ParcelService.fetchParcels({
-        userId, isUserParcels
-      }).then(result => this.response(res, result))
+        userId,
+        isUserParcels
+      })
+        .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
     };
   }
 
   /**
    * Gets a single parcel
-   * 
+   *
    * @static
    * @returns {function} Returns an express middleware function that handles the GET request
    * @method getParcel
@@ -63,12 +65,15 @@ export default class ParcelController extends Controller {
     return (req, res) => {
       const { userId, isAdmin } = req.body.decoded;
       if (req.params.userId && Number(userId) !== Number(req.params.userId)) {
-        const message = 'Sorry, not a valid logged in user';
+        const message = "Sorry, not a valid logged in user";
         return this.response(res, { statusCode: 401, message });
-      } 
+      }
       return ParcelService.fetchParcel({
-        parcelId: req.params.parcelId, userId, isAdmin
-      }).then(result => this.response(res, result))
+        parcelId: req.params.parcelId,
+        userId,
+        isAdmin
+      })
+        .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
     };
   }
@@ -86,8 +91,8 @@ export default class ParcelController extends Controller {
     return (req, res) => {
       const stateId = req.params.stateId || null;
       ParcelService.fetchPlaces(stateId ? { stateId, text } : { text })
-      .then(result => this.response(res, result))
-      .catch(error => this.serverError(res, error));
+        .then(result => this.response(res, result))
+        .catch(error => this.serverError(res, error));
     };
   }
 
@@ -103,9 +108,13 @@ export default class ParcelController extends Controller {
       const { isAdmin, userId } = req.body.decoded;
       // If URL contains user id
       // Then we know we are filtering a specific user parcels
-      const isUserParcels = typeof req.params.userId !== 'undefined';
-      if (isUserParcels && !isAdmin && (Number(userId) !== Number(req.params.userId))) {
-        const message = 'Sorry, not a valid logged in user';
+      const isUserParcels = typeof req.params.userId !== "undefined";
+      if (
+        isUserParcels &&
+        !isAdmin &&
+        Number(userId) !== Number(req.params.userId)
+      ) {
+        const message = "Sorry, not a valid logged in user";
         return this.response(res, { statusCode: 401, message });
       }
       const filter = this.ucFirstStr(req.query.filter);
@@ -125,9 +134,12 @@ export default class ParcelController extends Controller {
    */
   static updateParcel(update) {
     return (req, res) => {
-      return ParcelService.updateParcel({ 
-        requestBody: req.body, update, parcelId: req.params.parcelId
-      }).then(result => this.response(res, result))
+      return ParcelService.updateParcel({
+        requestBody: req.body,
+        update,
+        parcelId: req.params.parcelId
+      })
+        .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
     };
   }
@@ -144,7 +156,8 @@ export default class ParcelController extends Controller {
       return ParcelService.getAreas({
         stateId: req.params.stateId,
         lgaId: req.params.lgaId
-      }).then(result => this.response(res, result))
+      })
+        .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
     };
   }
@@ -162,10 +175,10 @@ export default class ParcelController extends Controller {
       const userId = req.body.decoded.userId;
       // If URL contains user id
       // Then we know we are fetching a specific user parcels
-      const isUserParcels = typeof req.params.userId !== 'undefined';
+      const isUserParcels = typeof req.params.userId !== "undefined";
       if (isUserParcels && Number(userId) !== Number(req.params.userId)) {
-        const message = 'Sorry, not a valid logged in user';
-        return this.response( res, { statusCode: 401, message });
+        const message = "Sorry, not a valid logged in user";
+        return this.response(res, { statusCode: 401, message });
       }
       return ParcelService.countOrders(isUserParcels ? userId : null)
         .then(result => this.response(res, result))

@@ -1,24 +1,24 @@
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
 
 dotenv.config();
-const isProduction = process.env.NODE_ENV.trim() === 'production';
+const isProduction = process.env.NODE_ENV.trim() === "production";
 
-const configs = { 
+const configs = {
   // Database configuration
-  databaseConfig: { 
+  databaseConfig: {
     testConfig: {
       user: process.env.DB_USERNAME_TEST,
       database: process.env.DB_NAME_TEST,
       password: process.env.DB_PASSWORD_TEST,
       port: process.env.DB_PORT_TEST,
-      host: process.env.DB_HOST_TEST,
+      host: process.env.DB_HOST_TEST
     },
     devConfig: {
       user: process.env.DB_USERNAME,
       database: process.env.DB_NAME,
       password: process.env.DB_PASSWORD,
       port: process.env.DB_PORT,
-      host: process.env.DB_HOST,
+      host: process.env.DB_HOST
     },
     prodConfig: process.env.DATABASE_URL
   },
@@ -30,16 +30,20 @@ const configs = {
   },
   // Twilio configuration
   twilioConfig: {
-    accountSid: isProduction ? process.env.TWILIO_SID_PROD : process.env.TWILIO_SID_TEST,
-    authToken: isProduction ? process.env.TWILIO_AUTHTOKEN_PROD : process.env.TWILIO_AUTHTOKEN_TEST,
-    fromNumber: isProduction 
-      ? process.env.TWILIO_PHONE_NUMBER_PROD 
+    accountSid: isProduction
+      ? process.env.TWILIO_SID_PROD
+      : process.env.TWILIO_SID_TEST,
+    authToken: isProduction
+      ? process.env.TWILIO_AUTHTOKEN_PROD
+      : process.env.TWILIO_AUTHTOKEN_TEST,
+    fromNumber: isProduction
+      ? process.env.TWILIO_PHONE_NUMBER_PROD
       : process.env.TWILIO_PHONE_NUMBER_TEST
   },
   // Nodemailer configuration
-  nodemailerConfig: { 
-    user: process.env.EMAIL, 
-    pass: process.env.PASSWORD 
+  nodemailerConfig: {
+    user: process.env.EMAIL,
+    pass: process.env.PASSWORD
   }
- };
- export default configs;
+};
+export default configs;

@@ -1,16 +1,17 @@
-import { Pool } from 'pg';
-import dotenv from 'dotenv';
-import bcrypt from 'bcrypt';
+import { Pool } from "pg";
+import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 import Places from "./Places";
-import configs from '../configs';
+import configs from "../configs";
 
 dotenv.config();
 
 const { devConfig, prodConfig, testConfig } = configs.databaseConfig;
 
-const env = typeof process.env.NODE_ENV !== `undefined`
-             ? process.env.NODE_ENV.trim() 
-             : `development`;
+const env =
+  typeof process.env.NODE_ENV !== `undefined`
+    ? process.env.NODE_ENV.trim()
+    : `development`;
 
 /**
  * @class Database
@@ -18,7 +19,7 @@ const env = typeof process.env.NODE_ENV !== `undefined`
 class Database {
   /**
    * Creates an instance of Database.
-   * 
+   *
    * @param {object} config - the database configuration object
    * @memberof Database
    */
@@ -26,14 +27,15 @@ class Database {
     this._env = config.env;
     this._tables = [`parcels`, `users`, `states`];
     this._pool = new Pool(
-      (env !== `test` && env !== `development`)
-      ? { connectionString: config.dbConfig } 
-      : config.dbConfig);
+      env !== `test` && env !== `development`
+        ? { connectionString: config.dbConfig }
+        : config.dbConfig
+    );
   }
 
   /**
    * Get the connection pool
-   * 
+   *
    * @return {oject} Returns the connection pool object
    * @memberof Database
    */
@@ -53,7 +55,7 @@ class Database {
   /**
    * Run an sql query
    *
-   * @param {Object} query Query configuration object  
+   * @param {Object} query Query configuration object
    * @returns {Promise.object} A promise that resolve on success; rejects if otherwise
    * @memberof Database
    */
@@ -69,14 +71,16 @@ class Database {
    * @memberof Database
    */
   dropTable(table) {
-    return this.sqlQuery(`DROP TABLE IF EXISTS ${table}`).then(() => {
-      if (env === `development`) {
-        console.log(`Table ${table} successfully dropped`);
-      }
-      return Promise.resolve(true);
-    }).catch((error) => {
-      return Promise.reject(error.toString());
-    });
+    return this.sqlQuery(`DROP TABLE IF EXISTS ${table}`)
+      .then(() => {
+        if (env === `development`) {
+          console.log(`Table ${table} successfully dropped`);
+        }
+        return Promise.resolve(true);
+      })
+      .catch(error => {
+        return Promise.reject(error.toString());
+      });
   }
 
   /**
@@ -87,14 +91,16 @@ class Database {
    * @memberof Database
    */
   createTable(meta) {
-    return this.sqlQuery(meta.sql).then(() => {
-      if (env === `development`) {
-        console.log(`Table ${meta.table} successfully created`);
-      }
-      return Promise.resolve(true);
-    }).catch((error) => {
-      return Promise.reject(error.toString());
-    });
+    return this.sqlQuery(meta.sql)
+      .then(() => {
+        if (env === `development`) {
+          console.log(`Table ${meta.table} successfully created`);
+        }
+        return Promise.resolve(true);
+      })
+      .catch(error => {
+        return Promise.reject(error.toString());
+      });
   }
 
   /**
@@ -103,33 +109,40 @@ class Database {
    * @memberof Database
    */
   dropTables() {
-    return this.dropTable(`parcels`).then(() => {
-      return this.dropTable(`users`).then(() => {
-        return this.dropTable(`lgas`).then(() => {
-          return this.dropTable(`states`).then(() => Promise.resolve(true));
+    return this.dropTable(`parcels`)
+      .then(() => {
+        return this.dropTable(`users`).then(() => {
+          return this.dropTable(`lgas`).then(() => {
+            return this.dropTable(`states`).then(() => Promise.resolve(true));
+          });
+          //We need to provide a default admin
         });
-        //We need to provide a default admin
-      });
-    }).catch(() => {});
+      })
+      .catch(() => {});
   }
 
- /**
-  * Create the database tables
-  * 
-  * @returns {Promise.object} a promise
-  * @memberof Database 
-  */
+  /**
+   * Create the database tables
+   *
+   * @returns {Promise.object} a promise
+   * @memberof Database
+   */
   createTables() {
-    return this.createTable(this.getUsersTableMeta()).then(() => {
-      return this.createTable(this.getParcelsTableMeta()).then(() => {
-        return this.createTable(this.getStatesTableMeta()).then(() => {
-          return this.createTable(this.getLGAsTableMeta())
-            .then(() => Promise.resolve(true));
+    return this.createTable(this.getUsersTableMeta())
+      .then(() => {
+        return this.createTable(this.getParcelsTableMeta()).then(() => {
+          return this.createTable(this.getStatesTableMeta()).then(() => {
+            return this.createTable(this.getLGAsTableMeta()).then(() =>
+              Promise.resolve(true)
+            );
+          });
         });
+      })
+      .catch(error => {
+        console.log(error);
       });
-    }).catch((error) => { console.log(error); });
   }
-  
+
   /**
    * Seed database with initial data
    *
@@ -138,24 +151,26 @@ class Database {
    * @memberof Database
    */
   seedInitialData() {
-    return this.seedAdmin().then(() => {
-    return this.seedStates().then(() => {
-      return this.seedLGAs();
-    });
-    }).catch(e => console.log(e));
+    return this.seedAdmin()
+      .then(() => {
+        return this.seedStates().then(() => {
+          return this.seedLGAs();
+        });
+      })
+      .catch(e => console.log(e));
   }
 
-	/**
-	 * Get parcel table meta data
-	 *
-	 * @returns {object} an object containing users table meta data 
-	 * @method getParcelTableMeta
-	 * @memberof Database
-	 */
-	getParcelsTableMeta() {
-		return {
-			table: `parcels`,
-			sql: `CREATE TABLE IF NOT EXISTS public.parcels
+  /**
+   * Get parcel table meta data
+   *
+   * @returns {object} an object containing users table meta data
+   * @method getParcelTableMeta
+   * @memberof Database
+   */
+  getParcelsTableMeta() {
+    return {
+      table: `parcels`,
+      sql: `CREATE TABLE IF NOT EXISTS public.parcels
 						(
 							"parcelId" SERIAL,
 							"weight" FLOAT NOT NULL,
@@ -186,39 +201,39 @@ class Database {
 							ON UPDATE CASCADE
 							ON DELETE SET NULL
 						);`
-		};
+    };
   }
 
-	/**
-	 *
-	 *
-	 * @returns {object} an object containing users table meta data 
-	 * @method getUserTableMeta
-	 * @memberof Database
-	 */
-	getStatesTableMeta() {
-		return {
-			table: `states`,
-			sql: `CREATE TABLE IF NOT EXISTS public.states
+  /**
+   *
+   *
+   * @returns {object} an object containing users table meta data
+   * @method getUserTableMeta
+   * @memberof Database
+   */
+  getStatesTableMeta() {
+    return {
+      table: `states`,
+      sql: `CREATE TABLE IF NOT EXISTS public.states
 						(
               "stateId" SERIAL,
               "state" VARCHAR (100) NOT NULL,
               CONSTRAINT state_pkey PRIMARY KEY ("stateId")
             );`
-				}; 
+    };
   }
 
   /**
-	 *
-	 *
-	 * @returns {object} an object containing users table meta data 
-	 * @method getUserTableMeta
-	 * @memberof Database
-	 */
-	getLGAsTableMeta() {
-		return {
-			table: `lgas`,
-			sql: `CREATE TABLE IF NOT EXISTS public.lgas
+   *
+   *
+   * @returns {object} an object containing users table meta data
+   * @method getUserTableMeta
+   * @memberof Database
+   */
+  getLGAsTableMeta() {
+    return {
+      table: `lgas`,
+      sql: `CREATE TABLE IF NOT EXISTS public.lgas
 						(
               "lgaId" SERIAL,
               "stateId" integer NOT NULL,
@@ -228,20 +243,20 @@ class Database {
 							ON UPDATE CASCADE
 							ON DELETE SET NULL
             );`
-				}; 
+    };
   }
 
-	/**
-	 *
-	 *
-	 * @returns {object} an object containing users table meta data 
-	 * @method getUserTableMeta
-	 * @memberof Database
-	 */
-	getUsersTableMeta() {
-		return {
-			table: `users`,
-			sql: `CREATE TABLE IF NOT EXISTS public.users
+  /**
+   *
+   *
+   * @returns {object} an object containing users table meta data
+   * @method getUserTableMeta
+   * @memberof Database
+   */
+  getUsersTableMeta() {
+    return {
+      table: `users`,
+      sql: `CREATE TABLE IF NOT EXISTS public.users
 						(
               "userId" SERIAL,
               "firstname" VARCHAR (100) NOT NULL,
@@ -256,7 +271,7 @@ class Database {
               CONSTRAINT users_pkey PRIMARY KEY ("userId"),
               CONSTRAINT users_email_key UNIQUE ("email")
             );`
-				}; 
+    };
   }
 
   /**
@@ -274,11 +289,12 @@ class Database {
              VALUES($1, $2, $3, $4, $5, $6, $7)`,
       values: [`Gabriel`, `Owvigho`, true, email, password, moment, moment]
     };
-    return this.sqlQuery(query).then(() => { 
-      if (env === `development`) console.log(`Admin successfully seeded`);
-      return Promise.resolve(true);
-    })
-    .catch(error => Promise.reject(error.toString()));
+    return this.sqlQuery(query)
+      .then(() => {
+        if (env === `development`) console.log(`Admin successfully seeded`);
+        return Promise.resolve(true);
+      })
+      .catch(error => Promise.reject(error.toString()));
   }
 
   /**
@@ -290,28 +306,33 @@ class Database {
    */
   seedStates() {
     const states = Places.getStates();
-    const stmt = `INSERT INTO states("state") VALUES `; 
-    const rows = states.map(state => `('${state.replace(/[-]+/g, ' ')}')`);
-    return this.sqlQuery(stmt.concat(rows.join(','))).then(() => {
-      if (env === `development`) console.log('States successfuly seeded');
-      return Promise.resolve(true);
-    }).catch(e => console.log(e));
+    const stmt = `INSERT INTO states("state") VALUES `;
+    const rows = states.map(state => `('${state.replace(/[-]+/g, " ")}')`);
+    return this.sqlQuery(stmt.concat(rows.join(",")))
+      .then(() => {
+        if (env === `development`) console.log("States successfuly seeded");
+        return Promise.resolve(true);
+      })
+      .catch(e => console.log(e));
   }
 
-/**
- * Seed local government areas
- *
- * @returns {Promise} a promise
- * @memberof Database
- */
-seedLGAs() { 
+  /**
+   * Seed local government areas
+   *
+   * @returns {Promise} a promise
+   * @memberof Database
+   */
+  seedLGAs() {
     const stmt = `INSERT INTO lgas("stateId", "lga") VALUES `;
     const rows = Places.getStates().map((state, i) => {
       return Places.getLGAs(state).map(lga => `(${i + 1}, '${lga}')`);
     });
-    return this.sqlQuery(stmt.concat(rows.join(','))).then(() => {
-      if (env === `development`) console.log(`Local Government Areas successfully seeded`);
-    }).catch(e => console.log(e));
+    return this.sqlQuery(stmt.concat(rows.join(",")))
+      .then(() => {
+        if (env === `development`)
+          console.log(`Local Government Areas successfully seeded`);
+      })
+      .catch(e => console.log(e));
   }
 }
 

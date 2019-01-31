@@ -1,7 +1,7 @@
 import decode from "jwt-decode";
 import Controller from "./Controller";
 import UserService from "../services/UserService";
-import UploadService from '../services/UploadService';
+import UploadService from "../services/UploadService";
 
 /**
  * @export
@@ -87,7 +87,7 @@ export default class UserController extends Controller {
     return (req, res, next) => {
       let token = this.extractToken(req);
       UserService.authenticate(token)
-        .then((result) => {
+        .then(result => {
           if (result.statusCode !== 401) {
             req.body.decoded = result;
             return next();
@@ -129,7 +129,7 @@ export default class UserController extends Controller {
       const token = this.extractToken(req);
       if (UserService.validateToken(token)) {
         return UserService.findUser(decode(token))
-          .then((result) => {
+          .then(result => {
             const { password, ...user } = result;
             this.response(res, { statusCode: 302, data: { user } });
           })
@@ -166,8 +166,13 @@ export default class UserController extends Controller {
    * @memberof UserController
    */
   static extractToken(req) {
-    return req.cookies.token || req.getAuthorization || req.query.token || req.headers.token 
-      || req.body.token;    
+    return (
+      req.cookies.token ||
+      req.getAuthorization ||
+      req.query.token ||
+      req.headers.token ||
+      req.body.token
+    );
   }
 
   /**
@@ -223,7 +228,7 @@ export default class UserController extends Controller {
     return (req, res, next) => {
       field = field.toLowerCase();
       UserService.checkIfUnique({ [field]: req.body[field] }, label)
-        .then((result) => {
+        .then(result => {
           return result.statusCode === 409
             ? this.response(res, result)
             : next();
@@ -243,12 +248,15 @@ export default class UserController extends Controller {
   static updatePhotoURL() {
     return (req, res) => {
       if (!req.file) {
-        return this.response(res, { statusCode: 400, message: 'No photo was uploaded' });
+        return this.response(res, {
+          statusCode: 400,
+          message: "No photo was uploaded"
+        });
       }
       UserService.updatePhotoURL({
         photoURL: decodeURIComponent(req.file.secure_url),
         decoded: req.body.decoded,
-        option: 'upload'
+        option: "upload"
       })
         .then(result => this.response(res, result))
         .catch(error => this.serverError(res, error));
@@ -265,7 +273,7 @@ export default class UserController extends Controller {
   static uploadPhoto() {
     return (req, res, next) => {
       const uploader = UploadService.uploadTocloudinary(req.body.decoded);
-      uploader(req, res, (err) => {
+      uploader(req, res, err => {
         return next(err || null);
       });
     };
@@ -281,9 +289,11 @@ export default class UserController extends Controller {
   static removePhoto() {
     return (req, res) => {
       UserService.updatePhotoURL({
-        photoURL: null, decoded: req.body.decoded, option: 'remove'
+        photoURL: null,
+        decoded: req.body.decoded,
+        option: "remove"
       })
-        .then((result) => {
+        .then(result => {
           UploadService.deleteCloudinaryImage(req.body.decoded);
           return this.response(res, result);
         })
