@@ -329,8 +329,9 @@ class Database {
     });
     return this.sqlQuery(stmt.concat(rows.join(",")))
       .then(() => {
-        if (env === `development`)
+        if (env === `development`) {
           console.log(`Local Government Areas successfully seeded`);
+        }
       })
       .catch(e => console.log(e));
   }

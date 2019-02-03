@@ -100,11 +100,7 @@
 								<div class="section-y">
 									<div class="field">
 										<div class="field-name">Pick up address</div>
-										<div class="field-value" id="from">
-											<span id="data-from-address"></span>
-											<span id="data-from-lga"></span>
-											<span id="data-from-state"></span>
-										</div>
+										<div class="field-value" id="from-address"></div>
 									</div>
 									<div class="field">
 										<div class="field-name">Sender's phone No.</div>
@@ -114,11 +110,7 @@
 								<div class="section-y">
 									<div class="field">
 										<div class="field-name">Destination address</div>
-										<div class="field-value" id="to-address">
-											<span id="data-to-address"></span>
-											<span id="data-to-lga"></span>
-											<span id="data-to-state"> </span>
-										</div>
+										<div class="field-value" id="to-address"></div>
 									</div>
 									<div class="field">
 										<div class="field-name">Receiver name</div>
@@ -153,6 +145,8 @@
 	<script src="../js/jquery-3.2.1.min.js"></script>
 	<script src="../js/script.js"></script>
 	<script src="../js/modals.js"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4fuZVukoacZf3oVilqibcN9DXvi-84Tg"></script>
+	<script src="../js/map.js"></script>
 	<script>
 
 		const getParcelId = () => location.pathname.split('/')[2];
@@ -172,18 +166,30 @@
 							const { sender, ...pickUp } = from;
 							const { receiver, ...destination } = to;
 							displayData(data);
-							displayData(pickUp, 'from');
+							const fromAddress = displayAddress(pickUp, 'from');
 							if (user.isAdmin) displayData(sender, 'sender');
-							displayData(to, 'to');
+							const toAddress = displayAddress(to, 'to');
 							displayData(receiver, 'receiver');
 							displayLocation(presentLocation);
 							appendMenu(parcel.userId, parcel.deliveryStatus);
+							displayMap({
+								fromAddress, toAddress
+							});
 						} else {
 							document.getElementById('order-details').classList.add('hide')
 							message(res.message);
 						}
 					}).catch(error => message(error.message, error.status));
 				});
+		}
+		
+		const displayAddress = (data, where) => {
+			const address = `${data.address}, ${data.lga}, ${data.state}`
+			const elem = document.getElementById(`${where}-address`);
+			if (elem) {
+				elem.innerHTML = address;
+			}
+			return address;
 		}
 
 		const displayData = (data, str) => {
@@ -333,7 +339,5 @@
 			}
 		}
 	</script>
-	<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB4fuZVukoacZf3oVilqibcN9DXvi-84Tg"></script>
-	<script src="../js/map.js"></script>
 </body>
 </html>
