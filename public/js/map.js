@@ -2,7 +2,8 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable require-jsdoc */
 /* eslint-disable no-extra-semi */
-let map;
+let map,
+  coords = [];
 const displayMap = props => {
   // const { from, to, presentLocation } = props;
   const options = {
@@ -18,6 +19,7 @@ const codeAddress = options => {
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ address }, (results, status) => {
     if (status === "OK") {
+      coords.push(results[0].geometry.location);
       map.setCenter(results[0].geometry.location);
       let marker = new google.maps.Marker({
         map,
