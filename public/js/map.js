@@ -4,16 +4,16 @@
 /* eslint-disable no-extra-semi */
 let map;
 const displayMap = props => {
-  const { fromAddress, toAddress } = props;
+  // const { from, to, presentLocation } = props;
   const options = {
     zoom: 6
   };
   map = new google.maps.Map(document.getElementById("map"), options);
-  codeAddress(fromAddress);
-  codeAddress(toAddress);
+  Object.keys(props).forEach(key => codeAddress(props[key]));
 };
 
-const codeAddress = address => {
+const codeAddress = options => {
+  const { address, viewType } = options;
   getAddress("data-from-address");
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ address }, (results, status) => {
@@ -22,6 +22,18 @@ const codeAddress = address => {
       let marker = new google.maps.Marker({
         map,
         position: results[0].geometry.location
+      });
+
+      const infoWindow = new google.maps.InfoWindow({
+        content: `<div class="info-window">
+                    <h3>${viewType}</h3>
+                    <p>${address}</p>
+                  </div>`,
+        maxWidth: 150
+      });
+
+      marker.addListener("click", () => {
+        infoWindow.open(map, marker);
       });
     }
   });

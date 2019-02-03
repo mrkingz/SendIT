@@ -166,14 +166,13 @@
 							const { sender, ...pickUp } = from;
 							const { receiver, ...destination } = to;
 							displayData(data);
-							const fromAddress = displayAddress(pickUp, 'from');
 							if (user.isAdmin) displayData(sender, 'sender');
-							const toAddress = displayAddress(to, 'to');
 							displayData(receiver, 'receiver');
-							displayLocation(presentLocation);
 							appendMenu(parcel.userId, parcel.deliveryStatus);
 							displayMap({
-								fromAddress, toAddress
+								from: { address: displayAddress(pickUp, 'from'), viewType: 'Pick up location' }, 
+								to: { address: displayAddress(to, 'to'), viewType: 'Parcel destination' },
+								PresentLocation: { address: displayLocation(presentLocation), viewType: 'Present location' }
 							});
 						} else {
 							document.getElementById('order-details').classList.add('hide')
@@ -184,7 +183,7 @@
 		}
 		
 		const displayAddress = (data, where) => {
-			const address = `${data.address}, ${data.lga}, ${data.state}`
+			const address = `${data.address}, ${data.lga}, ${data.state} State`
 			const elem = document.getElementById(`${where}-address`);
 			if (elem) {
 				elem.innerHTML = address;
@@ -211,11 +210,16 @@
 		}
 
 		const displayLocation = (pLocation) => {
-			const elem = document.getElementById('data-presentLocation')
-			elem.innerHTML =  pLocation && !!(pLocation.state && pLocation.lga)
-				? `${pLocation.lga}, ${pLocation.state}`
-				: `Not updated`;
-			elem.parentNode.style.display = 'inline-flex';
+			if (pLocation) {
+				const address = `${pLocation.lga}, ${pLocation.state} State`;
+				const elem = document.getElementById('data-presentLocation')
+				elem.innerHTML =  pLocation && !!(pLocation.state && pLocation.lga)
+					? address
+					: `Not updated`;
+				elem.parentNode.style.display = 'inline-flex';
+				return address
+			}
+			return null;
 		}
 
 		const selectStatus = () => {
