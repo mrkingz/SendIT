@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 
 dotenv.config();
-const isProduction = process.env.NODE_ENV.trim() === "production";
+const env = process.env.NODE_ENV || "development";
+const isProduction = env === "production";
 
 const configs = {
   // Database configuration
@@ -28,18 +29,7 @@ const configs = {
     api_secret: process.env.CLOUD_API_SECRET,
     cloud_name: process.env.CLOUD_NAME
   },
-  // Twilio configuration
-  twilioConfig: {
-    accountSid: isProduction
-      ? process.env.TWILIO_SID_PROD
-      : process.env.TWILIO_SID_TEST,
-    authToken: isProduction
-      ? process.env.TWILIO_AUTHTOKEN_PROD
-      : process.env.TWILIO_AUTHTOKEN_TEST,
-    fromNumber: isProduction
-      ? process.env.TWILIO_PHONE_NUMBER_PROD
-      : process.env.TWILIO_PHONE_NUMBER_TEST
-  },
+
   // Nodemailer configuration
   nodemailerConfig: {
     user: process.env.EMAIL,
