@@ -130,8 +130,8 @@
         method: 'GET'
       })).then(res => res.json())
         .then((res) => {
-          user = res.data.user;
-          orderBreakdown(res.data.user.orders, user.userid);
+          user = res.user;
+          orderBreakdown(res.user.orders, user.userid);
           Object.keys(user).forEach((key) => {
             elem = document.getElementById(`data-${key}`);
             if (elem && user[key] !== '') {
