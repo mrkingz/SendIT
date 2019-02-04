@@ -9,7 +9,6 @@
   "scripts": {
     "start": "babel-node ./server/app.js",
     "start:dev": "cross-env NODE_ENV=development nodemon --watch server --exec babel-node ./server/app",
-    "tests": "cross-env NODE_ENV=test mocha --require babel-core/register server/tests/**/*.js --timeout 100000 --exit",
     "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 100000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "migrate:test": "cross-env NODE_ENV=test babel-node ./server/database/migrate.js --exit",
@@ -18,16 +17,20 @@
     "seed:dev": "cross-env NODE_ENV=development babel-node ./server/database/seed.js",
     "seed:prod": "cross-env NODE_ENV=production babel-node ./server/database/seed.js --exit",
     "migrate:refresh": "npm run migrate:dev && npm run seed:dev",
-    "lint": "./node_modules/.bin/eslint 'server/**/*js'",
-    "lint:fix": "prettier-eslint server/**/*.js --write"
+    "lint": "eslint 'server/**/*js'",
+    "lint:fix": "prettier-eslint server/**/*{js,json} --write"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test"
     }
   },
   "lint-staged": {
-    "*.{js, json, md}": ["prettier --write", "git add"]
+    "*.{js, json}": [
+      "prettier --write",
+      "git add"
+    ]
   },
   "nyc": {
     "exclude": [
@@ -68,7 +71,6 @@
     "cloudinary": "^1.13.2",
     "cookie-parser": "^1.4.3",
     "cors": "^2.8.5",
-    "cross-env": "^5.2.0",
     "express": "^4.16.4",
     "joi": "^14.0.6",
     "jsonwebtoken": "^8.3.0",
@@ -84,12 +86,8 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "coveralls": "^3.0.2",
+    "cross-env": "^5.2.0",
     "dotenv": "^6.2.0",
-    "eslint": "^5.12.1",
-    "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.16.0",
-    "eslint-plugin-jsx-a11y": "^6.2.0",
-    "eslint-plugin-react": "^7.12.4",
     "husky": "^1.3.1",
     "lint-staged": "^8.1.1",
     "mocha": "^5.2.0",

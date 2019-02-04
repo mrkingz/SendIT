@@ -123,13 +123,7 @@ export default class UserService extends UtilityService {
           total,
           ...user
         } = result.rows[0];
-        user.orders = {
-          cancelled,
-          delivered,
-          placed,
-          transiting,
-          total
-        };
+        user.orders = { cancelled, delivered, placed, transiting, total };
         const message = "Profile details successfully retrieved";
         return { statusCode: 302, message, data: { user } };
       }

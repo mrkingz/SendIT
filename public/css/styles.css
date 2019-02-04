@@ -880,6 +880,15 @@ html {
     width: 50%;
 }
 
+.info-window h3 {
+    color:#470605;
+    margin-bottom: .3rem;
+}
+
+.info-window p {
+    color:#761b18;
+}
+
 .input-label input[type="file"] {
     position:absolute;
     top: -1000px;
