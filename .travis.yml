@@ -24,6 +24,6 @@ services:
 before_script: 
   - psql -c 'drop database if exists secure;' -U postgres
   - psql -c 'create database secure;' -U postgres
-
+  
 after_success:
   - npm run coverage
