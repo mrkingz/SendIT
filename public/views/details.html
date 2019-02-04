@@ -161,7 +161,7 @@
 				})).then(res => res.json())
 					.then((res) => {
 						if (res.status === 'Success') {
-							parcel = res.data.parcel;
+							parcel = res.parcel;
 							const { from, to, presentLocation, ...data } = parcel;
 							const { sender, ...pickUp } = from;
 							const { receiver, ...destination } = to;
