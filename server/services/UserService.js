@@ -41,7 +41,7 @@ export default class UserService extends UtilityService {
       return {
         statusCode: 201,
         message: "Sign up was successfull",
-        data: { user }
+        user
       };
     });
   }
@@ -66,8 +66,8 @@ export default class UserService extends UtilityService {
           const { password, createdAt, updatedAt, ...details } = result.rows[0];
           return {
             message: "Successfully signed in",
-            data: {
-              user: { ...details, createdAt, updatedAt },
+            user: {
+              ...details,
               token: this.generateToken(details)
             }
           };
@@ -98,7 +98,7 @@ export default class UserService extends UtilityService {
         const msg = `${this.ucFirstStr(
           this.stripDashes(options.key)
         )} successfully updated`;
-        return { statusCode: 200, message: msg, data: { user } };
+        return { statusCode: 200, message: msg, user };
       });
   }
 
@@ -125,7 +125,7 @@ export default class UserService extends UtilityService {
         } = result.rows[0];
         user.orders = { cancelled, delivered, placed, transiting, total };
         const message = "Profile details successfully retrieved";
-        return { statusCode: 302, message, data: { user } };
+        return { statusCode: 200, message, user };
       }
       return { statusCode: 404, message: "User does not exist" };
     });
@@ -162,8 +162,7 @@ export default class UserService extends UtilityService {
     return db.sqlQuery(UserQuery.findUserBy(option)).then(result => {
       if (result.rows[0]) {
         const message = `A user with ${label || field} was found`;
-        const { password, ...user } = result.rows[0];
-        return { statusCode: 302, message, data: { user } };
+        return { statusCode: 200, message };
       }
       return {
         statusCode: 404,
@@ -261,10 +260,13 @@ export default class UserService extends UtilityService {
           return {
             statusCode: 200,
             message: `Profile photo ${msg[options.option]} successfully`,
-            data: { user }
+            user
           };
         }
-        //return { statusCode: 400, message: 'Something went wrong, could not upload photo' };
+        return {
+          statusCode: 400,
+          message: "Something went wrong, could not upload photo"
+        };
       });
   }
 
@@ -281,7 +283,7 @@ export default class UserService extends UtilityService {
     return this.findUser(data.decoded).then(result => {
       const { password, ...user } = result;
       return bcrypt.compareSync(data.password, password)
-        ? { statusCode: 200, message: "Password is valid", data: { user } }
+        ? { statusCode: 200, message: "Password is valid", user }
         : { statusCode: 406, message: "Sorry, incorrect password" };
     });
   }
@@ -357,7 +359,7 @@ export default class UserService extends UtilityService {
     return this.findBy(option).then(result => {
       // Remember, findBy returns an object with property statusCode
       // So, we need to check the statusCode returned
-      return result.statusCode === 302
+      return result.statusCode === 200
         ? { statusCode: 409, message: `${label || key} has been used` }
         : Promise.resolve({ statusCode: 200 });
     });

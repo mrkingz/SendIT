@@ -86,7 +86,7 @@ export default class ParcelService extends UtilityService {
         : {
             statusCode: 200,
             message: "Total parcel delivery orders",
-            data: { count: result.rows[0] }
+            count: result.rows[0]
           };
     });
   }
@@ -142,7 +142,7 @@ export default class ParcelService extends UtilityService {
       return {
         statusCode: 201,
         message: "Delivery order successfully created",
-        data: { parcel: this.formatParcel({ ...parcel, sender }) }
+        parcel: this.formatParcel({ ...parcel, sender })
       };
     });
   }
@@ -193,11 +193,11 @@ export default class ParcelService extends UtilityService {
               : "No delivery order found"
           }
         : {
-            statusCode: 302,
+            statusCode: 200,
             message: filter
               ? `${filter} parcels successfully retrieved`
               : "Parcels successfully retrieved",
-            data: { parcels: parcels.map(parcel => this.formatParcel(parcel)) }
+            parcels: parcels.map(parcel => this.formatParcel(parcel))
           };
     });
   }
@@ -214,9 +214,9 @@ export default class ParcelService extends UtilityService {
     return this.findParcel(options).then(parcel => {
       return parcel
         ? {
-            statusCode: 302,
+            statusCode: 200,
             message: "Parcel successfully retrieved",
-            data: { parcel: this.formatParcel(parcel) }
+            parcel: this.formatParcel(parcel)
           }
         : { statusCode: 404, message: "No delivery order found" };
     });
@@ -547,9 +547,9 @@ export default class ParcelService extends UtilityService {
         const area = result.rows[0];
         return area
           ? {
-              statusCode: 302,
+              statusCode: 200,
               message: "State and L.G.A. successfully retreived",
-              data: { area }
+              area
             }
           : {
               statusCode: 404,
@@ -682,7 +682,7 @@ export default class ParcelService extends UtilityService {
           return {
             statusCode: 200,
             message: this.getMessages(parcel.deliveryStatus)[update],
-            data: { parcel: this.formatParcel({ ...parcel, sender }) }
+            parcel: this.formatParcel({ ...parcel, sender })
           };
         });
     });
@@ -751,9 +751,9 @@ export default class ParcelService extends UtilityService {
       const states = result.rows;
       return states[0]
         ? {
-            statusCode: 302,
+            statusCode: 200,
             message: `${options.text} retrieved successfully`,
-            data: { [options.text === "States" ? "states" : "lgas"]: states }
+            [options.text === "States" ? "states" : "lgas"]: states
           }
         : { statusCode: 404, message: "No state found" };
     });

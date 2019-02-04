@@ -4,7 +4,7 @@ import Twilio from "twilio";
 import nodemailer from "nodemailer";
 import configs from "../configs";
 
-dotenv.load();
+dotenv.config();
 
 /**
  *

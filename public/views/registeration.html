@@ -76,7 +76,7 @@
             const isUniqueEmail = (elem) => {
                 return fetch(request({path: '/auth/email', fields: ['email'] })).then(res => res.json())
                 .then(res => {
-                    if (res['data'] && res.data.email === elem.value) {
+                    if (res['data'] && res.email === elem.value) {
                         isUnique(elem, res.message)
                         return false
                     } 

@@ -31,6 +31,7 @@ authRouter.put(
   UserController.authenticateUser(),
   UserController.uploadPhoto(),
   UserController.errorHandler(),
+  UserController.authenticateUser(),
   UserController.updatePhotoURL()
 );
 

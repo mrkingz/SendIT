@@ -85,12 +85,12 @@
                     }))
                     .then(res => res.json())
                     .then((res) => {
-                        if (res.status === 'Success' && res.data.parcels.length > 0) {
+                        if (res.status === 'Success' && res.parcels.length > 0) {
                             const orders = document.getElementById('orders');
                             document.getElementById('message').innerHTML = '';
                             orders.innerHTML = '';
                             document.getElementById('filter-div ').innerHTML = filters();
-                            res.data.parcels.forEach((order) => {
+                            res.parcels.forEach((order) => {
                                 orders.appendChild(orderCard(order));
                             })
                             document.querySelector('.page-title').innerHTML = `${filter ? filter : 'Delivery'} orders`;
