@@ -31,31 +31,32 @@ describe("Test authentication routes", () => {
       .send(user)
       .end((err, res) => {
         const response = res.body;
+        console.log(response);
         expect(res.statusCode).to.equal(201);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Sign up was successfull");
-        expect(response.data).to.be.an("object");
-        expect(response.data.user).to.be.an("object");
-        expect(response.data.user)
+        expect(response).to.be.an("object");
+
+        expect(response.user)
           .to.have.own.property("userId")
           .to.be.a("number");
-        expect(response.data.user)
+        expect(response.user)
           .to.have.own.property("firstname")
           .to.be.a("string")
           .that.is.equal(user.firstname);
-        expect(response.data.user)
+        expect(response.user)
           .to.have.own.property("lastname")
           .to.be.a("string")
           .that.is.equal(user.lastname);
-        expect(response.data.user)
+        expect(response.user)
           .to.have.own.property("email")
           .to.be.a("string")
           .that.is.equal(user.email);
-        expect(response.data.user)
+        expect(response.user)
           .to.have.own.property("isAdmin")
           .to.be.a("boolean")
           .that.is.equal(false);
-        expect(response.data.user).to.have.property("createdAt");
+        expect(response.user).to.have.property("createdAt");
         done();
       });
   });
@@ -234,9 +235,9 @@ describe("Test authentication routes", () => {
         expect(res.statusCode).to.equal(200);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Successfully signed in");
-        expect(response.data)
+        expect(response.user)
           .to.be.an("object")
-          .to.have.own.property("token")
+          .to.have.property("token")
           .to.be.a("string");
         done();
       });
