@@ -1,20 +1,29 @@
 language: node_js
+
 node_js: "stable"
+
 install:
   - npm install
 script:
   - npm test
+
 env:
   - NODE_ENV=test
+
 cache:
   directories:
-    - "node_modules"
+    - node_modules
+
 branches: 
   only:
-    - "develop"
+    - develop
+
 services:
   - postgresql
+
 before_script: 
+  - psql -c 'drop database if exists travis_test;' -U postgres
   - psql -c 'create database travis_test;' -U postgres
+
 after_success:
   - npm run coverage
