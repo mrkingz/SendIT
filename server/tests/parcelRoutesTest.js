@@ -31,8 +31,8 @@ describe("Test parcel routes", () => {
       })
       .end((err, res) => {
         const response = res.body;
-        user = res.body.data.user;
-        token = response.data.token;
+        user = res.body.user;
+        token = response.user.token;
         done();
       });
   });
@@ -43,7 +43,7 @@ describe("Test parcel routes", () => {
       .set("token", token)
       .send(parcel)
       .end((err, res) => {
-        parcel2 = res.body.data.parcel;
+        parcel2 = res.body.parcel;
         done();
       });
   });
@@ -57,7 +57,7 @@ describe("Test parcel routes", () => {
       })
       .end((err, res) => {
         const response = res.body;
-        adminToken = res.body.status === "Success" ? response.data.token : null;
+        adminToken = res.body.status === "Success" ? response.user.token : null;
         done();
       });
   });
@@ -87,46 +87,46 @@ describe("Test parcel routes", () => {
       .send(parcel)
       .end((err, res) => {
         const response = res.body;
-        parcel1 = res.body.data.parcel;
+        parcel1 = res.body.parcel;
         expect(res.statusCode).to.equal(201);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal(
           "Delivery order successfully created"
         );
-        expect(response.data).to.be.an("object");
-        expect(response.data.parcel)
+        expect(response).to.be.an("object");
+        expect(response.parcel)
           .to.have.own.property("parcelId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("weight")
           .to.be.a("number")
           .that.is.equal(parcel.weight);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("description")
           .to.be.a("string")
           .that.is.equal(parcel.description);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("deliveryMethod")
           .to.be.a("string")
           .that.is.equal(parcel.deliveryMethod);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("from")
           .to.be.an("object");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("to")
           .to.be.an("object");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.property("userId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("price")
           .to.be.a("number");
-        expect(response.data.parcel).to.have.own.property("presentLocation");
-        expect(response.data.parcel)
+        expect(response.parcel).to.have.own.property("presentLocation");
+        expect(response.parcel)
           .to.have.own.property("deliveryStatus")
           .to.be.a("string");
-        expect(response.data.parcel).to.have.property("createdAt");
-        expect(response.data.parcel).to.have.property("updatedAt");
+        expect(response.parcel).to.have.property("createdAt");
+        expect(response.parcel).to.have.property("updatedAt");
         done();
       });
   });
@@ -603,39 +603,37 @@ describe("Test parcel routes", () => {
         expect(res.statusCode).to.equal(302);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcels successfully retrieved");
-        expect(response.data).to.be.an("object");
-        expect(response.data.parcels).to.be.a("array");
-        expect(response.data.parcels[0])
+        expect(response).to.be.an("object");
+        expect(response.parcels).to.be.a("array");
+        expect(response.parcels[0])
           .to.have.own.property("parcelId")
           .to.be.a("number");
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("weight")
           .to.be.a("number")
           .that.is.equal(parcel.weight);
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("description")
           .to.be.a("string")
           .that.is.equal(parcel.description);
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("deliveryMethod")
           .to.be.a("string")
           .that.is.equal(parcel.deliveryMethod);
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.property("userId")
           .to.be.a("number");
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("price")
           .to.be.a("number");
-        expect(response.data.parcels[0]).to.have.own.property(
-          "presentLocation"
-        );
-        expect(response.data.parcels[0])
+        expect(response.parcels[0]).to.have.own.property("presentLocation");
+        expect(response.parcels[0])
           .to.have.own.property("deliveryStatus")
           .to.be.a("string");
-        expect(response.data.parcels[0]).to.have.own.property("from");
-        expect(response.data.parcels[0]).to.have.own.property("to");
-        expect(response.data.parcels[0]).to.have.property("createdAt");
-        expect(response.data.parcels[0]).to.have.property("updatedAt");
+        expect(response.parcels[0]).to.have.own.property("from");
+        expect(response.parcels[0]).to.have.own.property("to");
+        expect(response.parcels[0]).to.have.property("createdAt");
+        expect(response.parcels[0]).to.have.property("updatedAt");
         done();
       });
   });
@@ -672,36 +670,36 @@ describe("Test parcel routes", () => {
         expect(res.statusCode).to.equal(302);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcel successfully retrieved");
-        expect(response.data).to.be.an("object");
-        expect(response.data.parcel)
+        expect(response).to.be.an("object");
+        expect(response.parcel)
           .to.have.own.property("parcelId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("weight")
           .to.be.a("number")
           .that.is.equal(parcel.weight);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("description")
           .to.be.a("string")
           .that.is.equal(parcel.description);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("deliveryMethod")
           .to.be.a("string")
           .that.is.equal(parcel.deliveryMethod);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.property("userId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("price")
           .to.be.a("number");
-        expect(response.data.parcel).to.have.own.property("presentLocation");
-        expect(response.data.parcel)
+        expect(response.parcel).to.have.own.property("presentLocation");
+        expect(response.parcel)
           .to.have.own.property("deliveryStatus")
           .to.be.a("string");
-        expect(response.data.parcel).to.have.own.property("from");
-        expect(response.data.parcel).to.have.own.property("to");
-        expect(response.data.parcel).to.have.property("createdAt");
-        expect(response.data.parcel).to.have.property("updatedAt");
+        expect(response.parcel).to.have.own.property("from");
+        expect(response.parcel).to.have.own.property("to");
+        expect(response.parcel).to.have.property("createdAt");
+        expect(response.parcel).to.have.property("updatedAt");
         done();
       });
   });
@@ -719,39 +717,37 @@ describe("Test parcel routes", () => {
         expect(res.statusCode).to.equal(302);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcels successfully retrieved");
-        expect(response.data).to.be.an("object");
-        expect(response.data.parcels).to.be.a("array");
-        expect(response.data.parcels[0])
+        expect(response).to.be.an("object");
+        expect(response.parcels).to.be.a("array");
+        expect(response.parcels[0])
           .to.have.own.property("parcelId")
           .to.be.a("number");
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("weight")
           .to.be.a("number")
           .that.is.equal(parcel.weight);
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("description")
           .to.be.a("string")
           .that.is.equal(parcel.description);
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("deliveryMethod")
           .to.be.a("string")
           .that.is.equal(parcel.deliveryMethod);
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.property("userId")
           .to.be.a("number");
-        expect(response.data.parcels[0])
+        expect(response.parcels[0])
           .to.have.own.property("price")
           .to.be.a("number");
-        expect(response.data.parcels[0]).to.have.own.property(
-          "presentLocation"
-        );
-        expect(response.data.parcels[0])
+        expect(response.parcels[0]).to.have.own.property("presentLocation");
+        expect(response.parcels[0])
           .to.have.own.property("deliveryStatus")
           .to.be.a("string");
-        expect(response.data.parcels[0]).to.have.own.property("from");
-        expect(response.data.parcels[0]).to.have.own.property("to");
-        expect(response.data.parcels[0]).to.have.property("createdAt");
-        expect(response.data.parcels[0]).to.have.property("updatedAt");
+        expect(response.parcels[0]).to.have.own.property("from");
+        expect(response.parcels[0]).to.have.own.property("to");
+        expect(response.parcels[0]).to.have.property("createdAt");
+        expect(response.parcels[0]).to.have.property("updatedAt");
         done();
       });
   });
@@ -769,36 +765,36 @@ describe("Test parcel routes", () => {
         expect(res.statusCode).to.equal(302);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcel successfully retrieved");
-        expect(response.data).to.be.an("object");
-        expect(response.data.parcel)
+        expect(response).to.be.an("object");
+        expect(response.parcel)
           .to.have.own.property("parcelId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("weight")
           .to.be.a("number")
           .that.is.equal(parcel.weight);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("description")
           .to.be.a("string")
           .that.is.equal(parcel.description);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("deliveryMethod")
           .to.be.a("string")
           .that.is.equal(parcel.deliveryMethod);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.property("userId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("price")
           .to.be.a("number");
-        expect(response.data.parcel).to.have.own.property("presentLocation");
-        expect(response.data.parcel)
+        expect(response.parcel).to.have.own.property("presentLocation");
+        expect(response.parcel)
           .to.have.own.property("deliveryStatus")
           .to.be.a("string");
-        expect(response.data.parcel).to.have.own.property("from");
-        expect(response.data.parcel).to.have.own.property("to");
-        expect(response.data.parcel).to.have.property("createdAt");
-        expect(response.data.parcel).to.have.property("updatedAt");
+        expect(response.parcel).to.have.own.property("from");
+        expect(response.parcel).to.have.own.property("to");
+        expect(response.parcel).to.have.property("createdAt");
+        expect(response.parcel).to.have.property("updatedAt");
         done();
       });
   });
@@ -1092,7 +1088,7 @@ describe("Test parcel routes", () => {
         expect(response.message).to.equal(
           "Delivery status successfully updated to Transiting"
         );
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("deliveryStatus")
           .to.be.a("string")
           .that.is.equal("Transiting");
@@ -1115,36 +1111,36 @@ describe("Test parcel routes", () => {
         expect(response.message).to.equal(
           "Parcel delivery order successfully cancelled"
         );
-        expect(response.data).to.be.an("object");
-        expect(response.data.parcel)
+        expect(response).to.be.an("object");
+        expect(response.parcel)
           .to.have.own.property("parcelId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("weight")
           .to.be.a("number")
           .that.is.equal(parcel.weight);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("description")
           .to.be.a("string")
           .that.is.equal(parcel.description);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("deliveryMethod")
           .to.be.a("string")
           .that.is.equal(parcel.deliveryMethod);
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.property("userId")
           .to.be.a("number");
-        expect(response.data.parcel)
+        expect(response.parcel)
           .to.have.own.property("price")
           .to.be.a("number");
-        expect(response.data.parcel).to.have.own.property("presentLocation");
-        expect(response.data.parcel)
+        expect(response.parcel).to.have.own.property("presentLocation");
+        expect(response.parcel)
           .to.have.own.property("deliveryStatus")
           .to.be.a("string");
-        expect(response.data.parcel).to.have.own.property("from");
-        expect(response.data.parcel).to.have.own.property("to");
-        expect(response.data.parcel).to.have.property("createdAt");
-        expect(response.data.parcel).to.have.property("updatedAt");
+        expect(response.parcel).to.have.own.property("from");
+        expect(response.parcel).to.have.own.property("to");
+        expect(response.parcel).to.have.property("createdAt");
+        expect(response.parcel).to.have.property("updatedAt");
         done();
       });
   });
