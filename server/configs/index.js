@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
 
 dotenv.config();
-const isProduction = process.env.NODE_ENV.trim() === "production";
+const env = process.env.NODE_ENV || "development";
+const isProduction = env === "production";
 
 const configs = {
   // Database configuration
