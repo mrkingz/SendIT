@@ -1,18 +1,15 @@
 import express from "express";
-import logger from "morgan";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import routes from "./routes";
 
-dotenv.load();
+dotenv.config();
 const app = express();
 let NODE_ENV = process.env.NODE_ENV
   ? process.env.NODE_ENV.trim()
   : "development";
-
-app.use(logger("dev"));
 
 app.use(bodyParser.json({ limit: "10mb" }));
 app.use(bodyParser.urlencoded({ limit: "10mb", extended: false }));
@@ -30,7 +27,7 @@ app.use((req, res, next) => {
 });
 
 app.set("view options", { layout: false });
-app.use("/", express.static("./public"));
+app.use(express.static("./public"));
 app.use(routes.authRoutes);
 app.use(routes.parcelRoutes);
 app.use(routes.pageRoutes);
