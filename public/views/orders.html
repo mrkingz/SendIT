@@ -90,7 +90,7 @@
                             document.getElementById('message').innerHTML = '';
                             orders.innerHTML = '';
                             document.getElementById('filter-div ').innerHTML = filters();
-                            res.data.parcels.forEach((order) => {
+                            res.parcels.forEach((order) => {
                                 orders.appendChild(orderCard(order));
                             })
                             document.querySelector('.page-title').innerHTML = `${filter ? filter : 'Delivery'} orders`;
