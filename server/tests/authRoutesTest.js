@@ -31,7 +31,6 @@ describe("Test authentication routes", () => {
       .send(user)
       .end((err, res) => {
         const response = res.body;
-        console.log(response);
         expect(res.statusCode).to.equal(201);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Sign up was successfull");
