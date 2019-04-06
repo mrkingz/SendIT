@@ -193,7 +193,7 @@ export default class ParcelService extends UtilityService {
               : "No delivery order found"
           }
         : {
-            statusCode: 302,
+            statusCode: 200,
             message: filter
               ? `${filter} parcels successfully retrieved`
               : "Parcels successfully retrieved",
@@ -214,7 +214,7 @@ export default class ParcelService extends UtilityService {
     return this.findParcel(options).then(parcel => {
       return parcel
         ? {
-            statusCode: 302,
+            statusCode: 200,
             message: "Parcel successfully retrieved",
             parcel: this.formatParcel(parcel)
           }
@@ -547,7 +547,7 @@ export default class ParcelService extends UtilityService {
         const area = result.rows[0];
         return area
           ? {
-              statusCode: 302,
+              statusCode: 200,
               message: "State and L.G.A. successfully retreived",
               area
             }
@@ -751,7 +751,7 @@ export default class ParcelService extends UtilityService {
       const states = result.rows;
       return states[0]
         ? {
-            statusCode: 302,
+            statusCode: 200,
             message: `${options.text} retrieved successfully`,
             [options.text === "States" ? "states" : "lgas"]: states
           }
