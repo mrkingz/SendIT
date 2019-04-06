@@ -20,6 +20,7 @@ const parcel = {
   countryCode: "+234",
   receiverPhone: "08054329076"
 };
+200;
 
 describe("Test parcel routes", () => {
   before(done => {
@@ -600,7 +601,7 @@ describe("Test parcel routes", () => {
       .set("token", adminToken)
       .end((err, res) => {
         const response = res.body;
-        expect(res.statusCode).to.equal(302);
+        expect(res.statusCode).to.equal(200);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcels successfully retrieved");
         expect(response).to.be.an("object");
@@ -667,7 +668,7 @@ describe("Test parcel routes", () => {
       .set("token", adminToken)
       .end((err, res) => {
         const response = res.body;
-        expect(res.statusCode).to.equal(302);
+        expect(res.statusCode).to.equal(200);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcel successfully retrieved");
         expect(response).to.be.an("object");
@@ -714,7 +715,7 @@ describe("Test parcel routes", () => {
       .set("token", token)
       .end((err, res) => {
         const response = res.body;
-        expect(res.statusCode).to.equal(302);
+        expect(res.statusCode).to.equal(200);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcels successfully retrieved");
         expect(response).to.be.an("object");
@@ -762,7 +763,7 @@ describe("Test parcel routes", () => {
       .set("token", token)
       .end((err, res) => {
         const response = res.body;
-        expect(res.statusCode).to.equal(302);
+        expect(res.statusCode).to.equal(200);
         expect(response.status).to.equal("Success");
         expect(response.message).to.equal("Parcel successfully retrieved");
         expect(response).to.be.an("object");
