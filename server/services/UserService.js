@@ -125,7 +125,7 @@ export default class UserService extends UtilityService {
         } = result.rows[0];
         user.orders = { cancelled, delivered, placed, transiting, total };
         const message = "Profile details successfully retrieved";
-        return { statusCode: 302, message, user };
+        return { statusCode: 200, message, user };
       }
       return { statusCode: 404, message: "User does not exist" };
     });
@@ -162,7 +162,7 @@ export default class UserService extends UtilityService {
     return db.sqlQuery(UserQuery.findUserBy(option)).then(result => {
       if (result.rows[0]) {
         const message = `A user with ${label || field} was found`;
-        return { statusCode: 302, message };
+        return { statusCode: 200, message };
       }
       return {
         statusCode: 404,
@@ -359,7 +359,7 @@ export default class UserService extends UtilityService {
     return this.findBy(option).then(result => {
       // Remember, findBy returns an object with property statusCode
       // So, we need to check the statusCode returned
-      return result.statusCode === 302
+      return result.statusCode === 200
         ? { statusCode: 409, message: `${label || key} has been used` }
         : Promise.resolve({ statusCode: 200 });
     });
