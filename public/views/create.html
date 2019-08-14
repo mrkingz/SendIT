@@ -303,12 +303,12 @@
 				let stateId = document.getElementById('pick-up-state').value;
 				let lgaId = document.getElementById('pick-up-lga').value;
 				await getAreas(stateId, lgaId).then(stateData => {
-					const { state, lga } = stateData.data.area;
+					const { state, lga } = stateData.area;
 					stateId = document.getElementById('destination-state').value;
 					lgaId = document.getElementById('destination-lga').value;
 					areas.from = { state, lga }
 					return getAreas(stateId, lgaId).then(lgaData => {
-						const { area } = lgaData.data;
+						const { area } = lgaData;
 						areas.to = { state: area.state, lga: area.lga }
 					})
 				})
@@ -361,7 +361,7 @@
 				.then(res => {
 					if (res.status === 'Success') {
 						document.querySelector('#success #message').innerHTML = res.message;
-						document.getElementById('trackingNo').innerHTML = res.data.parcel.trackingNo;
+						document.getElementById('trackingNo').innerHTML = res.parcel.trackingNo;
 						const orderQuote = document.getElementById('order-quotation');
 						const orderSuccess = document.getElementById('order-success');
 						toggleOrderSteps(orderQuote, false, ['bounceOut', 'Animated']).then(() => {

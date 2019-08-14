@@ -53,7 +53,7 @@ export default class UserQuery {
       case "name":
         return {
           text: `UPDATE users SET "firstname" = $1, "lastname" = $2, "updatedAt" = $3
-								WHERE "userId" = $4 RETURNING *`,
+          WHERE "userId" = $4 RETURNING *`,
           values: [
             options.values.firstname,
             options.values.lastname,
@@ -61,7 +61,7 @@ export default class UserQuery {
             options.values.decoded.userId
           ]
         };
-      case "phonenumber":
+      case "phoneNumber":
         return {
           text: `UPDATE users SET "phoneNumber" = $1, "updatedAt" = $2
 							 WHERE "userId" = $3 RETURNING *`,

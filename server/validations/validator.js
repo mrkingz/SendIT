@@ -31,6 +31,7 @@ export default class Validator extends Controller {
         );
         return this.response(res, { statusCode: 400, message });
       }
+
       req.body = _.isFunction(callback) ? _.merge(data, callback()) : data;
       return next();
     });

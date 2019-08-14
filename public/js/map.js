@@ -15,7 +15,7 @@ const displayMap = props => {
 
 const codeAddress = options => {
   const { address, viewType } = options;
-  getAddress("data-from-address");
+  //getAddress("data-from-address");
   const geocoder = new google.maps.Geocoder();
   geocoder.geocode({ address }, (results, status) => {
     if (status === "OK") {
@@ -39,8 +39,4 @@ const codeAddress = options => {
       });
     }
   });
-};
-
-const getAddress = addressType => {
-  elems = document.getElementById(`${addressType}`);
 };

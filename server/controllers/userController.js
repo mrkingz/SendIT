@@ -176,7 +176,7 @@ export default class UserController extends Controller {
   }
 
   /**
-   * Verify password
+   * @description Verify password
    *
    * @static
    * @returns {function} An expresss middleware function that handles the POST request
@@ -264,7 +264,7 @@ export default class UserController extends Controller {
   }
 
   /**
-   * Upload photo to cloudinary
+   * @description Upload photo to cloudinary
    *
    * @static
    * @returns {function} An express middleware function that handles the request
