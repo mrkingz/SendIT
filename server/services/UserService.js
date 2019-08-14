@@ -16,7 +16,7 @@ import UserQuery from "../database/queries/userQuery";
  */
 export default class UserService extends UtilityService {
   /**
-   * Create user
+   * @description Create user
    *
    * @static
    * @param {object} data user data
@@ -47,7 +47,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Sign in a user
+   * @description Sign in a user
    *
    * @static
    * @param {string} data
@@ -77,7 +77,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Create edit user profile query object
+   * @description Create edit user profile query object
    *
    * @static
    * @param {object} options
@@ -89,21 +89,21 @@ export default class UserService extends UtilityService {
     return db
       .sqlQuery(
         UserQuery.editUser({
-          key: this.stripDashes(options.key),
+          key: this.toCammelCase(options.key),
           values: options.values
         })
       )
       .then(result => {
         const { password, ...user } = result.rows[0];
         const msg = `${this.ucFirstStr(
-          this.stripDashes(options.key)
+          this.stripDashes(options.key, " ")
         )} successfully updated`;
         return { statusCode: 200, message: msg, user };
       });
   }
 
   /**
-   * Fetch user profile details
+   * @description Fetch user profile details
    *
    * @static
    * @param {int} userId
@@ -132,7 +132,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Find a user
+   * @description Find a user
    *
    * @static
    * @param {object} decoded the credentials from user token
@@ -148,7 +148,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Find a user. Usefull when finding an unauthenticate user
+   * @description Find a user. Usefull when finding an unauthenticate user
    *
    * @static
    * @param {object} option object containing the field name and value pair
@@ -172,7 +172,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Authenticate user token
+   * @description Authenticate user token
    *
    * @static
    * @param {object} token
@@ -208,7 +208,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Generate a JWT for authenticated user
+   * @description Generate a JWT for authenticated user
    *
    * @param {object} credentials
    * @returns {string} the generated token
@@ -224,7 +224,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Validate user token
+   * @description Validate user token
    *
    * @static
    * @param {string} token the user token
@@ -242,7 +242,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Save the cloudinary photo url in database
+   * @description Save the cloudinary photo url in database
    *
    * @static
    * @param {object} options
@@ -271,7 +271,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Verify a user password
+   * @description Verify a user password
    *
    * @static
    * @param {object} data
@@ -289,7 +289,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Change user password
+   * @description Change user password
    *
    * @static
    * @param {object} data
@@ -317,7 +317,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Send new password email notification to user
+   * @description Send new password email notification to user
    *
    * @static
    * @param {object} user object with properties containing user data
@@ -345,7 +345,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Check if a field is unique
+   * @description Check if a field is unique
    *
    * @static
    * @param {object} option the
@@ -366,7 +366,7 @@ export default class UserService extends UtilityService {
   }
 
   /**
-   * Dispatch sms to user
+   * @description Dispatch sms to user
    *
    * @static
    * @param {object} options
