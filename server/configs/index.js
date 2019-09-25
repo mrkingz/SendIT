@@ -34,6 +34,13 @@ const configs = {
   nodemailerConfig: {
     user: process.env.EMAIL,
     pass: process.env.PASSWORD
+  },
+
+  // Twilio configuration
+  twilioConfig: {
+    fromNumber: process.env.FROM_NUMBER,
+    authToken: process.env.TWILIO_AUTH_TOKEN,
+    accountSid: process.env.TWILIO_ACCOUNT_ID
   }
 };
 export default configs;

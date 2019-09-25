@@ -7,7 +7,7 @@ import _ from "lodash";
  */
 export default class UtilityService {
   /**
-   * Capitalizes the first character of an object's string porperty
+   * @description Capitalizes the first character of an object's string porperty
    *
    * @static
    * @method ucFirstObj
@@ -55,7 +55,7 @@ export default class UtilityService {
   }
 
   /**
-   * Capitalizes the first character of a string
+   * @description Capitalizes the first character of a string
    *
    * @static
    * @method ucFirstStr
@@ -92,7 +92,7 @@ export default class UtilityService {
   }
 
   /**
-   * Helper method to get defauls values for method ucFirstStr and ucFirstObj
+   * @description Helper method to get defauls values for method ucFirstStr and ucFirstObj
    *
    * @static
    * @param {object} options
@@ -109,7 +109,8 @@ export default class UtilityService {
   }
 
   /**
-   * Removes any leading/trialing white space character from object's attributes
+   * @description Removes any leading/trialing white space character from object's attributes
+   *
    * @static
    * @method trimAttr
    * @memberof UtilityService
@@ -129,7 +130,8 @@ export default class UtilityService {
   }
 
   /**
-   * Removes all white space character, if any
+   * @description Removes all white space character, if any
+   *
    * @static
    * @method cleanString
    * @memberof UtilityService
@@ -146,32 +148,34 @@ export default class UtilityService {
   }
 
   /**
-   * Strip dashes from a string
+   * @description Strip dashes from a string
    *
    * @static
    * @param {string} string
+   * @param {String} seperator
    * @returns {string} a string with the dashes removed
    * @memberof UtilityService
    */
-  static stripDashes(string) {
-    return string.replace(/[-]+/g, "");
+  static stripDashes(string, seperator) {
+    return string.replace(/[-]+/g, seperator ? seperator : "");
   }
 
   /**
-   * Convert string to camel case
+   * @description Convert string to camel case
    *
    * @static
    * @param {string} string
    * @param {string} delimeter
+   * @param {String} seperator
    * @returns {string} the converted string in camel case
    * @memberof UtilityService
    */
-  static toCammelCase(string, delimeter) {
+  static toCammelCase(string, delimeter, seperator) {
     return this.cleanString(string)
       .split(delimeter || "-")
       .map((str, index) => {
         return index === 0 ? str : this.ucFirstStr(str);
       })
-      .join("");
+      .join(seperator ? seperator : "");
   }
 }
