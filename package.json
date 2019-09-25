@@ -7,7 +7,7 @@
     "node": "11.6.0"
   },
   "scripts": {
-    "start": "nodemon ./server/app.js --exec babel-node",
+    "start": "babel-node ./server/app.js --exec",
     "start:dev": "cross-env NODE_ENV=development nodemon --watch server --exec babel-node ./server/app",
     "test": "cross-env NODE_ENV=test nyc mocha server/tests/**/*.js --timeout 100000 --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
