@@ -5,8 +5,8 @@
 SendIT is a courier service that helps users deliver parcels to different destinations. SendIT
 provides courier quotes based on weight categories.
 
-#### link: 
-- https://senditkingsley.herokuapp.com
+#### link to the front-end vanillia JS implementation: 
+- https://sendit-app-api.herokuapp.com
 
 # Features
 - Users can create an account and log in.
